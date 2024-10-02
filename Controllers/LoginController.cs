@@ -24,12 +24,12 @@ namespace RealTimeChatApplication.Controllers
 
             if (pChatUser.UserName == null)
             {
-                ViewBag.ErrorMessage = "Please input the UserName";
+                ViewBag.ErrorMessage = "Please enter the UserName";
                 return View();
             }
             if (pChatUser.Password == null)
             {
-                ViewBag.ErrorMessage = "Please input the Password";
+                ViewBag.ErrorMessage = "Please enter the Password";
                 return View();
             }
 
