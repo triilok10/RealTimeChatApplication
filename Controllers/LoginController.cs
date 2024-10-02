@@ -37,18 +37,18 @@ namespace RealTimeChatApplication.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet, HttpPost]
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
         public IActionResult Register(ChatUser pChatUser)
         {
-            if (pChatUser == null)
-            {
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("", "");
-            }
+
+            return RedirectToAction("", "");
         }
+
 
         #endregion
     }

@@ -1,9 +1,24 @@
+using RealTimeChatApplication.AppCode;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+
+// Configure session management
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(5);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 
 var app = builder.Build();
+var connectionString = builder.Configuration.GetConnectionString("CustomConnection");
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
