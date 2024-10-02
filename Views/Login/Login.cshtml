@@ -1,0 +1,87 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+<style>
+    body {
+        background-color: #f8f9fa; 
+    }
+
+    .login-container {
+        max-width: 800px;
+        margin: auto;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        border-radius: 10px; 
+        transition: transform 0.2s; 
+    }
+
+        .login-container:hover {
+            transform: translateY(-5px); 
+        }
+
+    h1 {
+        margin-bottom: 2rem;
+        font-size: 2rem; 
+        color: #343a40; 
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        border-radius: 5px; 
+        border: 1px solid #ced4da; 
+        transition: border-color 0.3s; 
+    }
+
+        .form-control:focus {
+            border-color: #007bff; 
+            box-shadow: 0 0 5px rgba(0,123,255,.5); 
+        }
+
+    .form-check-label {
+        margin-left: 5px; 
+    }
+
+    button {
+        font-size: 1.1rem; 
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    @@media (max-width: 576px) {
+        .login-container {
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<div class="login-container mt-5">
+    <h1 class="text-center">Login</h1>
+    <form action="/login" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+    <p class="text-center mt-3">Don't have an account? <a href="/register">Create a new user here</a></p>
+</div>
