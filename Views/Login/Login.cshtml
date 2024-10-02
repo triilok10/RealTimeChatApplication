@@ -1,9 +1,10 @@
-﻿@{
+﻿@model RealTimeChatApplication.Models.ChatUser
+@{
     ViewData["Title"] = "Login";
 }
 <style>
     body {
-        background-color: #f8f9fa; 
+        background-color: #f8f9fa;
     }
 
     .login-container {
@@ -12,18 +13,18 @@
         padding: 40px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         background-color: white;
-        border-radius: 10px; 
-        transition: transform 0.2s; 
+        border-radius: 10px;
+        transition: transform 0.2s;
     }
 
         .login-container:hover {
-            transform: translateY(-5px); 
+            transform: translateY(-5px);
         }
 
     h1 {
         margin-bottom: 2rem;
-        font-size: 2rem; 
-        color: #343a40; 
+        font-size: 2rem;
+        color: #343a40;
     }
 
     .form-group {
@@ -31,22 +32,22 @@
     }
 
     .form-control {
-        border-radius: 5px; 
-        border: 1px solid #ced4da; 
-        transition: border-color 0.3s; 
+        border-radius: 5px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s;
     }
 
         .form-control:focus {
-            border-color: #007bff; 
-            box-shadow: 0 0 5px rgba(0,123,255,.5); 
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,.5);
         }
 
     .form-check-label {
-        margin-left: 5px; 
+        margin-left: 5px;
     }
 
     button {
-        font-size: 1.1rem; 
+        font-size: 1.1rem;
     }
 
     .btn-primary {
@@ -72,14 +73,14 @@
 
 <div class="login-container mt-5">
     <h1 class="text-center">Login</h1>
-    <form action="/login" method="post">
+    <form asp-controller="Login" asp-action="Login" method="post">
         <div class="form-group">
             <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+            <input type="text" asp-for="UserName" class="form-control" id="username" required>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
+            <input type="password" asp-for="Password" class="form-control" id="password" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>

@@ -5,7 +5,7 @@ namespace RealTimeChatApplication.Models
     public class ChatUser
     {
 
-        public int ChatUsser { get; set; }
+        public int ChatUserID { get; set; }
         [Required(ErrorMessage = "Please enter the UserName")]
         public string UserName { get; set; }
         [Required(ErrorMessage = "Please enter the Email")]
@@ -16,6 +16,6 @@ namespace RealTimeChatApplication.Models
         public string ConfirmPassword { get; set; }
         public IFormFile ProfilePictureURL { get; set; }
         public bool Status { get; set; }
-        public DateTime AuthenticationTime { get; set; }
+
     }
 }

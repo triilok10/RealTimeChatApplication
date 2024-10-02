@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RealTimeChatApplication.Models;
 
 namespace RealTimeChatApplication.Controllers
 {
@@ -14,13 +15,39 @@ namespace RealTimeChatApplication.Controllers
         public IActionResult Login()
         {
             return View();
+
         }
 
-
-        [HttpGet]
-        public IActionResult Register()
+        [HttpPost]
+        public IActionResult Login(ChatUser pChatUser)
         {
-            return View();
+
+            if (pChatUser.UserName == null)
+            {
+                ViewBag.ErrorMessage = "Please input the UserName";
+                return View();
+            }
+            if (pChatUser.Password == null)
+            {
+                ViewBag.ErrorMessage = "Please input the Password";
+                return View();
+            }
+
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet, HttpPost]
+        public IActionResult Register(ChatUser pChatUser)
+        {
+            if (pChatUser == null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("", "");
+            }
         }
 
         #endregion
