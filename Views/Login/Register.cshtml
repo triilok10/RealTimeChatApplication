@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+<style>
+    body {
+        background-color: #f8f9fa; 
+    }
+
+    .register-container {
+        max-width: 800px;
+        margin: auto;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        border-radius: 10px; 
+        transition: transform 0.2s; 
+    }
+
+    .register-container:hover {
+        transform: translateY(-5px);
+    }
+
+    h1 {
+        margin-bottom: 2rem; 
+        font-size: 2rem; 
+        color: #343a40; 
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem; 
+    }
+
+    .form-control, .form-control-file {
+        border-radius: 5px; 
+        border: 1px solid #ced4da; 
+        transition: border-color 0.3s; 
+    }
+
+    .form-control:focus, .form-control-file:focus {
+        border-color: #007bff; 
+        box-shadow: 0 0 5px rgba(0,123,255,.5); 
+    }
+
+    .profile-picture-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-picture-preview {
+        width: 150px; 
+        height: 150px; 
+        border-radius: 50%;
+        object-fit: cover; 
+        display: none; 
+        margin-bottom: 10px; 
+    }
+
+    button {
+        font-size: 1.1rem; 
+    }
+
+    .btn-primary {
+        background-color: #007bff; 
+        border-color: #007bff; 
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3; 
+        border-color: #0056b3;
+    }
+
+    @@media (max-width: 576px) {
+        .register-container {
+            padding: 30px; 
+        }
+        
+        h1 {
+            font-size: 1.8rem; 
+        }
+        
+        button {
+            font-size: 1rem; 
+        }
+        
+        .form-group label {
+            font-size: 0.9rem; 
+        }
+        
+        small.form-text {
+            font-size: 0.8rem; 
+        }
+    }
+</style>
+
+<div class="register-container mt-5">
+    <h1 class="text-center">Register</h1>
+    
+    <div class="profile-picture-container">
+        <img id="profilePicturePreview" class="profile-picture-preview" src="" alt="Profile Picture Preview">
+        
+        <label for="profilePicture" class="btn btn-secondary">Choose Profile Picture</label>
+        <input type="file" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*" style="display:none;" onchange="previewImage(event)">
+        
+        <small class="form-text text-muted">Upload a profile picture (optional).</small>
+    </div>
+
+    <form action="/register" method="post" enctype="multipart/form-data">
+        
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>
+    
+    <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
+</div>
+
+<script>
+function previewImage(event) {
+    const file = event.target.files[0];
+    
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+          const img = document.getElementById('profilePicturePreview');
+          img.src = e.target.result;
+          img.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+   }
+}
+</script>
