@@ -99,16 +99,16 @@
 <div class="register-container mt-5">
     <h1 class="text-center">Register</h1>
 
-    <form asp-controller="Login" asp-action="Login" method="post" enctype="multipart/form-data">
+    <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data">
 
-        <div class="profile-picture-container">
+       @*  <div class="profile-picture-container">
             <img id="profilePicturePreview" class="profile-picture-preview" src="" alt="Profile Picture Preview">
 
             <label for="profilePicture" class="btn btn-secondary">Choose Profile Picture</label>
             <input type="file" asp-for="ProfilePictureURL" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*" style="display:none;" onchange="previewImage(event)">
 
             <small class="form-text text-muted">Upload a profile picture (optional).</small>
-        </div>
+        </div> *@
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" asp-for="UserName" class="form-control" id="username" name="username" required>
