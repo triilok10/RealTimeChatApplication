@@ -60,9 +60,12 @@ namespace RealTimeChatApplication.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(ChatUser pChatUser, IFormFile ProfilePictureURL, IFormFile ProfilePictureURLCamera)
+        public async Task<IActionResult> Register(ChatUser pChatUser, IFormFile ProfilePictureURL, string ProfilePictureURLCamera)
         {
-
+            if (!string.IsNullOrEmpty(ProfilePictureURLCamera))
+            {
+                byte[] imageBytes = Convert.FromBase64String(ProfilePictureURLCamera.Replace("data:image/jpeg;base64,", ""));
+            }
 
             string url = baseUrl + "api/LoginAPI/Register";
 
