@@ -97,7 +97,8 @@
         }
     }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+<script src="~/js/webcam.min.js"></script>
+@* <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script> *@
 
 <div class="register-container mt-5">
     <h1 class="text-center">Register</h1>
@@ -107,7 +108,7 @@
 
             <div class="profile-picture-container mb-3">
                 <div id="my_camera" style="width:320px; height:240px; display:none;"></div>
-                <button type="button" class="btn btn-secondary mt-2" onclick="toggleCamera()">Capture Profile Picture</button>
+                <button type="button" class="btn btn-secondary mt-2" id="captureProfileButton" onclick="toggleCamera()">Capture Profile Picture</button>
                 <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
 
                 <!-- File input for selecting an image -->
@@ -159,7 +160,7 @@
     // Attach camera to the div
     function toggleCamera() {
         const cameraDiv = document.getElementById('my_camera');
-
+        document.getElementById('captureProfileButton').style.display = 'none';
         if (cameraDiv.style.display === 'none') {
             cameraDiv.style.display = 'block';
             Webcam.attach(cameraDiv);
@@ -180,7 +181,8 @@
             document.getElementById('profilePicturePreview').style.display = 'block';
             document.getElementById('my_camera').style.display = 'none';
             Webcam.reset();
-            document.getElementById('captureButton').style.display = 'block';
+            document.getElementById('captureButton').style.display = 'none';
+            document.getElementById('captureProfileButton').style.display = 'block';
         });
     }
 
