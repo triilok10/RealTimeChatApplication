@@ -18,15 +18,15 @@
         transition: transform 0.2s;
     }
 
-    .register-container:hover {
-        transform: translateY(-5px);
-    }
+        .register-container:hover {
+            transform: translateY(-5px);
+        }
 
     h1 {
         margin-bottom: 2rem;
         font-size: 2rem;
         color: #343a40;
-        text-align: center; 
+        text-align: center;
     }
 
     .form-group {
@@ -40,25 +40,25 @@
         transition: border-color 0.3s;
     }
 
-    .form-control:focus,
-    .form-control-file:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, .5);
-    }
+        .form-control:focus,
+        .form-control-file:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, .5);
+        }
 
     .profile-picture-container {
         display: flex;
-        flex-direction: column; 
+        flex-direction: column;
         align-items: center;
         margin-bottom: 1.5rem;
     }
 
     .profile-picture-preview {
-        width: 150px; 
-        height: 150px; 
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
-        object-fit: cover; 
-        display: none; 
+        object-fit: cover;
+        display: none;
         margin-bottom: 10px;
     }
 
@@ -67,35 +67,35 @@
     }
 
     .btn-primary {
-        background-color: #007bff; 
-        border-color: #007bff; 
+        background-color: #007bff;
+        border-color: #007bff;
     }
 
-    .btn-primary:hover {
-        background-color: #0056b3; 
-        border-color: #0056b3; 
-    }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
 
-   
+
     @@media (max-width: 576px) {
         .register-container {
-            padding: 30px; 
-            width: calc(100% - 40px); 
+            padding: 30px;
+            width: calc(100% - 40px);
             box-shadow: none;
-            border-radius: 0; 
+            border-radius: 0;
             margin-top: 20px;
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 1.8rem; 
+            font-size: 1.8rem;
             margin-bottom: 1.5rem;
         }
 
         button {
             font-size: 1rem;
             width: 100%;
-            margin-top: 10px; 
+            margin-top: 10px;
             margin-bottom: 10px;
         }
 
@@ -105,27 +105,27 @@
 
         small.form-text {
             font-size: 0.8rem;
-            text-align: center; 
-            width: 100%; 
-            padding-left: 10px; 
-            padding-right: 10px; 
+            text-align: center;
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
         }
-        
-         #my_camera {
-             max-width :100%; 
-             height:auto; 
-         }
-         
-         #captureProfileButton img{
-             max-width :50%; 
-             height:auto; 
-         }
-         
-         #captureProfileButton{
-             display:flex ;
-             justify-content:center ;
-             align-items:center ;
-         }
+
+        #my_camera {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #captureProfileButton img {
+            max-width: 50%;
+            height: auto;
+        }
+
+        #captureProfileButton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 </style>
 <script src="~/js/webcam.min.js"></script>
 
@@ -142,7 +142,7 @@
                 </a>
                 <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
 
-                <!-- File input for selecting an image -->
+
                 <input type="file" accept="image/*" id="fileInput" onchange="loadFile(event)" style="display:none;">
                 <button type="button" class="btn btn-secondary mt-2" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
 
@@ -171,6 +171,8 @@
                 <input type="password" asp-for="ConfirmPassword" class="form-control" id="confirmPassword" name="confirmPassword" required>
             </div>
 
+            <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
+            <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
             <button type="submit" class="btn btn-primary btn-block">Register</button>
         </form>
     </div>
@@ -179,60 +181,101 @@
 </div>
 
 <script>
-    // Configure Webcam.js
+
     Webcam.set({
-        width :320,
-        height :240,
-        image_format :'jpeg',
-        jpeg_quality :90
+        width: 320,
+        height: 240,
+        image_format: 'jpeg',
+        jpeg_quality: 90
     });
 
-   // Attach camera to the div
-   function toggleCamera() {
-       const cameraDiv = document.getElementById('my_camera');
-       document.getElementById('captureProfileButton').style.display = 'none';
-       if (cameraDiv.style.display === 'none') {
-           cameraDiv.style.display = 'block';
-           Webcam.attach(cameraDiv);
-           document.getElementById('captureButton').style.display = 'block';
-           document.getElementById('profilePicturePreview').style.display = 'none';
-       } else {
-           cameraDiv.style.display = 'none';
-           Webcam.reset();
-           document.getElementById('captureButton').style.display = 'none';
-       }
-   }
+
+    function toggleCamera() {
+        const cameraDiv = document.getElementById('my_camera');
+        document.getElementById('captureProfileButton').style.display = 'none';
+        if (cameraDiv.style.display === 'none') {
+            cameraDiv.style.display = 'block';
+            Webcam.attach(cameraDiv);
+            document.getElementById('captureButton').style.display = 'block';
+            document.getElementById('profilePicturePreview').style.display = 'none';
+        } else {
+            cameraDiv.style.display = 'none';
+            Webcam.reset();
+            document.getElementById('captureButton').style.display = 'none';
+        }
+    }
 
 
-   function takeSnapshot() {
-       Webcam.snap(function(data_uri) {
-           document.getElementById('profilePicturePreview').src = data_uri;
-           document.getElementById('profilePictureURL').value = data_uri;
-           document.getElementById('profilePicturePreview').style.display = 'block';
-           document.getElementById('my_camera').style.display = 'none';
-           Webcam.reset();
-           document.getElementById('captureButton').style.display = 'none';
-           document.getElementById('captureProfileButton').style.display = 'block';
-       });
-   }
+    function takeSnapshot() {
+        Webcam.snap(function (data_uri) {
+            document.getElementById('profilePicturePreview').src = data_uri;
+            document.getElementById('profilePictureURL').value = data_uri;
+            document.getElementById('profilePicturePreview').style.display = 'block';
+            document.getElementById('my_camera').style.display = 'none';
+            Webcam.reset();
+            document.getElementById('captureButton').style.display = 'none';
+            document.getElementById('captureProfileButton').style.display = 'block';
+        });
+    }
 
 
-   // Load file from device
-   function loadFile(event) {
-       const file = event.target.files[0];
 
-       if (file) {
-           const reader = new FileReader();
+    function loadFile(event) {
+        const file = event.target.files[0];
 
-           reader.onload = function(e) {
-               document.getElementById('profilePicturePreview').src = e.target.result;
-               document.getElementById('profilePictureURL').value = e.target.result;
-               document.getElementById('profilePicturePreview').style.display = 'block';
-               document.getElementById('my_camera').style.display = 'none';
-               Webcam.reset();
-           }
+        if (file) {
+            const reader = new FileReader();
 
-           reader.readAsDataURL(file);
-       }
-   }
+            reader.onload = function (e) {
+                document.getElementById('profilePicturePreview').src = e.target.result;
+                document.getElementById('profilePictureURL').value = e.target.result;
+                document.getElementById('profilePicturePreview').style.display = 'block';
+                document.getElementById('my_camera').style.display = 'none';
+                Webcam.reset();
+            }
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function geoLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        document.getElementById("Latitude").value = latitude;
+        document.getElementById("Longitude").value = longitude;
+
+        console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+    }
+
+    function showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.");
+                break;
+        }
+    }
+
+    window.onload = geoLocation;
 </script>
