@@ -136,20 +136,24 @@
         <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data">
 
             <div class="profile-picture-container mb-3">
+                <!-- Webcam and Capture Button -->
                 <div id="my_camera" style="width:auto; height:auto; display:none;"></div>
                 <a href="javascript:void(0)" id="captureProfileButton" onclick="toggleCamera()">
                     <img src="~/images/camera-svgrepo-com.svg" style="height:50px;" />
                 </a>
                 <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
 
+                <!-- Hidden input to store base64 data of captured image -->
+                <input type="hidden" asp-for="ProfilePictureURLCamera" name="ProfilePictureBase64" id="profilePictureBase64">
 
-                <input type="file" accept="image/*" id="fileInput" onchange="loadFile(event)" style="display:none;">
+                <!-- File upload input -->
+                <input type="file" asp-for="ProfilePictureURL" accept="image/*" id="fileInput" onchange="loadFile(event)" style="display:none;">
                 <button type="button" class="btn btn-secondary mt-2" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
 
-                <input type="hidden" name="ProfilePictureURL" id="profilePictureURL">
                 <img id="profilePicturePreview" class="profile-picture-preview mt-2" src="" alt="Profile Picture Preview">
                 <small class="form-text text-muted">Upload or capture a profile picture (optional).</small>
             </div>
+
 
             <div class="form-group">
                 <label for="username">Username</label>
@@ -181,14 +185,12 @@
 </div>
 
 <script>
-
     Webcam.set({
         width: 320,
         height: 240,
         image_format: 'jpeg',
         jpeg_quality: 90
     });
-
 
     function toggleCamera() {
         const cameraDiv = document.getElementById('my_camera');
@@ -205,12 +207,16 @@
         }
     }
 
-
     function takeSnapshot() {
         Webcam.snap(function (data_uri) {
+            // Set the base64 data to the hidden input field
+            document.getElementById('profilePictureBase64').value = data_uri;
+
+            // Display the preview
             document.getElementById('profilePicturePreview').src = data_uri;
-            document.getElementById('profilePictureURL').value = data_uri;
             document.getElementById('profilePicturePreview').style.display = 'block';
+
+            // Hide the camera view
             document.getElementById('my_camera').style.display = 'none';
             Webcam.reset();
             document.getElementById('captureButton').style.display = 'none';
@@ -218,64 +224,18 @@
         });
     }
 
-
-
     function loadFile(event) {
         const file = event.target.files[0];
-
         if (file) {
             const reader = new FileReader();
-
             reader.onload = function (e) {
                 document.getElementById('profilePicturePreview').src = e.target.result;
-                document.getElementById('profilePictureURL').value = e.target.result;
+                document.getElementById('profilePictureBase64').value = ''; 
                 document.getElementById('profilePicturePreview').style.display = 'block';
                 document.getElementById('my_camera').style.display = 'none';
                 Webcam.reset();
             }
-
             reader.readAsDataURL(file);
         }
     }
-
-    function geoLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError, {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-    function showPosition(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        document.getElementById("Latitude").value = latitude;
-        document.getElementById("Longitude").value = longitude;
-
-        console.log("Latitude: " + latitude + ", Longitude: " + longitude);
-    }
-
-    function showError(error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                alert("User denied the request for Geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                alert("The request to get user location timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-                alert("An unknown error occurred.");
-                break;
-        }
-    }
-
-    window.onload = geoLocation;
 </script>

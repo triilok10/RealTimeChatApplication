@@ -60,8 +60,10 @@ namespace RealTimeChatApplication.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Register(ChatUser pChatUser, IFormFile File)
+        public async Task<IActionResult> Register(ChatUser pChatUser, IFormFile ProfilePictureURL, IFormFile ProfilePictureURLCamera)
         {
+
+
             string url = baseUrl + "api/LoginAPI/Register";
 
             string Json = JsonConvert.SerializeObject(pChatUser);
