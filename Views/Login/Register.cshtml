@@ -32,15 +32,17 @@
         margin-bottom: 1.5rem;
     }
 
-    .form-control, .form-control-file {
+    .form-control,
+    .form-control-file {
         border-radius: 5px;
         border: 1px solid #ced4da;
         transition: border-color 0.3s;
     }
 
-        .form-control:focus, .form-control-file:focus {
+        .form-control:focus,
+        .form-control-file:focus {
             border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0,123,255,.5);
+            box-shadow: 0 0 5px rgba(0, 123, 255, .5);
         }
 
     .profile-picture-container {
@@ -95,58 +97,112 @@
         }
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
 
 <div class="register-container mt-5">
     <h1 class="text-center">Register</h1>
+    <div class="container mt-5">
 
-    <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data">
+        <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data">
 
-       @*  <div class="profile-picture-container">
-            <img id="profilePicturePreview" class="profile-picture-preview" src="" alt="Profile Picture Preview">
+            <div class="profile-picture-container mb-3">
+                <div id="my_camera" style="width:320px; height:240px; display:none;"></div>
+                <button type="button" class="btn btn-secondary mt-2" onclick="toggleCamera()">Capture Profile Picture</button>
+                <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
 
-            <label for="profilePicture" class="btn btn-secondary">Choose Profile Picture</label>
-            <input type="file" asp-for="ProfilePictureURL" class="form-control-file" id="profilePicture" name="profilePicture" accept="image/*" style="display:none;" onchange="previewImage(event)">
+                <!-- File input for selecting an image -->
+                <input type="file" accept="image/*" id="fileInput" onchange="loadFile(event)" style="display:none;">
+                <button type="button" class="btn btn-secondary mt-2" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
 
-            <small class="form-text text-muted">Upload a profile picture (optional).</small>
-        </div> *@
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" asp-for="UserName" class="form-control" id="username" name="username" required>
-        </div>
+                <input type="hidden" name="ProfilePictureURL" id="profilePictureURL">
+                <img id="profilePicturePreview" class="profile-picture-preview mt-2" src="" alt="Profile Picture Preview">
+                <small class="form-text text-muted">Upload or capture a profile picture (optional).</small>
+            </div>
 
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" asp-for="Email" class="form-control" id="email" name="email" required>
-        </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" asp-for="UserName" class="form-control" id="username" name="username" required>
+            </div>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" asp-for="Password" class="form-control" id="password" name="password" required>
-        </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" asp-for="Email" class="form-control" id="email" name="email" required>
+            </div>
 
-        <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <input type="password" asp-for="ConfirmPassword" class="form-control" id="confirmPassword" name="confirmPassword" required>
-        </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" asp-for="Password" class="form-control" id="password" name="password" required>
+            </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Register</button>
-    </form>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" asp-for="ConfirmPassword" class="form-control" id="confirmPassword" name="confirmPassword" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+        </form>
+    </div>
 
     <p class="text-center mt-3">Already have an account? <a href="@Url.Action("Login","Login")">Login here</a></p>
 </div>
 
 <script>
-    function previewImage(event) {
+
+    // Configure Webcam.js
+    Webcam.set({
+        width: 320,
+        height: 240,
+        image_format: 'jpeg',
+        jpeg_quality: 90
+    });
+
+    // Attach camera to the div
+    function toggleCamera() {
+        const cameraDiv = document.getElementById('my_camera');
+
+        if (cameraDiv.style.display === 'none') {
+            cameraDiv.style.display = 'block';
+            Webcam.attach(cameraDiv);
+            document.getElementById('captureButton').style.display = 'block';
+            document.getElementById('profilePicturePreview').style.display = 'none';
+        } else {
+            cameraDiv.style.display = 'none';
+            Webcam.reset();
+            document.getElementById('captureButton').style.display = 'none';
+        }
+    }
+
+
+    function takeSnapshot() {
+        Webcam.snap(function (data_uri) {
+            document.getElementById('profilePicturePreview').src = data_uri;
+            document.getElementById('profilePictureURL').value = data_uri;
+            document.getElementById('profilePicturePreview').style.display = 'block';
+            document.getElementById('my_camera').style.display = 'none';
+            Webcam.reset();
+            document.getElementById('captureButton').style.display = 'block';
+        });
+    }
+
+
+
+    // Load file from device
+    function loadFile(event) {
         const file = event.target.files[0];
 
         if (file) {
             const reader = new FileReader();
+
             reader.onload = function (e) {
-                const img = document.getElementById('profilePicturePreview');
-                img.src = e.target.result;
-                img.style.display = 'block';
+                document.getElementById('profilePicturePreview').src = e.target.result;
+                document.getElementById('profilePictureURL').value = e.target.result;
+                document.getElementById('profilePicturePreview').style.display = 'block';
+                document.getElementById('my_camera').style.display = 'none';
+                Webcam.reset();
             }
+
             reader.readAsDataURL(file);
+
         }
     }
 </script>
