@@ -313,24 +313,32 @@
             $("#username").addClass("border-Danger");
             toastr.error("Please enter the Username");
             return false;
+        } else {
+            $("#username").removeClass("border-Danger");
         }
 
         if (!email) {
             toastr.error("Please enter the Email");
             $("#email").addClass("border-Danger");
             return false;
+        } else {
+            $("#email").removeClass("border-Danger");
         }
 
         if (!password) {
             toastr.error("Please enter the Password");
             $("#password").addClass("border-Danger");
             return false;
+        } else {
+            $("#password").removeClass("border-Danger");
         }
 
         if (!confirmPassword) {
             toastr.error("Please enter the Confirm Password");
             $("#confirmPassword").addClass("border-Danger");
             return false;
+        } else {
+            $("#confirmPassword").removeClass("border-Danger");
         }
 
         if (password !== confirmPassword) {
