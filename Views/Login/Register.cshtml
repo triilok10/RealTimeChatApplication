@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Register";
 }
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/toastr.min.js"></script>
+<link href="~/js/toastr.min.css" rel="stylesheet" />
 <style>
     body {
         background-color: #f8f9fa;
@@ -76,6 +79,9 @@
             border-color: #0056b3;
         }
 
+    .border-Danger {
+        border: 1px solid red;
+    }
 
     @@media (max-width: 576px) {
         .register-container {
@@ -126,6 +132,7 @@
             justify-content: center;
             align-items: center;
         }
+
 </style>
 <script src="~/js/webcam.min.js"></script>
 
@@ -133,21 +140,19 @@
     <h1 class="text-center">Register</h1>
     <div class="container mt-5">
 
-        <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data">
+        <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data" onsubmit="return jsValidateSubmit()" ;>
 
             <div class="profile-picture-container mb-3">
-               
+
                 <div id="my_camera" style="width:auto; height:auto; display:none;"></div>
                 <a href="javascript:void(0)" id="captureProfileButton" onclick="toggleCamera()">
                     <img src="~/images/camera-svgrepo-com.svg" style="height:50px;" />
                 </a>
                 <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
 
-              
-               
                 <input type="hidden" asp-for="ProfilePictureURLCamera" id="ProfilePictureURLCamera">
 
-               
+
                 <input type="file" asp-for="ProfilePictureURL" accept="image/*" id="fileInput" onchange="loadFile(event)" style="display:none;">
                 <button type="button" class="btn btn-secondary mt-2" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
 
@@ -158,22 +163,22 @@
 
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" asp-for="UserName" class="form-control" id="username" name="username" required>
+                <input type="text" asp-for="UserName" class="form-control" id="username" name="username">
             </div>
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" asp-for="Email" class="form-control" id="email" name="email" required>
+                <input type="email" asp-for="Email" class="form-control" id="email" name="email">
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" asp-for="Password" class="form-control" id="password" name="password" required>
+                <input type="password" asp-for="Password" class="form-control" id="password" name="password">
             </div>
 
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password</label>
-                <input type="password" asp-for="ConfirmPassword" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                <input type="password" asp-for="ConfirmPassword" class="form-control" id="confirmPassword" name="confirmPassword">
             </div>
 
             <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
@@ -185,7 +190,27 @@
     <p class="text-center mt-3">Already have an account? <a href="@Url.Action("Login","Login")">Login here</a></p>
 </div>
 
-<script>
+<script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+
     Webcam.set({
         width: 320,
         height: 240,
@@ -210,9 +235,9 @@
 
     function takeSnapshot() {
         Webcam.snap(function (data_uri) {
-            
+
             document.getElementById('ProfilePictureURLCamera').value = data_uri;
-           
+
             document.getElementById('profilePicturePreview').src = data_uri;
 
             document.getElementById('profilePicturePreview').style.display = 'block';
@@ -277,5 +302,44 @@
         }
     }
     window.onload = geoLocation;
+
+    function jsValidateSubmit() {
+        var username = $("#username").val().trim();
+        var email = $("#email").val().trim();
+        var password = $("#password").val().trim();
+        var confirmPassword = $("#confirmPassword").val().trim();
+
+        if (!username) {
+            $("#username").addClass("border-Danger");
+            toastr.error("Please enter the Username");
+            return false;
+        }
+
+        if (!email) {
+            toastr.error("Please enter the Email");
+            $("#email").addClass("border-Danger");
+            return false;
+        }
+
+        if (!password) {
+            toastr.error("Please enter the Password");
+            $("#password").addClass("border-Danger");
+            return false;
+        }
+
+        if (!confirmPassword) {
+            toastr.error("Please enter the Confirm Password");
+            $("#confirmPassword").addClass("border-Danger");
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            toastr.error("Password and Confirm Password must be the same");
+            return false;
+        }
+
+        return true; // If all validations pass, allow form submission
+    }
+
 
 </script>
