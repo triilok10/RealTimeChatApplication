@@ -81,6 +81,12 @@ namespace RealTimeChatApplication.Controllers
         }
 
 
+        [HttpGet]
+        public PartialViewResult _partialTermsCondition()
+        {
+            return PartialView();
+        }
+
         #endregion
     }
 }

@@ -83,6 +83,10 @@
         border: 1px solid red;
     }
 
+    .register-containerBlock {
+        display: none
+    }
+
     @@media (max-width: 576px) {
         .register-container {
             padding: 30px;
@@ -138,9 +142,9 @@
 
 <div class="register-container mt-5">
     <h1 class="text-center">Register</h1>
-    <div class="container mt-5">
+    <div class="container mt-5" id="registerContainer">
 
-        <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data" onsubmit="return jsValidateSubmit()" ;>
+        <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data" onsubmit="return jsValidateSubmit()">
 
             <div class="profile-picture-container mb-3">
 
@@ -153,7 +157,7 @@
                 <input type="hidden" asp-for="ProfilePictureURLCamera" id="ProfilePictureURLCamera">
 
 
-                <input type="file" asp-for="ProfilePictureURL" accept="image/*" id="fileInput" onchange="loadFile(event)" style="display:none;">
+                <input type="file" asp-for="ProfilePictureURL" accept="image" id="fileInput" onchange="loadFile(event)" style="display:none;">
                 <button type="button" class="btn btn-secondary mt-2" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
 
                 <img id="profilePicturePreview" class="profile-picture-preview mt-2" src="" alt="Profile Picture Preview">
@@ -172,6 +176,17 @@
             </div>
 
             <div class="form-group">
+                <label for="email">Gender</label>
+                <select asp-for="Gender" class="form-control" id="Gender">
+                    <option value="0">Select Gender</option>
+                    @foreach (var item in Enum.GetValues(typeof(RealTimeChatApplication.Models.ChatUser.GenderType)))
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" asp-for="Password" class="form-control" id="password" name="password">
             </div>
@@ -183,10 +198,18 @@
 
             <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
             <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
+
+            <div class="form-group">
+                <a href="javascript:void(0)" onclick="js_TermsandCondition();"> Terms and Condition.</a>
+            </div>
+
+
             <button type="submit" class="btn btn-primary btn-block">Register</button>
         </form>
     </div>
-
+    <div id="termsConditionContainer" style="display: none; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: #fff;">
+        <!-- Partial View content will be injected here -->
+    </div>
     <p class="text-center mt-3">Already have an account? <a href="@Url.Action("Login","Login")">Login here</a></p>
 </div>
 
@@ -308,6 +331,8 @@
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
         var confirmPassword = $("#confirmPassword").val().trim();
+        var gender = $("#Gender").val();
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
         if (!username) {
             $("#username").addClass("border-Danger");
@@ -325,13 +350,22 @@
             $("#email").removeClass("border-Danger");
         }
 
-        if (!password) {
-            toastr.error("Please enter the Password");
+        if (gender === "0" || gender === null) {
+            toastr.error("Please select a Gender");
+            $("#Gender").addClass("border-Danger");
+            return false;
+        } else {
+            $("#Gender").removeClass("border-Danger");
+        }
+
+        if (!passwordRegex.test(password)) {
+            toastr.error("Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.");
             $("#password").addClass("border-Danger");
             return false;
         } else {
             $("#password").removeClass("border-Danger");
         }
+
 
         if (!confirmPassword) {
             toastr.error("Please enter the Confirm Password");
@@ -341,6 +375,8 @@
             $("#confirmPassword").removeClass("border-Danger");
         }
 
+
+
         if (password !== confirmPassword) {
             toastr.error("Password and Confirm Password must be the same");
             return false;
@@ -349,5 +385,20 @@
         return true; // If all validations pass, allow form submission
     }
 
+
+    function js_TermsandCondition() {
+        $.ajax({
+            url: "@Url.Action("_partialTermsCondition", "Login")",
+            type: "GET",
+            cache: false,
+            success: function (res) {
+                $("#registerContainer").addClass("register-containerBlock");
+                $("#termsConditionContainer").html(res).slideDown();
+
+
+            }
+        })
+
+    }
 
 </script>
