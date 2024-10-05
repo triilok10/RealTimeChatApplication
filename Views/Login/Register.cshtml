@@ -140,9 +140,9 @@
 </style>
 <script src="~/js/webcam.min.js"></script>
 
-<div class="register-container mt-5">
+<div class="register-container mt-5" id="registerContainer">
     <h1 class="text-center">Register</h1>
-    <div class="container mt-5" id="registerContainer">
+    <div class="container mt-5">
 
         <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data" onsubmit="return jsValidateSubmit()">
 
@@ -207,12 +207,12 @@
             <button type="submit" class="btn btn-primary btn-block">Register</button>
         </form>
     </div>
-    <div id="termsConditionContainer" style="display: none; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: #fff;">
-        <!-- Partial View content will be injected here -->
-    </div>
+
     <p class="text-center mt-3">Already have an account? <a href="@Url.Action("Login","Login")">Login here</a></p>
 </div>
-
+<div id="termsConditionContainer" style="display: none; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: #fff;">
+    <!-- Partial View content will be injected here -->
+</div>
 <script type="text/javascript">
 
     toastr.options = {

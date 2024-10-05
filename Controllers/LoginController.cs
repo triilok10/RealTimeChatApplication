@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace RealTimeChatApplication.Controllers
@@ -85,6 +86,18 @@ namespace RealTimeChatApplication.Controllers
         public PartialViewResult _partialTermsCondition()
         {
             return PartialView();
+        }
+
+        [HttpPost]
+        public JsonResult TermsCondition(bool boolTerms)
+        {
+            if (boolTerms == true)
+            {
+                ChatUser obj = new ChatUser();
+                obj.TermsCondition = boolTerms;
+                return Json(new { });
+            }
+            return Json(new { });
         }
 
         #endregion

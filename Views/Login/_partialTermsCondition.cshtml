@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Terms and Conditions";
 }
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/toastr.min.js"></script>
+<link href="~/js/toastr.min.css" rel="stylesheet" />
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -50,7 +52,6 @@
     }
 
     .checkbox-container {
-        margin-top: 30px;
         text-align: center;
     }
 
@@ -60,6 +61,13 @@
 
     label {
         font-size: 1.1em;
+    }
+
+    .agreeContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
     }
 
     /* Responsive Design */
@@ -119,12 +127,66 @@
     <h2>4. Contact Us</h2>
     <p>If you have any questions about these Terms, please contact us at support@example.com.</p>
 
-    <div class="checkbox-container">
-        <input type="checkbox" id="agreeTerms" required>
-        <label for="agreeTerms">I agree with the Terms and Conditions</label>
+    <div class="agreeContainer">
+        <div class="checkbox-container">
+            <input type="checkbox" id="agreeTerms">
+            <label for="agreeTerms">I agree with the Terms and Conditions</label>
+        </div>
+        <div>
+            <a href="#" class="btn btn-primary" onclick="js_TermsCondition();">Agree</a>
+        </div>
     </div>
 
     <footer>
         <p>&copy; @DateTime.Now.Year RealTimeChatApplication. All rights reserved.</p>
     </footer>
 </div>
+
+<script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+
+    function js_TermsCondition() {
+        var boolTerms = $("#agreeTerms").is(":checked");
+        console.log(typeof (boolTerms));
+
+        if (boolTerms == false || boolTerms === "") {
+            toastr.error("Please Select the Terms and Conditions");
+            return false;
+        }
+
+        $.ajax({
+            url: "@Url.Action("TermsCondition", "Login")",
+            type: "POST",
+            data: {
+                boolTerms: boolTerms
+            },
+            cache: false,
+            success: function (res) {
+                setTimeout(() => {
+                    $("#termsConditionContainer").addClass("register-containerBlock");
+                    $("#registerContainer").removeClass("register-containerBlock");
+                }, 1000);
+
+            }
+        })
+
+    }
+</script>
