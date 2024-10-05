@@ -95,9 +95,9 @@ namespace RealTimeChatApplication.Controllers
             {
                 ChatUser obj = new ChatUser();
                 obj.TermsCondition = boolTerms;
-                return Json(new { });
+                return Json(new { boolTerms });
             }
-            return Json(new { });
+            return Json(new { boolTerms });
         }
 
         #endregion

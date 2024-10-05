@@ -198,6 +198,7 @@
 
             <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
             <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
+            <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
 
             <div class="form-group">
                 <a href="javascript:void(0)" onclick="js_TermsandCondition();"> Terms and Condition.</a>
@@ -332,6 +333,7 @@
         var password = $("#password").val().trim();
         var confirmPassword = $("#confirmPassword").val().trim();
         var gender = $("#Gender").val();
+        var termsCondition = $("#TermsCondition").val();
         var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
         if (!username) {
@@ -382,6 +384,12 @@
             return false;
         }
 
+        if (termsCondition == false || termsCondition == "") {
+            toastr.error("Please read the Terms and Condition");
+            return false;
+        }
+
+
         return true; // If all validations pass, allow form submission
     }
 
@@ -394,8 +402,7 @@
             success: function (res) {
                 $("#registerContainer").addClass("register-containerBlock");
                 $("#termsConditionContainer").html(res).slideDown();
-
-
+                document.getElementById("TermsCondition").value = true;
             }
         })
 
