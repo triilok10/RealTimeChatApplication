@@ -66,7 +66,28 @@ namespace RealTimeChatApplication.Controllers
             if (!string.IsNullOrEmpty(ProfilePictureURLCamera))
             {
                 byte[] imageBytes = Convert.FromBase64String(ProfilePictureURLCamera.Replace("data:image/jpeg;base64,", ""));
+
+                dynamic File = Convert.ToByte("imageBytes");
+
             }
+
+            if (ProfilePictureURL != null)
+            {
+                string FileName = Path.GetFileName(ProfilePictureURL.FileName);
+                string FilePath = Path.Combine("wwwroot", "images", "Uploads", FileName);
+
+                if (!Directory.Exists(FilePath))
+                {
+                    Directory.CreateDirectory(FilePath);
+                }
+                using (var stream = new FileStream(FilePath, FileMode.Create))
+                {
+                    await ProfilePictureURL.CopyToAsync(stream);
+                }
+                pChatUser.HdnProfilePicture = FileName;
+
+            }
+
 
             string url = baseUrl + "api/LoginAPI/Register";
 
@@ -77,14 +98,32 @@ namespace RealTimeChatApplication.Controllers
             if (res.IsSuccessStatusCode)
             {
 
+                dynamic resData = await res.Content.ReadAsStringAsync();
+                dynamic resBody = JsonConvert.DeserializeObject(resData);
+                if (resBody.response == true)
+                {
+                    string Message = resBody.message;
+                    TempData["successMessage"] = Message;
+                    TempData.Keep("successMessage");
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+                else
+                {
+                    string Message = resBody.message;
+                    TempData["errorMessage"] = Message;
+                    return RedirectToAction("Register", "Login");
+                }
+
             }
-            return RedirectToAction("", "");
+            return RedirectToAction("Register", "Login");
         }
 
 
         [HttpGet]
-        public PartialViewResult _partialTermsCondition()
+        public PartialViewResult _partialTermsCondition(string termsValueCheck = "")
         {
+
+            ViewBag.HdnTermsCondition = termsValueCheck; ;
             return PartialView();
         }
 

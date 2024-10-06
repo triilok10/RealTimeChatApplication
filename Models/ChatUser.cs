@@ -11,12 +11,13 @@ namespace RealTimeChatApplication.Models
         public string? Password { get; set; }
         public string? ConfirmPassword { get; set; }
         public IFormFile? ProfilePictureURL { get; set; }
+        public string? HdnProfilePicture { get; set; }
         public IFormFile? ProfilePictureURLCamera { get; set; }
         public bool? Status { get; set; }
         public string? Longitude { get; set; }
         public string? Latitude { get; set; }
-
         public bool? TermsCondition { get; set; }
+        public string? HdnTermsCondition { get; set; }
         public GenderType? Gender { get; set; }
         public enum GenderType
         {

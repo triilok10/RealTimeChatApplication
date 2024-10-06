@@ -87,6 +87,10 @@
         display: none
     }
 
+    .containerBlockRepeat {
+        display: block;
+    }
+
     @@media (max-width: 576px) {
         .register-container {
             padding: 30px;
@@ -211,7 +215,7 @@
 
     <p class="text-center mt-3">Already have an account? <a href="@Url.Action("Login","Login")">Login here</a></p>
 </div>
-<div id="termsConditionContainer" style="display: none; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: #fff;">
+<div id="termsConditionContainer" style="display: none; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: rgb(82 108 142);">
     <!-- Partial View content will be injected here -->
 </div>
 <script type="text/javascript">
@@ -390,14 +394,27 @@
         }
 
 
-        return true; // If all validations pass, allow form submission
+        return true;
     }
 
 
     function js_TermsandCondition() {
+
+        var termsValue = document.getElementById("TermsCondition").value;
+
+        var termsValueCheck = "";
+        if (termsValue == "true") {
+            termsValueCheck = termsValue;
+            $("#registerContainer").hide();
+            $("#registerContainer").addClass("containerBlockRepeat");
+        } else {
+            termsValueCheck = "false";
+        }
+
         $.ajax({
             url: "@Url.Action("_partialTermsCondition", "Login")",
             type: "GET",
+            data: { termsValueCheck: termsValueCheck },
             cache: false,
             success: function (res) {
                 $("#registerContainer").addClass("register-containerBlock");

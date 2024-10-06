@@ -22,9 +22,13 @@
         transition: transform 0.3s;
     }
 
-        .container:hover {
-            transform: scale(1.02);
-        }
+    .agreeContainerNone {
+        display: none;
+    }
+
+    .container:hover {
+        transform: scale(1.02);
+    }
 
     h1 {
         color: #2c3e50;
@@ -64,6 +68,13 @@
     }
 
     .agreeContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .CloseContainer {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -110,7 +121,7 @@
     }
 </style>
 
-<div class="container">
+<div class="container TermsConditionContainer">
     <h1>Terms and Conditions</h1>
 
     <p>Welcome to our Terms and Conditions page. Please read these terms carefully before using our service.</p>
@@ -130,10 +141,19 @@
     <div class="agreeContainer">
         <div class="checkbox-container">
             <input type="checkbox" id="agreeTerms">
+            <input type="hidden" id="TermsConditionCheck" value="@ViewBag.HdnTermsCondition">
             <label for="agreeTerms">I agree with the Terms and Conditions</label>
         </div>
         <div>
             <a href="#" class="btn btn-primary" onclick="js_TermsCondition();">Agree</a>
+        </div>
+    </div>
+
+    <div class="CloseContainer" style="display:none">
+        <div class="checkbox-container">
+        </div>
+        <div>
+            <a href="#" onclick="js_CloseTermsCondition();" class="btn btn-danger">Close</a>
         </div>
     </div>
 
@@ -143,6 +163,13 @@
 </div>
 
 <script type="text/javascript">
+
+
+    $(document).ready(function () {
+        js_TermsandConditionCheck();
+
+    });
+
 
     toastr.options = {
         "closeButton": false,
@@ -187,5 +214,23 @@
             }
         })
 
+    }
+
+    function js_TermsandConditionCheck() {
+        var termsCondition = $("#TermsConditionCheck").val();
+
+        console.log(termsCondition);
+
+        if (termsCondition === "true") {
+            $(".agreeContainer").hide();
+            $(".CloseContainer").show();
+
+        }
+    }
+
+
+    function js_CloseTermsCondition() {
+        $("#termsConditionContainer").hide();
+        $("#registerContainer").show();
     }
 </script>

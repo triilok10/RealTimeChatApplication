@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RealTimeChatApplication.Models;
 using System.Data.SqlClient;
+using static RealTimeChatApplication.Models.ChatUser;
 
 namespace RealTimeChatApplication.API
 {
@@ -21,21 +22,43 @@ namespace RealTimeChatApplication.API
         [HttpPost]
         public IActionResult Register([FromBody] ChatUser pChatUser)
         {
-
-            using (SqlConnection con = new SqlConnection(_connectionString))
+            bool res = false;
+            string msg = "";
+            try
             {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand("usp_ChatUser", con))
+                using (SqlConnection con = new SqlConnection(_connectionString))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Mode", 1);
-                    cmd.Parameters.AddWithValue("@UserName", pChatUser.UserName);
-                    cmd.Parameters.AddWithValue("@Password", pChatUser.Password);
-                    cmd.Parameters.AddWithValue("@Email", pChatUser.Email);
-                    cmd.ExecuteNonQuery();
+                    con.Open();
+                    using (SqlCommand cmd = new SqlCommand("usp_ChatUser", con))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 1);
+                        cmd.Parameters.AddWithValue("@UserName", pChatUser.UserName);
+                        cmd.Parameters.AddWithValue("@Password", pChatUser.Password);
+                        cmd.Parameters.AddWithValue("@Email", pChatUser.Email);
+                        cmd.Parameters.AddWithValue("@Gender", pChatUser.Gender);
+                        cmd.Parameters.AddWithValue("@ProfilePictureURL", pChatUser.HdnProfilePicture);
+                        cmd.ExecuteNonQuery();
+
+
+                        //using (SqlDataReader rdr = cmd.ExecuteReader())
+                        //{
+                        //    while (rdr.Read())
+                        //    {
+                        //        pChatUser.ChatUserID = Convert.ToInt32("");
+                        //    }
+                        //}
+                    }
                 }
-                return Ok();
+                res = true;
+                msg = "User Created Successfully";
             }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return Ok(new { response = res, message = msg });
         }
     }
 }
