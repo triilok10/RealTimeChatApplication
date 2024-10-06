@@ -24,6 +24,7 @@ namespace RealTimeChatApplication.API
         {
             bool res = false;
             string msg = "";
+            int newUserId = 0;
             try
             {
                 using (SqlConnection con = new SqlConnection(_connectionString))
@@ -38,16 +39,17 @@ namespace RealTimeChatApplication.API
                         cmd.Parameters.AddWithValue("@Email", pChatUser.Email);
                         cmd.Parameters.AddWithValue("@Gender", pChatUser.Gender);
                         cmd.Parameters.AddWithValue("@ProfilePictureURL", pChatUser.HdnProfilePicture);
+
+                        SqlParameter outputIdParam = new SqlParameter("@ChatUser", System.Data.SqlDbType.Int)
+                        {
+                            Direction = System.Data.ParameterDirection.Output
+                        };
+                        cmd.Parameters.Add(outputIdParam);
+
+
                         cmd.ExecuteNonQuery();
 
-
-                        //using (SqlDataReader rdr = cmd.ExecuteReader())
-                        //{
-                        //    while (rdr.Read())
-                        //    {
-                        //        pChatUser.ChatUserID = Convert.ToInt32("");
-                        //    }
-                        //}
+                        newUserId = (int)outputIdParam.Value;
                     }
                 }
                 res = true;
@@ -58,7 +60,7 @@ namespace RealTimeChatApplication.API
                 res = false;
                 msg = ex.Message;
             }
-            return Ok(new { response = res, message = msg });
+            return Ok(new { response = res, message = msg, userId = newUserId });
         }
     }
 }

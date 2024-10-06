@@ -56,9 +56,9 @@ namespace RealTimeChatApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
+        public IActionResult Register(ChatUser pChatUser)
         {
-            return View();
+            return View(pChatUser);
         }
         [HttpPost]
         public async Task<IActionResult> Register(ChatUser pChatUser, IFormFile ProfilePictureURL, string ProfilePictureURLCamera)
@@ -111,7 +111,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     string Message = resBody.message;
                     TempData["errorMessage"] = Message;
-                    return RedirectToAction("Register", "Login");
+                    return RedirectToAction("Register", pChatUser);
                 }
 
             }

@@ -6,6 +6,16 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/toastr.min.js"></script>
 <link href="~/js/toastr.min.css" rel="stylesheet" />
+@{
+    if (TempData["errorMessage"] != null)
+    {
+        <script>
+            toastr.error("@TempData["errorMessage"]");
+        </script>
+
+    }
+}
+
 <style>
     body {
         background-color: #f8f9fa;
