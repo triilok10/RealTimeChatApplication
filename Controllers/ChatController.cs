@@ -34,6 +34,12 @@ namespace RealTimeChatApplication.Controllers
             return View();
         }
 
+
+        [HttpGet]
+        public IActionResult ChatMessage()
+        {
+            return View();
+        }
         #endregion
     }
 }

@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "ChatMessage";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/toastr.min.js"></script>
+<link href="~/js/toastr.min.css" rel="stylesheet" />
+
+@{
+    if (TempData["successMessage"] != null)
+    {
+        <script>
+            toastr.success("@TempData["successMessage"]");
+        </script>
+    }
+}
+<style>
+    :root {
+        --background-color: #ffffff;
+        --text-color: #000000;
+    }
+
+    [data-theme='dark'] {
+        --background-color: #121212;
+        --text-color: #ffffff;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    .chat-container {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        padding: 10px;
+        flex-direction: column;
+        height: 100vh;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #44426e;
+        color: white;
+        padding: 10px;
+    }
+
+    .settings-container {
+        position: relative;
+    }
+
+    .settings-button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+
+    .settings-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .settings-container:hover .settings-dropdown {
+        display: block;
+    }
+
+    .settings-dropdown ul {
+        list-style-type: none;
+        padding: 10px;
+    }
+
+    .settings-dropdown li {
+        padding: 5px 10px;
+    }
+
+        .settings-dropdown li a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .settings-dropdown li:hover {
+            background-color: #f1f1f1;
+        }
+
+    .chat-messages {
+        flex-grow: 1;
+        padding: 10px;
+        overflow-y: auto;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .chat-input-container {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+    }
+
+        .chat-input-container input[type='text'] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .chat-input-container input[type='file'] {
+            margin-right: 10px;
+        }
+
+    #cameraButton {
+        background: none;
+        border: none;
+    }
+
+    #sendButton {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+    }
+
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 600px) {
+        .chat-input-container {
+            flex-direction: column;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+
+            .chat-input-container input[type='text'],
+            .chat-input-container input[type='file'],
+            #sendButton {
+                width: 100%;
+                margin-bottom: 10px;
+                box-shadow: none;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                padding-left: 10px;
+                padding-right: 10px;
+                height: 40px;
+                font-size: 16px;
+            }
+    }
+</style>
+
+
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>Chat Application</h1>
+        <div class="settings-container">
+            <button class="settings-button">Settings</button>
+            <div class="settings-dropdown">
+                <ul>
+                    <li><a href="#">Account Settings</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Connections</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <!-- Messages will be dynamically added here -->
+    </div>
+    <div class="chat-input-container">
+        <input type="text" id="messageInput" placeholder="Type your message..." />
+        <button id="cameraButton"><img src="~/images/camera3.svg" alt="Camera" style="width:50px;" /></button>
+        <button id="sendButton">Send</button>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+</script>
+
