@@ -183,7 +183,7 @@
     </div>
 </div>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
 
 <script type="text/javascript">
 
@@ -204,6 +204,39 @@
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     };
+    debugger;
 
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    debugger;
+    connection.start().then(function () {
+        console.log("Connected to SignalR hub");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    debugger;
+    document.getElementById("sendButton").addEventListener("click", function () {
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value;
+
+        if (message) {
+
+            connection.invoke("SendMessage", message).catch(function (err) {
+                return console.error(err.toString());
+            });
+            messageInput.value = '';
+        }
+    });
+
+    connection.on("ReceiveMessage", function (user, message) {
+        const msg = document.createElement("div");
+        msg.textContent = `${user}: ${message}`;
+        document.getElementById("chatMessages").appendChild(msg);
+
+
+        toastr.success(`New message from ${user}`);
+    });
 </script>
-
