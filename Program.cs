@@ -1,7 +1,9 @@
 using RealTimeChatApplication.AppCode;
+using RealTimeChatApplication.Hub;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSignalR();
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -32,7 +34,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+//app.MapHub<ChatHub>("/chatHub");
 app.UseAuthorization();
 
 app.MapControllerRoute(
