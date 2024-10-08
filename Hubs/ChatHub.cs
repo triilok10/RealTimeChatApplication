@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 
-namespace RealTimeChatApplication.Hub
+namespace RealTimeChatApplication.Hubs
 {
     public class ChatHub : Hub
     {
