@@ -65,10 +65,13 @@ namespace RealTimeChatApplication.Controllers
         {
             if (!string.IsNullOrEmpty(ProfilePictureURLCamera))
             {
-                byte[] imageBytes = Convert.FromBase64String(ProfilePictureURLCamera.Replace("data:image/jpeg;base64,", ""));
+                string base64Data = ProfilePictureURLCamera.Replace("data:image/jpeg;base64,", "");
 
-                dynamic File = Convert.ToByte("imageBytes");
+                byte[] imageBytes = Convert.FromBase64String(base64Data);
 
+                string filePath = @"C:\path\to\output\profile_picture.jpg";
+
+                System.IO.File.WriteAllBytes(filePath, imageBytes);
             }
 
             if (ProfilePictureURL != null)
