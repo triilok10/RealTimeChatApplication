@@ -69,12 +69,15 @@ namespace RealTimeChatApplication.Controllers
 
                 byte[] imageBytes = Convert.FromBase64String(base64Data);
 
-                string filePath = Path.Combine("www", "images", "uploads");
+                string filePath = Path.Combine("wwwroot", "images", "uploads");
                 if (!Directory.Exists(filePath))
                 {
                     Directory.CreateDirectory(filePath);
                 }
-                System.IO.File.WriteAllBytes(filePath, imageBytes);
+                string fileName = "profile_picture.jpg";
+                string directoryPath = Path.Combine(filePath, fileName);
+
+                System.IO.File.WriteAllBytes(directoryPath, imageBytes);
             }
 
             if (ProfilePictureURL != null)
