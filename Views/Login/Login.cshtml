@@ -1,133 +1,61 @@
-﻿@model RealTimeChatApplication.Models.ChatUser
-@{
-    ViewData["Title"] = "Login";
-}
+﻿<!DOCTYPE html>
+<html lang="en">
 
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/js/toastr.min.js"></script>
-<link href="~/js/toastr.min.css" rel="stylesheet" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-<style>
-
-    .login-container {
-        max-width: 800px;
-        margin: auto;
-        padding: 40px;
-        box-shadow: 0 4px 20px rgb(206 197 197);
-        background-color: white;
-        border-radius: 10px;
-        transition: transform 0.2s;
-        border: 1px solid violet;
-    }
-
-        .login-container:hover {
-            transform: translateY(-5px);
-        }
-
-    .LoginForm {
-        height: 100vh;
-        align-content: center;
-        background-color: #f0f0f0
-    }
-
-    h1 {
-        margin-bottom: 2rem;
-        font-size: 2rem;
-        color: #343a40;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-control {
-        border-radius: 5px;
-        border: 1px solid #ced4da;
-        transition: border-color 0.3s;
-    }
-
-
-
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0,123,255,.5);
-        }
-
-    .form-check-label {
-        margin-left: 5px;
-    }
-
-    button {
-        font-size: 1.1rem;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-    @@media (max-width: 576px) {
-        .login-container {
-            padding: 30px;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-        }
-    }
-</style>
-
-
-<div class="LoginForm">
-    <div class="login-container">
-        <h1 class="text-center">Login</h1>
-        <form asp-controller="Login" asp-action="Login" method="post">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" asp-for="UserName" class="form-control" id="username">
+<body class="bg-light">
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <!-- Left image section (visible on larger screens) -->
+            <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center">
+                <img src="https://images.unsplash.com/photo-1521747116042-5a810fda9664?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fHJlYWwlMjBlc3RhdGV8ZW58MHx8fHwxNjc4NzM5NzMz&ixlib=rb-4.0.3&q=80&w=1080"
+                     alt="Real Estate" class="img-fluid rounded-left" />
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" asp-for="Password" class="form-control" id="password">
+
+            <!-- Right form section -->
+            <div class="col-md-6 bg-white border rounded-lg shadow-lg p-4">
+                <h1 class="text-3xl font-weight-bold text-center text-dark">Sampatti Search</h1>
+                <h2 class="h4 text-center text-muted mb-4">User Sign In</h2>
+                <p class="text-muted text-center mb-6">
+                    Sign in to access your account and manage your properties.
+                </p>
+
+                <!-- Sign-in form -->
+                <form>
+                    <div class="form-group">
+                        <label for="email" class="text-muted">Email</label>
+                        <input class="form-control" type="email" id="email" name="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="text-muted">Password</label>
+                        <input class="form-control" type="password" id="password" name="password" />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </form>
+
+                <!-- Links for Forgot Password and Sign Up -->
+                <div class="mt-4 text-center">
+                    <p class="text-muted">
+                        <a href="#" class="text-primary">Forgot Password?</a>
+                    </p>
+                    <p class="mt-2 text-muted">
+                        Don't have an account?
+                        <a href="#" class="text-primary">Sign Up</a>
+                    </p>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Login</button>
-        </form>
-        <p class="text-center mt-3">Don't have an account? <a href="@Url.Action("Register","Login")">Create a new user here</a></p>
+        </div>
     </div>
-</div>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    @* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script> *@
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 
-
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": false,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-
-        // Show error message if it exists
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <text>toastr.error("@ViewBag.ErrorMessage"); </text>
-    }
-                                    });
-</script>
+</html>
