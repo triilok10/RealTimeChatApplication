@@ -1,12 +1,13 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@model RealTimeChatApplication.Models.ChatUser
+@{
+    ViewData["Title"] = "Login";
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Title</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/toastr.min.js"></script>
+<link href="~/js/toastr.min.css" rel="stylesheet" />
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
 <style>
     .containerLogin {
         display: flex;
@@ -29,11 +30,23 @@
         border-bottom-left-radius: 0.75rem;
     }
 
+    .tagline {
+        font-size: 1.25em;
+        color: #7149d2;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-weight:800;
+    }
 </style>
 <body class="bg-light">
 
     <div class="containerLogin d-flex align-items-stretch">
         <div class="container my-4">
+
             <div class="row justify-content-center">
 
                 <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center p-0 custom-image-container" style="background-image: url('https://images.unsplash.com/photo-1521747116042-5a810fda9664?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fHJlYWwlMjBlc3RhdGV8ZW58MHx8fHwxNjc4NzM5NzMz&ixlib=rb-4.0.3&q=80&w=1080'); background-size: cover; background-position: center; height:auto">
@@ -42,7 +55,11 @@
 
 
                 <div class="col-md-6 bg-white border rounded-lg shadow-lg p-4 d-flex flex-column">
-                    <h1 class="text-3xl font-weight-bold text-center text-dark">Sampatti Search</h1>
+                    <h1 class="text-3xl font-weight-bold text-center text-dark">
+                        Twisted Talk<br>
+                        <small class="tagline">Fast, Friendly, and Always On.</small>
+                    </h1>
+
                     <h2 class="h4 text-center text-muted mb-4">User Sign In</h2>
                     <p class="text-muted text-center mb-6">
                         Sign in to access your account and manage your properties.
@@ -51,8 +68,8 @@
 
                     <form class="flex-grow-1 d-flex flex-column">
                         <div class="form-group">
-                            <label for="email" class="text-muted">Email</label>
-                            <input class="form-control" type="email" id="email" name="email" />
+                            <label for="text" class="text-muted">Username</label>
+                            <input class="form-control" type="text" id="username" name="username" />
                         </div>
                         <div class="form-group">
                             <label for="password" class="text-muted">Password</label>
@@ -68,7 +85,7 @@
                         </p>
                         <p class="mt-2 text-muted">
                             Don't have an account?
-                            <a href="#" class="text-primary">Sign Up</a>
+                            <a href="@Url.Action("Register","Login")" class="text-primary">Sign Up</a>
                         </p>
                     </div>
                 </div>
@@ -76,12 +93,32 @@
         </div>
     </div>
 
-
-
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    @* <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script> *@
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
-</html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        // Show error message if it exists
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <text>toastr.error("@ViewBag.ErrorMessage"); </text>
+    }
+ });
+</script>
