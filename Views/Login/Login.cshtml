@@ -7,50 +7,81 @@
     <title>Page Title</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<style>
+    .containerLogin {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+    }
 
+    .custom-image-container {
+        height: 100%;
+        width: 100%;
+    }
+
+    .custom-image {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+    }
+
+  
+
+
+
+</style>
 <body class="bg-light">
-    <div class="container my-4">
-        <div class="row justify-content-center">
-            <!-- Left image section (visible on larger screens) -->
-            <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center">
-                <img src="https://images.unsplash.com/photo-1521747116042-5a810fda9664?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fHJlYWwlMjBlc3RhdGV8ZW58MHx8fHwxNjc4NzM5NzMz&ixlib=rb-4.0.3&q=80&w=1080"
-                     alt="Real Estate" class="img-fluid rounded-left" />
-            </div>
 
-            <!-- Right form section -->
-            <div class="col-md-6 bg-white border rounded-lg shadow-lg p-4">
-                <h1 class="text-3xl font-weight-bold text-center text-dark">Sampatti Search</h1>
-                <h2 class="h4 text-center text-muted mb-4">User Sign In</h2>
-                <p class="text-muted text-center mb-6">
-                    Sign in to access your account and manage your properties.
-                </p>
+    <div class="containerLogin d-flex align-items-stretch">
+        <div class="container my-4">
+            <div class="row justify-content-center">
+                <!-- Left image section (visible on larger screens) -->
+                <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center p-0 custom-image-container">
+                    <img src="https://images.unsplash.com/photo-1521747116042-5a810fda9664?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fHJlYWwlMjBlc3RhdGV8ZW58MHx8fHwxNjc4NzM5NzMz&ixlib=rb-4.0.3&q=80&w=1080"
+                         alt="Real Estate" class="img-fluid custom-image" />
+                </div>
 
-                <!-- Sign-in form -->
-                <form>
-                    <div class="form-group">
-                        <label for="email" class="text-muted">Email</label>
-                        <input class="form-control" type="email" id="email" name="email" />
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="text-muted">Password</label>
-                        <input class="form-control" type="password" id="password" name="password" />
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                </form>
-
-                <!-- Links for Forgot Password and Sign Up -->
-                <div class="mt-4 text-center">
-                    <p class="text-muted">
-                        <a href="#" class="text-primary">Forgot Password?</a>
+                <!-- Right form section -->
+                <div class="col-md-6 bg-white border rounded-lg shadow-lg p-4 d-flex flex-column">
+                    <h1 class="text-3xl font-weight-bold text-center text-dark">Sampatti Search</h1>
+                    <h2 class="h4 text-center text-muted mb-4">User Sign In</h2>
+                    <p class="text-muted text-center mb-6">
+                        Sign in to access your account and manage your properties.
                     </p>
-                    <p class="mt-2 text-muted">
-                        Don't have an account?
-                        <a href="#" class="text-primary">Sign Up</a>
-                    </p>
+
+                    <!-- Sign-in form -->
+                    <form class="flex-grow-1 d-flex flex-column">
+                        <div class="form-group">
+                            <label for="email" class="text-muted">Email</label>
+                            <input class="form-control" type="email" id="email" name="email" />
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-muted">Password</label>
+                            <input class="form-control" type="password" id="password" name="password" />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block mt-auto">Sign In</button>
+                    </form>
+
+                    <!-- Links for Forgot Password and Sign Up -->
+                    <div class="mt-4 text-center">
+                        <p class="text-muted">
+                            <a href="#" class="text-primary">Forgot Password?</a>
+                        </p>
+                        <p class="mt-2 text-muted">
+                            Don't have an account?
+                            <a href="#" class="text-primary">Sign Up</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
