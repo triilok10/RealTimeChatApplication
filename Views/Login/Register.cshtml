@@ -1,5 +1,6 @@
 ﻿@model RealTimeChatApplication.Models.ChatUser
 
+
 @{
     ViewData["Title"] = "Register";
 }
@@ -16,151 +17,73 @@
     }
 }
 
+
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    .register-container {
-        max-width: 800px;
-        margin: auto;
-        padding: 40px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        background-color: white;
-        border-radius: 10px;
-        transition: transform 0.2s;
-    }
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 
-        .register-container:hover {
-            transform: translateY(-5px);
-        }
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
 
-    h1 {
-        margin-bottom: 2rem;
-        font-size: 2rem;
-        color: #343a40;
-        text-align: center;
-    }
+.image-section {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
 
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
+.registration-section {
+    width: 70%;
+    padding: 40px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
 
-    .form-control,
-    .form-control-file {
-        border-radius: 5px;
-        border: 1px solid #ced4da;
-        transition: border-color 0.3s;
-    }
+.responsive-image {
+    width: 100%;
+    height: auto;
+}
 
-        .form-control:focus,
-        .form-control-file:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, .5);
-        }
-
-    .profile-picture-container {
-        display: flex;
+/* Responsive styles for smaller screens */
+@@media (max-width: 768px) {
+    .container {
         flex-direction: column;
-        align-items: center;
-        margin-bottom: 1.5rem;
     }
-
-    .profile-picture-preview {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        display: none;
-        margin-bottom: 10px;
+    
+    .image-section, .registration-section {
+        width: 100%;
     }
-
-    button {
-        font-size: 1.1rem;
+    
+    .registration-section {
+        padding: 20px;
     }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-    .border-Danger {
-        border: 1px solid red;
-    }
-
-    .register-containerBlock {
-        display: none
-    }
-
-    .containerBlockRepeat {
-        display: block;
-    }
-
-    @@media (max-width: 576px) {
-        .register-container {
-            padding: 30px;
-            width: calc(100% - 40px);
-            box-shadow: none;
-            border-radius: 0;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-        }
-
-        button {
-            font-size: 1rem;
-            width: 100%;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        .form-group label {
-            font-size: 0.9rem;
-        }
-
-        small.form-text {
-            font-size: 0.8rem;
-            text-align: center;
-            width: 100%;
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-        #my_camera {
-            max-width: 100%;
-            height: auto;
-        }
-
-        #captureProfileButton img {
-            max-width: 50%;
-            height: auto;
-        }
-
-        #captureProfileButton {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+}
 
 </style>
 <script src="~/js/webcam.min.js"></script>
+<div class="container">
+    <div class="image-section" style="background-image: url('../images/registerChat.svg'); background-size: cover; background-position: center; height:auto;">
+        
+    </div>
 
-<div class="register-container mt-5" id="registerContainer">
-    <h1 class="text-center">Register</h1>
-    <div class="container mt-5">
+    <div class="registration-section">
+        <h2>Registration Form</h2>
+        <form asp-controller="Login" asp-action="Login" method="post" class="flex-grow-1 d-flex flex-column">
 
-        <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data" onsubmit="return jsValidateSubmit()">
-
-            <div class="profile-picture-container mb-3">
+             <div class="profile-picture-container mb-3">
 
                 <div id="my_camera" style="width:auto; height:auto; display:none;"></div>
                 <a href="javascript:void(0)" id="captureProfileButton" onclick="toggleCamera()">
@@ -179,54 +102,59 @@
             </div>
 
 
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" asp-for="UserName" class="form-control" id="username" name="username">
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" asp-for="Email" class="form-control" id="email" name="email">
-            </div>
-
-            <div class="form-group">
-                <label for="email">Gender</label>
-                <select asp-for="Gender" class="form-control" id="Gender">
+                        <div class="form-group">
+                            <label for="username" class="text-muted">Username</label>
+                            <input asp-for="UserName" class="form-control" type="text" id="username" name="username" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="text-muted">Email</label>
+                            <input asp-for="Email" class="form-control" type="email" id="email" name="email" />
+                        </div>
+                         <div class="form-group">
+                            <label for="Gender" class="text-muted">Gender</label>
+                            <select asp-for="Gender" class="form-control" id="Gender">
                     <option value="0">Select Gender</option>
                     @foreach (var item in Enum.GetValues(typeof(RealTimeChatApplication.Models.ChatUser.GenderType)))
                     {
                         <option value="@item">@item</option>
                     }
                 </select>
-            </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" asp-for="Password" class="form-control" id="password" name="password">
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" asp-for="ConfirmPassword" class="form-control" id="confirmPassword" name="confirmPassword">
-            </div>
-
-            <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
+                        </div>
+                         <div class="form-group">
+                            <label for="password" class="text-muted">Password</label>
+                            <input asp-for="Password" class="form-control" type="password" id="password" name="password" />
+                        </div>
+                         <div class="form-group">
+                            <label for="ConfirmPassword" class="text-muted">Confirm Password</label>
+                            <input asp-for="ConfirmPassword" class="form-control" type="password" id="confirmPassword" name="ConfirmPassword" />
+                        </div>
+                         <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
             <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
             <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
 
             <div class="form-group">
-                <a href="javascript:void(0)" onclick="js_TermsandCondition();"> Terms and Condition.</a>
-            </div>
+                <a href="javascript:void(0)"> Terms and Condition.</a>
+ <br/>
+                        <button type="submit" class="btn btn-primary btn-block mt-auto">Sign In</button>
+       </form>
 
-
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
-        </form>
+        @* <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password">
+            
+            <label for="confirm-password">Confirm Password:</label>
+            <input type="password" id="confirm-password" name="confirm-password">
+            
+            <button type="submit">Register</button>
+        </form> *@
     </div>
-
-    <p class="text-center mt-3">Already have an account? <a href="@Url.Action("Login","Login")">Login here</a></p>
-</div>
-<div id="termsConditionContainer" style="display: none; max-width: 800px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; background-color: rgb(82 108 142);">
-    <!-- Partial View content will be injected here -->
 </div>
 <script type="text/javascript">
 
@@ -348,7 +276,7 @@
         var confirmPassword = $("#confirmPassword").val().trim();
         var gender = $("#Gender").val();
         var termsCondition = $("#TermsCondition").val();
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        var passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{8,}$/;
 
         if (!username) {
             $("#username").addClass("border-Danger");
@@ -433,6 +361,6 @@
             }
         })
 
-    }
+    }
 
 </script>
