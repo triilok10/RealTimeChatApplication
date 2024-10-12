@@ -6,6 +6,7 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/toastr.min.js"></script>
 <link href="~/js/toastr.min.css" rel="stylesheet" />
+
 <style>
     * {
         box-sizing: border-box;
@@ -21,91 +22,181 @@
 
     .container {
         display: flex;
-        flex-direction: row;
         height: 100vh;
+        flex-direction: row;
     }
 
     .image-section {
         width: 30%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f0f0f0;
         background-size: cover;
         background-position: center;
+        background-color: #f0f0f0;
     }
 
-   .termsConditon-Container {
-       width:70%;
-   }
+    .termsConditon-Container {
+        width: 70%;
+        padding: 40px;
+        overflow-y: auto;
+    }
 
-    /* Responsive styles for smaller screens */
+    h1 {
+        color: #2c3e50;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        color: #34495e;
+        font-size: 1.8em;
+        margin-top: 20px;
+    }
+
+    p {
+        line-height: 1.8;
+        color: #555555;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+
+    .agreeContainer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .checkbox-container {
+        text-align: center;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    label {
+        font-size: 1.1em;
+    }
+
+    footer {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 14px;
+        color: #777777;
+    }
+
+    /* Responsive styles for larger tablets */
     @@media (max-width: 1024px) {
         .container {
             flex-direction: column;
-            padding-left: 15px;
-            padding-right: 15px;
+        }
+
+        .termsConditon-Container {
+            width: 100%;
+            padding: 20px;
         }
 
         .image-section {
             width: 100%;
-            padding: 20px;
             height: 250px;
+            display: none; 
         }
     }
 
-    /* Responsive styles for tablets and very small screens */
+    /* Responsive styles for small devices */
     @@media (max-width: 768px) {
-        .image-section {
-            display: none;
+        .termsConditon-Container {
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        h2 {
+            font-size: 1.5em;
+        }
+
+        p {
+            font-size: 1em;
+        }
+
+        .agreeContainer {
+            flex-direction: column;
+        }
+
+        .checkbox-container, .agreeContainer a {
+            margin-bottom: 10px;
+        }
+
+        footer {
+            font-size: 12px;
         }
     }
 
-    
+    /* Responsive styles for very small devices */
+    @@media (max-width: 480px) {
+        h1 {
+            font-size: 1.8em;
+        }
+
+        h2 {
+            font-size: 1.3em;
+        }
+
+        p {
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .agreeContainer a {
+            width: 100%;
+            text-align: center;
+        }
+    }
 </style>
 
 <body>
     <div class="container">
-        <div class="termsConditon-Container">    
-        <h1>Terms and Conditions</h1>
+        <div class="termsConditon-Container">
+            <h1>Terms and Conditions</h1>
+            <p>Welcome to our Terms and Conditions page. Please read these terms carefully before using our service.</p>
 
-    <p>Welcome to our Terms and Conditions page. Please read these terms carefully before using our service.</p>
+            <h2>1. Introduction</h2>
+            <p>These Terms govern your use of our services. By accessing or using our services, you agree to be bound by these Terms.</p>
 
-    <h2>1. Introduction</h2>
-    <p>These Terms govern your use of our services. By accessing or using our services, you agree to be bound by these Terms.</p>
+            <h2>2. User Responsibilities</h2>
+            <p>As a user, you agree to abide by all applicable laws and regulations while using our service.</p>
 
-    <h2>2. User Responsibilities</h2>
-    <p>As a user, you agree to abide by all applicable laws and regulations while using our service.</p>
+            <h2>3. Modifications</h2>
+            <p>We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting on this page.</p>
 
-    <h2>3. Modifications</h2>
-    <p>We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting on this page.</p>
+            <h2>4. Contact Us</h2>
+            <p>If you have any questions about these Terms, please contact us at support@example.com.</p>
 
-    <h2>4. Contact Us</h2>
-    <p>If you have any questions about these Terms, please contact us at support@example.com.</p>
+            <div class="agreeContainer">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="agreeTerms">
+                    <input type="hidden" id="TermsConditionCheck" value="@ViewBag.HdnTermsCondition">
+                    <label for="agreeTerms">I agree with the Terms and Conditions</label>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-primary" onclick="js_TermsCondition();">Agree</a>
+                </div>
+            </div>
 
-    <div class="agreeContainer">
-        <div class="checkbox-container">
-            <input type="checkbox" id="agreeTerms">
-            <input type="hidden" id="TermsConditionCheck" value="@ViewBag.HdnTermsCondition">
-            <label for="agreeTerms">I agree with the Terms and Conditions</label>
+            <div class="CloseContainer" style="display:none">
+                <div class="checkbox-container">
+                </div>
+                <div>
+                    <a href="#" onclick="js_CloseTermsCondition();" class="btn btn-danger">Close</a>
+                </div>
+            </div>
+
+            <footer>
+                <p>&copy; @DateTime.Now.Year RealTimeChatApplication. All rights reserved.</p>
+            </footer>
         </div>
-        <div>
-            <a href="#" class="btn btn-primary" onclick="js_TermsCondition();">Agree</a>
-        </div>
-    </div>
 
-    <div class="CloseContainer" style="display:none">
-        <div class="checkbox-container">
-        </div>
-        <div>
-            <a href="#" onclick="js_CloseTermsCondition();" class="btn btn-danger">Close</a>
-        </div>
-    </div>
-
-    <footer>
-        <p>&copy; @DateTime.Now.Year RealTimeChatApplication. All rights reserved.</p>
-    </footer>    
-        </div>
         <div class="image-section" style="background-image: url('../images/termsConditon.svg');"></div>
     </div>
 </body>
