@@ -9,7 +9,7 @@ using System.Text;
 
 namespace RealTimeChatApplication.Controllers
 {
-    [ServiceFilter(typeof(SessionAdmin))]
+    
     public class LoginController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -158,24 +158,24 @@ namespace RealTimeChatApplication.Controllers
         #endregion
     }
 
-    public class SessionAdmin : ActionFilterAttribute
-    {
-        private readonly ISessionService _sessionService;
+    //public class SessionAdmin : ActionFilterAttribute
+    //{
+    //    private readonly ISessionService _sessionService;
 
-        public SessionAdmin(ISessionService sessionService)
-        {
-            _sessionService = sessionService;
-        }
+    //    public SessionAdmin(ISessionService sessionService)
+    //    {
+    //        _sessionService = sessionService;
+    //    }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            string userId = _sessionService.GetString("UserID");
-            if (string.IsNullOrEmpty(userId))
-            {
-                context.Result = new RedirectToActionResult("Login", "Login", null);
-            }
-            base.OnActionExecuting(context);
-        }
-    }
+    //    public override void OnActionExecuting(ActionExecutingContext context)
+    //    {
+    //        string userId = _sessionService.GetString("UserID");
+    //        if (string.IsNullOrEmpty(userId))
+    //        {
+    //            context.Result = new RedirectToActionResult("Login", "Login", null);
+    //        }
+    //        base.OnActionExecuting(context);
+    //    }
+    //}
 
 }
