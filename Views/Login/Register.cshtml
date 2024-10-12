@@ -17,7 +17,6 @@
     }
 }
 
-
 <style>
     * {
         box-sizing: border-box;
@@ -53,6 +52,12 @@
         align-items: center;
     }
 
+    .formAlignCenter {
+        display: block;
+        justify-content: center;
+        align-items: center;
+    }
+
     .image-section {
         width: 30%;
         display: flex;
@@ -76,8 +81,8 @@
     }
 
     .form-container {
-        width: 70%; 
-        margin: 0 auto; 
+        width: 80%;
+        margin: 0 auto;
         padding: 20px;
     }
 
@@ -88,7 +93,6 @@
 
     .small-input {
         height: 35px;
-        width: calc(100% - 30px); 
     }
 
     .text-muted {
@@ -101,48 +105,44 @@
 
     .btn-primary,
     .btn-secondary {
-        width: 100%; /* Ensure buttons span 100% of the form width */
+        width: 100%;
+    }
+
+    .pictureContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
     }
 
     /* Responsive styles for smaller screens */
-    @@media (max-width: 768px) {
-
+    @@media (max-width: 1024px) {
         .container {
             flex-direction: column;
-            height: auto;
             padding-left: 15px;
             padding-right: 15px;
         }
 
-        .image-section,
+        .image-section {
+            width: 100%;
+            padding: 20px;
+            height: 250px;
+        }
+
         .registration-section {
             width: 100%;
             padding: 20px;
             margin-bottom: 20px;
-            height: auto;
-            margin-left: 15px;
-            margin-right: 15px;
-            box-shadow: none;
-        }
-
-        .image-section {
-            height: 250px;
-            background-position: top;
         }
 
         .form-container {
-            padding-left: 10px;
-            padding-right: 10px;
-            max-width: none;
-            width: -webkit-fit-content;
+            width: 100%;
         }
 
         .cameraContainer img,
         #profilePicturePreview {
             max-width: 100%;
             height: auto;
-            display: block;
-            margin: auto;
         }
 
         .btn-block {
@@ -154,9 +154,8 @@
         }
     }
 
-    /* Further responsive styles for very small screens */
-    @@media (max-width: 480px) {
-
+    /* Responsive styles for tablets and very small screens */
+    @@media (max-width: 768px) {
         .image-section {
             display: none;
         }
@@ -168,9 +167,33 @@
         }
 
         .form-container {
+            padding-left: 10px;
+            padding-right: 10px;
+            max-width: none;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        h2.text-center {
+            font-size: 1.3em;
+        }
+    }
+
+    /* Responsive styles for mobile */
+    @@media (max-width: 480px) {
+        .registration-section {
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .form-container {
             padding-left: 5px;
             padding-right: 5px;
-            width: -webkit-fit-content;
+            width: 100%;
         }
 
         .btn {
@@ -178,99 +201,102 @@
         }
 
         h2.text-center {
-            font-size: 1.3em;
+            font-size: 1.2em;
         }
 
         .form-group {
             margin-bottom: 10px;
-            width: auto;
         }
+
+        .cameraContainer {
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .cameraContainer img {
+                max-width: 80%;
+            }
     }
 </style>
 
+<body>
+    <div class="container">
+        <div class="image-section" style="background-image: url('../images/registerChat.svg');"></div>
+        <div class="registration-section">
+            <h2 class="text-center">Registration Form</h2>
+            <form asp-controller="Login" asp-action="Login" method="post" class="d-flex flex-column">
+                <div class="pictureContainer">
+                    <div class="profile-picture-container">
+                        <div class="cameraAlignCenter">
+                            <div id="my_camera" style="display:none;"></div>
+                        </div>
+                        <div class="cameraContainer">
+                            <a href="javascript:void(0)" id="captureProfileButton" onclick="toggleCamera()">
+                                <img src="~/images/camera-svgrepo-com.svg" style="height:50px;" />
+                            </a>
+                        </div>
+                        <div class="cameraContainer">
+                            <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
+                        </div>
+                        <div class="cameraContainer">
+                            <input type="hidden" asp-for="ProfilePictureURLCamera" id="ProfilePictureURLCamera">
+                        </div>
+                        <div class="cameraContainer">
+                            <input type="file" asp-for="ProfilePictureURL" accept="image" id="fileInput" onchange="loadFile(event)" style="display:none;">
+                            <button type="button" class="btn btn-secondary mt-2 small-input" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
+                        </div>
+                        <div class="cameraContainer">
+                            <img id="profilePicturePreview" src="" class="profile-picture-preview mt-2" style="width:350px;height:auto">
+                        </div>
+                        <div class="cameraContainer">
+                            <small class="form-text text-muted text-center">Upload or capture a profile picture (optional).</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="pictureContainer">
+                    <div class="form-container">
+                        <div class="form-group formAlignCenter">
+                            <label for="username" class="text-muted">Username</label>
+                            <input asp-for="UserName" class="form-control small-input" type="text" id="username" name="username" />
+                        </div>
+                        <div class="form-group formAlignCenter">
+                            <label for="email" class="text-muted">Email</label>
+                            <input asp-for="Email" class="form-control small-input" type="email" id="email" name="email" />
+                        </div>
+                        <div class="form-group formAlignCenter">
+                            <label for="Gender" class="text-muted">Gender</label>
+                            <select asp-for="Gender" class="form-control small-input" id="Gender">
+                                <option value="0">Select Gender</option>
+                                @foreach (var item in Enum.GetValues(typeof(RealTimeChatApplication.Models.ChatUser.GenderType)))
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group formAlignCenter">
+                            <label for="password" class="text-muted">Password</label>
+                            <input asp-for="Password" class="form-control small-input" type="password" id="password" name="password" />
+                        </div>
+                        <div class="form-group formAlignCenter">
+                            <label for="ConfirmPassword" class="text-muted">Confirm Password</label>
+                            <input asp-for="ConfirmPassword" class="form-control small-input" type="password" id="confirmPassword" name="ConfirmPassword" />
+                        </div>
+                        <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
+                        <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
+                        <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
+                        <div class="form-group formAlignCenter">
+                            <a href="#" class="">Terms and Condition.</a>
+                            <br />
+                            <button type="submit" class="btn btn-primary btn-block mt-auto small-input">Sign In</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
 <script src="~/js/webcam.min.js"></script>
-<div class="container" style="height:auto">
-    <div class="image-section" style="background-image: url('../images/registerChat.svg'); background-size: cover; background-position: center; height:auto;">
-    </div>
-
-    <div class="registration-section">
-        <h2 class="text-center">Registration Form</h2>
-        <form asp-controller="Login" asp-action="Login" method="post" class="flex-grow-1 d-flex flex-column">
-
-            <div class="profile-picture-container mb-3">
-                <div class="cameraAlignCenter">
-                    <div id="my_camera" style="width:auto; height:auto; display:none;"></div>
-                </div>
-                <div class="cameraContainer">
-                    <a href="javascript:void(0)" id="captureProfileButton" onclick="toggleCamera()">
-                        <img src="~/images/camera-svgrepo-com.svg" style="height:50px;" />
-                    </a>
-                </div>
-                <div class="cameraContainer">
-                    <button type="button" class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</button>
-                </div>
-                <div class="cameraContainer">
-                    <input type="hidden" asp-for="ProfilePictureURLCamera" id="ProfilePictureURLCamera">
-                </div>
-                <div class="cameraContainer">
-                    <input type="file" asp-for="ProfilePictureURL" accept="image" id="fileInput" onchange="loadFile(event)" style="display:none;">
-                    <button type="button" class="btn btn-secondary mt-2" onclick="document.getElementById('fileInput').click();">Select Profile Picture</button>
-                </div>
-
-                <div class="cameraContainer">
-                    <img id="profilePicturePreview" src="" class="profile-picture-preview mt-2" style="width:350px;height:auto">
-                </div>
-                <div class="cameraContainer">
-                    <small class="form-text text-muted text-center">Upload or capture a profile picture (optional).</small>
-                </div>
-            </div>
-
-            <div class="form-container">
-                <div class="form-group">
-                    <label for="username" class="text-muted">Username</label>
-                    <input asp-for="UserName" class="form-control small-input" type="text" id="username" name="username" />
-                </div>
-
-                <div class="form-group">
-                    <label for="email" class="text-muted">Email</label>
-                    <input asp-for="Email" class="form-control small-input" type="email" id="email" name="email" />
-                </div>
-
-                <div class="form-group">
-                    <label for="Gender" class="text-muted">Gender</label>
-                    <select asp-for="Gender" class="form-control small-input" id="Gender">
-                        <option value="0">Select Gender</option>
-                        @foreach (var item in Enum.GetValues(typeof(RealTimeChatApplication.Models.ChatUser.GenderType)))
-                        {
-                            <option value="@item">@item</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="password" class="text-muted">Password</label>
-                    <input asp-for="Password" class="form-control small-input" type="password" id="password" name="password" />
-                </div>
-
-                <div class="form-group">
-                    <label for="ConfirmPassword" class="text-muted">Confirm Password</label>
-                    <input asp-for="ConfirmPassword" class="form-control small-input" type="password" id="confirmPassword" name="ConfirmPassword" />
-                </div>
-
-                <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
-                <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
-                <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
-
-                <div class="form-group">
-                    <a href="#" class="">Terms and Condition.</a>
-                    <br />
-                    <button type="submit" class="btn btn-primary btn-block mt-auto">Sign In</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script type="text/javascript">
 
     toastr.options = {
