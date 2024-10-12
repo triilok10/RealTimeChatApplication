@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
@@ -8,6 +9,7 @@ using System.Text;
 
 namespace RealTimeChatApplication.Controllers
 {
+    [ServiceFilter(typeof(SessionAdmin))]
     public class LoginController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -117,7 +119,7 @@ namespace RealTimeChatApplication.Controllers
                     string UserId = resBody.userId;
                     _sessionService.SetString("UserID", UserId);
 
-                     TempData["successMessage"] = Message;
+                    TempData["successMessage"] = Message;
                     TempData.Keep("successMessage");
                     return RedirectToAction("ChatBox", "Chat");
                 }
@@ -155,4 +157,25 @@ namespace RealTimeChatApplication.Controllers
 
         #endregion
     }
+
+    public class SessionAdmin : ActionFilterAttribute
+    {
+        private readonly ISessionService _sessionService;
+
+        public SessionAdmin(ISessionService sessionService)
+        {
+            _sessionService = sessionService;
+        }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            string userId = _sessionService.GetString("UserID");
+            if (string.IsNullOrEmpty(userId))
+            {
+                context.Result = new RedirectToActionResult("Login", "Login", null);
+            }
+            base.OnActionExecuting(context);
+        }
+    }
+
 }
