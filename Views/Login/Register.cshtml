@@ -50,7 +50,6 @@
     .cameraAlignCenter {
         display: flex;
         justify-content: center;
-        align-content: center;
         align-items: center;
     }
 
@@ -60,13 +59,15 @@
         justify-content: center;
         align-items: center;
         background-color: #f0f0f0;
+        background-size: cover;
+        background-position: center;
     }
 
     .registration-section {
         width: 70%;
         padding: 40px;
         background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .responsive-image {
@@ -74,24 +75,121 @@
         height: auto;
     }
 
+    .form-container {
+        width: 70%; 
+        margin: 0 auto; 
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .small-input {
+        height: 35px;
+        width: calc(100% - 30px); 
+    }
+
+    .text-muted {
+        font-size: 14px;
+    }
+
+    .btn {
+        margin-top: 10px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%; /* Ensure buttons span 100% of the form width */
+    }
+
     /* Responsive styles for smaller screens */
     @@media (max-width: 768px) {
+
         .container {
             flex-direction: column;
+            height: auto;
+            padding-left: 15px;
+            padding-right: 15px;
         }
 
-        .image-section, .registration-section {
-            width: 100%;
-        }
-
+        .image-section,
         .registration-section {
+            width: 100%;
             padding: 20px;
+            margin-bottom: 20px;
+            height: auto;
+            margin-left: 15px;
+            margin-right: 15px;
+            box-shadow: none;
+        }
+
+        .image-section {
+            height: 250px;
+            background-position: top;
+        }
+
+        .form-container {
+            padding-left: 10px;
+            padding-right: 10px;
+            max-width: none;
+            width: -webkit-fit-content;
+        }
+
+        .cameraContainer img,
+        #profilePicturePreview {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+
+        .btn-block {
+            width: auto;
+        }
+
+        h2.text-center {
+            font-size: 1.5em;
         }
     }
 
+    /* Further responsive styles for very small screens */
+    @@media (max-width: 480px) {
+
+        .image-section {
+            display: none;
+        }
+
+        .registration-section {
+            width: 100%;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .form-container {
+            padding-left: 5px;
+            padding-right: 5px;
+            width: -webkit-fit-content;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        h2.text-center {
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            width: auto;
+        }
+    }
 </style>
+
 <script src="~/js/webcam.min.js"></script>
-<div class="container">
+<div class="container" style="height:auto">
     <div class="image-section" style="background-image: url('../images/registerChat.svg'); background-size: cover; background-position: center; height:auto;">
     </div>
 
@@ -127,47 +225,52 @@
                 </div>
             </div>
 
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="username" class="text-muted">Username</label>
+                    <input asp-for="UserName" class="form-control small-input" type="text" id="username" name="username" />
+                </div>
 
-            <div class="form-group">
-                <label for="username" class="text-muted">Username</label>
-                <input asp-for="UserName" class="form-control" type="text" id="username" name="username" />
-            </div>
-            <div class="form-group">
-                <label for="email" class="text-muted">Email</label>
-                <input asp-for="Email" class="form-control" type="email" id="email" name="email" />
-            </div>
-            <div class="form-group">
-                <label for="Gender" class="text-muted">Gender</label>
-                <select asp-for="Gender" class="form-control" id="Gender">
-                    <option value="0">Select Gender</option>
-                    @foreach (var item in Enum.GetValues(typeof(RealTimeChatApplication.Models.ChatUser.GenderType)))
-                    {
-                        <option value="@item">@item</option>
-                    }
-                </select>
+                <div class="form-group">
+                    <label for="email" class="text-muted">Email</label>
+                    <input asp-for="Email" class="form-control small-input" type="email" id="email" name="email" />
+                </div>
 
-            </div>
-            <div class="form-group">
-                <label for="password" class="text-muted">Password</label>
-                <input asp-for="Password" class="form-control" type="password" id="password" name="password" />
-            </div>
-            <div class="form-group">
-                <label for="ConfirmPassword" class="text-muted">Confirm Password</label>
-                <input asp-for="ConfirmPassword" class="form-control" type="password" id="confirmPassword" name="ConfirmPassword" />
-            </div>
-            <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
-            <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
-            <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
+                <div class="form-group">
+                    <label for="Gender" class="text-muted">Gender</label>
+                    <select asp-for="Gender" class="form-control small-input" id="Gender">
+                        <option value="0">Select Gender</option>
+                        @foreach (var item in Enum.GetValues(typeof(RealTimeChatApplication.Models.ChatUser.GenderType)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <a href="javascript:void(0)"> Terms and Condition.</a>
-                <br />
-                <button type="submit" class="btn btn-primary btn-block mt-auto">Sign In</button>
+                <div class="form-group">
+                    <label for="password" class="text-muted">Password</label>
+                    <input asp-for="Password" class="form-control small-input" type="password" id="password" name="password" />
+                </div>
+
+                <div class="form-group">
+                    <label for="ConfirmPassword" class="text-muted">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control small-input" type="password" id="confirmPassword" name="ConfirmPassword" />
+                </div>
+
+                <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
+                <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
+                <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
+
+                <div class="form-group">
+                    <a href="#" class="">Terms and Condition.</a>
+                    <br />
+                    <button type="submit" class="btn btn-primary btn-block mt-auto">Sign In</button>
+                </div>
+            </div>
         </form>
-
-
     </div>
 </div>
+
 <script type="text/javascript">
 
     toastr.options = {
