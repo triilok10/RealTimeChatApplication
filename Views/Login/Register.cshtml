@@ -285,7 +285,7 @@
                         <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
                         <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
                         <div class="form-group formAlignCenter">
-                            <a href="#" class="">Terms and Condition.</a>
+                            <a href="JavaScript:Void()" class="" onclick="js_TermsandCondition();">Terms and Condition.</a>
                             <br />
                             <button type="submit" class="btn btn-primary btn-block mt-auto small-input">Sign In</button>
                         </div>
@@ -293,6 +293,9 @@
                 </div>
             </form>
         </div>
+    </div>
+    <div id="termsConditionContainer" style="display: none;">
+    <!-- Partial View content will be injected here -->
     </div>
 </body>
 
