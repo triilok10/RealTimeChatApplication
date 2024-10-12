@@ -247,7 +247,8 @@
             success: function (res) {
                 setTimeout(() => {
                     $("#termsConditionContainer").addClass("register-containerBlock");
-                    $("#registerContainer").removeClass("register-containerBlock");
+                    $("#registerContainer").show();
+                    $(".container").css("height","100%");
                 }, 1000);
             }
         })

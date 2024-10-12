@@ -232,7 +232,7 @@
         <div class="image-section" style="background-image: url('../images/registerChat.svg');"></div>
         <div class="registration-section">
             <h2 class="text-center">Registration Form</h2>
-            <form asp-controller="Login" asp-action="Login" method="post" class="d-flex flex-column">
+            <form asp-controller="Login" asp-action="Register" method="post" enctype="multipart/form-data" class="d-flex flex-column" onsubmit="return jsValidateSubmit();">
                 <div class="pictureContainer">
                     <div class="profile-picture-container">
                         <div class="cameraAlignCenter">
@@ -422,14 +422,18 @@
     window.onload = geoLocation;
 
     function jsValidateSubmit() {
+      
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
+        console.log(password);
+
         var confirmPassword = $("#confirmPassword").val().trim();
+        console.log(confirmPassword);
         var gender = $("#Gender").val();
         var termsCondition = $("#TermsCondition").val();
         var passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{8,}$/;
-
+     
         if (!username) {
             $("#username").addClass("border-Danger");
             toastr.error("Please enter the Username");
@@ -492,6 +496,7 @@
 
         var termsValue = document.getElementById("TermsCondition").value;
         var termsValueCheck = "";
+        $("#registerContainer").css("display", "none");
         if (termsValue == "true") {
             termsValueCheck = termsValue;
             $("#registerContainer").hide();
@@ -499,15 +504,15 @@
         } else {
             termsValueCheck = "false";
         }
-
+          $("#registerContainer").css("display", "none");
         $.ajax({
             url: "@Url.Action("_partialTermsCondition", "Login")",
             type: "GET",
             data: { termsValueCheck: termsValueCheck },
             cache: false,
             success: function (res) {
-                $("#registerContainer").addClass("register-containerBlock");
-                $("#registerContainer").removeClass("container");
+                //$("#registerContainer").addClass("register-containerBlock");
+                //$("#registerContainer").css("display", "block");
                 $("#termsConditionContainer").html(res).slideDown();
                 document.getElementById("TermsCondition").value = true;
             }
