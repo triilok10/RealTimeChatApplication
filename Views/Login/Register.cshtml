@@ -115,6 +115,14 @@
         align-content: center;
     }
 
+
+    .containerBlockRepeat {
+        display:block;
+    }
+
+    .register-containerBlock {
+        display:none;
+    }
     /* Responsive styles for smaller screens */
     @@media (max-width: 1024px) {
         .container {
@@ -220,7 +228,7 @@
 </style>
 
 <body>
-    <div class="container">
+    <div class="container" id="registerContainer">
         <div class="image-section" style="background-image: url('../images/registerChat.svg');"></div>
         <div class="registration-section">
             <h2 class="text-center">Registration Form</h2>
@@ -483,7 +491,6 @@
     function js_TermsandCondition() {
 
         var termsValue = document.getElementById("TermsCondition").value;
-
         var termsValueCheck = "";
         if (termsValue == "true") {
             termsValueCheck = termsValue;
@@ -500,6 +507,7 @@
             cache: false,
             success: function (res) {
                 $("#registerContainer").addClass("register-containerBlock");
+                $("#registerContainer").removeClass("container");
                 $("#termsConditionContainer").html(res).slideDown();
                 document.getElementById("TermsCondition").value = true;
             }
