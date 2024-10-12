@@ -34,6 +34,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 app.MapHub<ChatHub>("/chathub");
 app.UseAuthorization();
 

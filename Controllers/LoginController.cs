@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
+using System.Data.SqlTypes;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
@@ -112,7 +113,11 @@ namespace RealTimeChatApplication.Controllers
                 if (resBody.response == true)
                 {
                     string Message = resBody.message;
-                    TempData["successMessage"] = Message;
+
+                    string UserId = resBody.userId;
+                    _sessionService.SetString("UserID", UserId);
+
+                     TempData["successMessage"] = Message;
                     TempData.Keep("successMessage");
                     return RedirectToAction("ChatBox", "Chat");
                 }

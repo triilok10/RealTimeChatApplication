@@ -31,6 +31,14 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public IActionResult ChatBox()
         {
+            var UserID = _sessionService.GetString("UserID");
+            if (string.IsNullOrWhiteSpace(UserID))
+            {
+                TempData["errorMessage"] = "Please login";
+                return RedirectToAction("Login", "Login");
+            }
+
+
             return View();
         }
 

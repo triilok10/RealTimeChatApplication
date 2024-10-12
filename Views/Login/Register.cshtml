@@ -33,7 +33,11 @@
     .container {
         display: flex;
         flex-direction: row;
-        height: 100vh;
+        height: 100%;
+    }
+
+    .border-Danger {
+        border-color: red;
     }
 
     .cameraContainer {
@@ -117,11 +121,11 @@
 
 
     .containerBlockRepeat {
-        display:block;
+        display: block;
     }
 
     .register-containerBlock {
-        display:none;
+        display: none;
     }
     /* Responsive styles for smaller screens */
     @@media (max-width: 1024px) {
@@ -293,7 +297,7 @@
                         <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
                         <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
                         <div class="form-group formAlignCenter">
-                            <a href="JavaScript:Void()" class="" onclick="js_TermsandCondition();">Terms and Condition.</a>
+                            <a href="JavaScript:Void()" class="" onclick="js_TermsandCondition();">Terms and Condition.</a><span>(Please read carefully)</span>
                             <br />
                             <button type="submit" class="btn btn-primary btn-block mt-auto small-input">Sign In</button>
                         </div>
@@ -303,7 +307,7 @@
         </div>
     </div>
     <div id="termsConditionContainer" style="display: none;">
-    <!-- Partial View content will be injected here -->
+        <!-- Partial View content will be injected here -->
     </div>
 </body>
 
@@ -422,7 +426,7 @@
     window.onload = geoLocation;
 
     function jsValidateSubmit() {
-      
+
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
@@ -432,8 +436,9 @@
         console.log(confirmPassword);
         var gender = $("#Gender").val();
         var termsCondition = $("#TermsCondition").val();
-        var passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{8,}$/;
-     
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+
         if (!username) {
             $("#username").addClass("border-Danger");
             toastr.error("Please enter the Username");
@@ -459,6 +464,7 @@
         }
 
         if (!passwordRegex.test(password)) {
+            console.log(password);
             toastr.error("Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.");
             $("#password").addClass("border-Danger");
             return false;
@@ -504,7 +510,7 @@
         } else {
             termsValueCheck = "false";
         }
-          $("#registerContainer").css("display", "none");
+        $("#registerContainer").css("display", "none");
         $.ajax({
             url: "@Url.Action("_partialTermsCondition", "Login")",
             type: "GET",
