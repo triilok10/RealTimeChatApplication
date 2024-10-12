@@ -43,11 +43,15 @@
         justify-content: center;
     }
 
-    .cameraAignCenter {
-        width: 100%;
-        height: 240px;
+    #my_camera {
+        max-width: 100%;
+    }
+
+    .cameraAlignCenter {
         display: flex;
         justify-content: center;
+        align-content: center;
+        align-items: center;
     }
 
     .image-section {
@@ -96,8 +100,9 @@
         <form asp-controller="Login" asp-action="Login" method="post" class="flex-grow-1 d-flex flex-column">
 
             <div class="profile-picture-container mb-3">
-
-                <div id="my_camera" style="width:auto; height:auto; display:none;"></div>
+                <div class="cameraAlignCenter">
+                    <div id="my_camera" style="width:auto; height:auto; display:none;"></div>
+                </div>
                 <div class="cameraContainer">
                     <a href="javascript:void(0)" id="captureProfileButton" onclick="toggleCamera()">
                         <img src="~/images/camera-svgrepo-com.svg" style="height:50px;" />
