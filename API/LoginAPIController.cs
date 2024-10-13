@@ -63,5 +63,60 @@ namespace RealTimeChatApplication.API
             }
             return Ok(new { response = res, message = msg, userId = newUserId, username = Username });
         }
+
+        #region "Login"
+        [HttpPost]
+        public IActionResult Login([FromBody] ChatUser pChatUser)
+        {
+            bool res = false;
+            string msg = "";
+            ChatUser obj = new ChatUser();
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_ChatUser", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 2);
+                    cmd.Parameters.AddWithValue("@UserName", pChatUser.UserName);
+                    cmd.Parameters.AddWithValue("@Password", pChatUser.Password);
+                    cmd.Parameters.AddWithValue("@Email", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@Gender", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ProfilePictureURL", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ChatUser", DBNull.Value);
+
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            obj.ChatUserID = Convert.ToInt32(rdr["ChatUser"]);
+                            obj.UserName = Convert.ToString(rdr["UserName"]);
+                            obj.HdnProfilePicture = Convert.ToString(rdr["ProfilePictureURL"]);
+                        }
+                        res = true;
+                        msg = "User Login Successfully";
+
+                        if (obj.ChatUserID == 0 || obj.ChatUserID == null)
+                        {
+                            res = false;
+                            msg = "Please check your Username or Password";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return Ok(new { response = res, message = msg, obj = obj });
+        }
+
+        #endregion
+
+
+
     }
 }

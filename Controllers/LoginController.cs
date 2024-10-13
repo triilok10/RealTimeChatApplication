@@ -50,12 +50,8 @@ namespace RealTimeChatApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(ChatUser pChatUser)
+        public async Task<IActionResult> Login(ChatUser pChatUser)
         {
-
-
-
-
             if (pChatUser.UserName == null)
             {
                 ViewBag.ErrorMessage = "Please enter the UserName";
@@ -66,6 +62,40 @@ namespace RealTimeChatApplication.Controllers
                 ViewBag.ErrorMessage = "Please enter the Password";
                 return View();
             }
+
+            string url = baseUrl + "api/LoginAPI/Login";
+            string Json = JsonConvert.SerializeObject(pChatUser);
+            StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+
+            if (res.IsSuccessStatusCode)
+            {
+                dynamic resBody = await res.Content.ReadAsStringAsync();
+                dynamic resData = JsonConvert.DeserializeObject(resBody);
+
+                if (resData.response == true)
+                {
+                    string Message = resData.message;
+                    dynamic data = resData.obj;
+                
+
+                    int UserId = Convert.ToInt32(data.chatUserID);
+                    string Username = data.userName;
+                    _sessionService.SetInt32("UserID", UserId);
+                    _sessionService.SetString("UserName", Username);
+                    TempData["successMessage"] = Message;
+                    TempData.Keep("successMessage");
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+                else
+                {
+                    string Message = resData.message;
+                    TempData["errorMessage"] = Message;
+                    return RedirectToAction("Login", pChatUser);
+                }
+            }
+
 
 
             return RedirectToAction("Index", "Home");
@@ -208,7 +238,7 @@ namespace RealTimeChatApplication.Controllers
             var username = context.HttpContext.Session.GetString("UserName");
             var userId = context.HttpContext.Session.GetInt32("UserID");
             var requestedPath = _sessionService.GetString("ActionPath");
-       
+
             if (!string.IsNullOrEmpty(requestedPath))
             {
                 context.Result = new RedirectResult(requestedPath);

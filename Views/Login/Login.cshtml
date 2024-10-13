@@ -9,6 +9,23 @@
 <link href="~/js/toastr.min.css" rel="stylesheet" />
 <link href="~/css/bootstrap.min.css" rel="stylesheet" />
 
+
+@{
+    if (TempData["errorMessage"] != null)
+    {
+        <script>
+            toastr.error("@TempData["errorMessage"]");
+        </script>
+    }
+}
+
+@{
+    if (ViewBag.ErrorMessage != null)
+    {
+        <text>toastr.error("@ViewBag.ErrorMessage"); </text>
+}
+}
+
 <!-- Custom Styles -->
 <style>
     .containerLogin {
@@ -53,10 +70,10 @@
     <div class="containerLogin d-flex align-items-stretch">
         <div class="container my-4">
             <div class="row justify-content-center">
-                
+
                 <!-- Left Image Section -->
-                <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center p-0 custom-image-container" 
-                    style="background-image: url('../images/loginChat.svg'); background-size: cover; background-position: center; height:auto;">
+                <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center p-0 custom-image-container"
+                     style="background-image: url('../images/loginChat.svg'); background-size: cover; background-position: center; height:auto;">
                 </div>
 
                 <!-- Right Form Section -->
@@ -97,33 +114,27 @@
             </div>
         </div>
     </div>
-
-    <!-- Toastr Configuration Script -->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            toastr.options = {
-                "closeButton": false,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": false,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
-
-            // Display error message if exists
-            @if (ViewBag.ErrorMessage != null)
-            {
-                <text>toastr.error("@ViewBag.ErrorMessage");</text>
-            }
-        });
-    </script>
 </body>
+<!-- Toastr Configuration Script -->
+<script type="text/javascript">
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+
+
+</script>
