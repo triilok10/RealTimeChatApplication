@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient(); 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<SessionAdmin>();
+builder.Services.AddScoped<RedirectIfLoggedInAttribute>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 
 

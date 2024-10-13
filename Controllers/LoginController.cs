@@ -4,12 +4,13 @@ using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
 using System.Data.SqlTypes;
+using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace RealTimeChatApplication.Controllers
 {
-    
+    [ServiceFilter(typeof(RedirectIfLoggedInAttribute))]
     public class LoginController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -35,6 +36,15 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            var Username = _sessionService.GetString("UserName");
+            var UserID = _sessionService.GetInt32("UserID");
+
+            if (!string.IsNullOrWhiteSpace(Username) || UserID != null)
+            {
+                var actionPath = TempData["RequestPath"];
+
+                return RedirectToAction("actionPath");
+            }
             return View();
 
         }
@@ -42,6 +52,9 @@ namespace RealTimeChatApplication.Controllers
         [HttpPost]
         public IActionResult Login(ChatUser pChatUser)
         {
+
+
+
 
             if (pChatUser.UserName == null)
             {
@@ -116,8 +129,10 @@ namespace RealTimeChatApplication.Controllers
                 {
                     string Message = resBody.message;
 
-                    string UserId = resBody.userId;
-                    _sessionService.SetString("UserID", UserId);
+                    int UserId = Convert.ToInt32(resBody.userId);
+                    string Username = resBody.username;
+                    _sessionService.SetInt32("UserID", UserId);
+                    _sessionService.SetString("UserName", Username);
 
                     TempData["successMessage"] = Message;
                     TempData.Keep("successMessage");
@@ -178,4 +193,28 @@ namespace RealTimeChatApplication.Controllers
     //    }
     //}
 
+
+
+    //To Check User is Already Login or not
+    public class RedirectIfLoggedInAttribute : ActionFilterAttribute
+    {
+        private readonly ISessionService _sessionService;
+        public RedirectIfLoggedInAttribute(ISessionService sessionService)
+        {
+            _sessionService = sessionService;
+        }
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var username = context.HttpContext.Session.GetString("UserName");
+            var userId = context.HttpContext.Session.GetInt32("UserID");
+            var requestedPath = _sessionService.GetString("ActionPath");
+       
+            if (!string.IsNullOrEmpty(requestedPath))
+            {
+                context.Result = new RedirectResult(requestedPath);
+            }
+        }
+    }
 }
+
+

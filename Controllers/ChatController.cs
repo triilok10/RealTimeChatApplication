@@ -21,7 +21,6 @@ namespace RealTimeChatApplication.Controllers
             baseUrl = $"{request.Scheme}://{request.Host.Value}/"; _httpClient.BaseAddress = new Uri(baseUrl);
         }
 
-
         public IActionResult Index()
         {
             return View();
@@ -33,21 +32,19 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public IActionResult ChatBox()
         {
-            var UserID = _sessionService.GetString("UserID");
-            if (string.IsNullOrWhiteSpace(UserID))
-            {
-                TempData["errorMessage"] = "Please login";
-                return RedirectToAction("Login", "Login");
-            }
-
+            var actionPath = HttpContext.Request.Path;
+            _sessionService.SetString("ActionPath", actionPath);
 
             return View();
+
         }
 
 
         [HttpGet]
         public IActionResult ChatMessage()
         {
+            var actionPath = HttpContext.Request.Path;
+            _sessionService.SetString("ActionPath", actionPath);
             return View();
         }
         #endregion
@@ -63,8 +60,9 @@ namespace RealTimeChatApplication.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string userId = _sessionService.GetString("UserID");
-            if (string.IsNullOrEmpty(userId))
+            int? UserId = _sessionService.GetInt32("UserID");
+            string Username = _sessionService.GetString("UserName");
+            if (string.IsNullOrEmpty(Username) || UserId == null)
             {
                 context.Result = new RedirectToActionResult("Login", "Login", null);
             }

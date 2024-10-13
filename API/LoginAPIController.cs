@@ -25,6 +25,7 @@ namespace RealTimeChatApplication.API
             bool res = false;
             string msg = "";
             int newUserId = 0;
+            string Username = pChatUser.UserName;
             try
             {
                 using (SqlConnection con = new SqlConnection(_connectionString))
@@ -60,7 +61,7 @@ namespace RealTimeChatApplication.API
                 res = false;
                 msg = ex.Message;
             }
-            return Ok(new { response = res, message = msg, userId = newUserId });
+            return Ok(new { response = res, message = msg, userId = newUserId, username = Username });
         }
     }
 }
