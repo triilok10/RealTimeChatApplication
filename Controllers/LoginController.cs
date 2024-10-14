@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
@@ -78,7 +79,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     string Message = resData.message;
                     dynamic data = resData.obj;
-                
+
 
                     int UserId = Convert.ToInt32(data.chatUserID);
                     string Username = data.userName;
@@ -200,30 +201,15 @@ namespace RealTimeChatApplication.Controllers
             return Json(new { boolTerms });
         }
 
+
+        
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Login");
+        }
         #endregion
     }
-
-    //public class SessionAdmin : ActionFilterAttribute
-    //{
-    //    private readonly ISessionService _sessionService;
-
-    //    public SessionAdmin(ISessionService sessionService)
-    //    {
-    //        _sessionService = sessionService;
-    //    }
-
-    //    public override void OnActionExecuting(ActionExecutingContext context)
-    //    {
-    //        string userId = _sessionService.GetString("UserID");
-    //        if (string.IsNullOrEmpty(userId))
-    //        {
-    //            context.Result = new RedirectToActionResult("Login", "Login", null);
-    //        }
-    //        base.OnActionExecuting(context);
-    //    }
-    //}
-
-
 
     //To Check User is Already Login or not
     public class RedirectIfLoggedInAttribute : ActionFilterAttribute
@@ -238,6 +224,13 @@ namespace RealTimeChatApplication.Controllers
             var username = context.HttpContext.Session.GetString("UserName");
             var userId = context.HttpContext.Session.GetInt32("UserID");
             var requestedPath = _sessionService.GetString("ActionPath");
+
+            var actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+
+            if (actionDescriptor != null && actionDescriptor.ActionName == "LogOut" && !string.IsNullOrEmpty(username) && userId != null)
+            {
+                return;
+            }
 
             if (!string.IsNullOrEmpty(requestedPath))
             {
