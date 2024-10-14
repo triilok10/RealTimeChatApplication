@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
+using RealTimeChatApplication.Models;
+using System.Text;
 
 namespace RealTimeChatApplication.Controllers
 {
@@ -47,8 +50,40 @@ namespace RealTimeChatApplication.Controllers
             _sessionService.SetString("ActionPath", actionPath);
             return View();
         }
-        #endregion
+
+        [HttpPost]
+        public async Task<IActionResult> SearchConnections(ChatMessage pChatMessage)
+        {
+            string message = "";
+            try
+            {
+                if (pChatMessage.SearchConnection == null)
+                {
+
+                }
+
+                string url = baseUrl + "";
+                string Json = JsonConvert.SerializeObject(pChatMessage);
+                StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");
+                HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                if (res.IsSuccessStatusCode)
+                {
+                    dynamic resBody = await res.Content.ReadAsStringAsync();
+                    string resData = JsonConvert.DeserializeObject(resBody);
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+
+
+            }
+            return RedirectToAction("ChatBox", "Chat");
+
+        }
+
     }
+    #endregion
     public class SessionAdmin : ActionFilterAttribute
     {
         private readonly ISessionService _sessionService;

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model RealTimeChatApplication.Models.ChatMessage
+@{
     ViewData["Title"] = "ChatBox";
 }
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -227,8 +228,10 @@
                 </div>
 
                 <div class="search-container">
-                    <input type="text" id="searchConnections" placeholder="Search for new connections..." class="form-control" />
-                    <button class="btn search-button">Search</button>
+                    <form asp-controller="Chat" asp-action="SearchConnections" method="post" class="flex-grow-1 d-flex flex-column">
+                        <input asp-for="SearchConnection" type="text" id="searchConnections" placeholder="Search for new connections..." class="form-control" />
+                        <button type="submit" class="btn search-button">Search</button>
+                    </form>
                 </div>
 
                 <div class="connection-list">
