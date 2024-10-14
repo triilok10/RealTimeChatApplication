@@ -59,10 +59,9 @@ namespace RealTimeChatApplication.Controllers
             {
                 if (pChatMessage.SearchConnection == null)
                 {
-
+                    return RedirectToAction("Index");
                 }
-
-                string url = baseUrl + "";
+                string url = baseUrl + "api/ChatAPI/SearchConnections";
                 string Json = JsonConvert.SerializeObject(pChatMessage);
                 StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");
                 HttpResponseMessage res = await _httpClient.PostAsync(url, content);
