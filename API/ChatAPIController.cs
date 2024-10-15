@@ -28,7 +28,7 @@ namespace RealTimeChatApplication.API
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("", con);
+                    SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@Mode", 1);
@@ -40,12 +40,13 @@ namespace RealTimeChatApplication.API
                     {
                         while (reader.Read())
                         {
-                            lstMessage = DT.AsEnumerable().Select(row => new ChatMessage
+                            ChatMessage obj = new ChatMessage
                             {
-
-                            }).ToList();
-                        }
-                    });
+                                SearchConnection = Convert.ToString(reader["UserName"]),
+                                ChatMessageID = Convert.ToInt32(reader["ChatUser"])
+                            };
+                        };
+                    };
                 }
 
             }
