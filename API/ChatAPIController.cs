@@ -24,17 +24,13 @@ namespace RealTimeChatApplication.API
             List<ChatMessage> lstMessage = new List<ChatMessage>();
             try
             {
-
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     con.Open();
                     SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
                     cmd.Parameters.AddWithValue("@Mode", 1);
                     cmd.Parameters.AddWithValue("@UserName", pChatMessage.SearchConnection);
-
-                    DataTable DT = new DataTable();
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -42,16 +38,20 @@ namespace RealTimeChatApplication.API
                         {
                             ChatMessage obj = new ChatMessage
                             {
-                                SearchConnection = Convert.ToString(reader["UserName"]),
+                                SearchConnection = reader["UserName"].ToString(),
                                 ChatMessageID = Convert.ToInt32(reader["ChatUser"])
                             };
-                        };
-                    };
+                            lstMessage.Add(obj);
+                        }
+                    }
                 }
-
+                return Ok(new { lstMessage });
             }
-            catch (Exception ex) { }
-            return Ok();
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while searching for connections.");
+            }
         }
+
     }
 }

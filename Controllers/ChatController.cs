@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
+using NuGet.Common;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
 using System.Text;
@@ -68,7 +69,12 @@ namespace RealTimeChatApplication.Controllers
                 if (res.IsSuccessStatusCode)
                 {
                     dynamic resBody = await res.Content.ReadAsStringAsync();
-                    string resData = JsonConvert.DeserializeObject(resBody);
+                    dynamic resData = JsonConvert.DeserializeObject(resBody);
+                    if (resData.lstMessage != null)
+                    {
+                        List<ChatMessage> lstChat = JsonConvert.DeserializeObject<List<ChatMessage>>(resData.lstMessage);
+                    }
+
                 }
             }
             catch (Exception ex)
