@@ -45,7 +45,7 @@ namespace RealTimeChatApplication.API
                         }
                     }
                 }
-                return Ok(new { lstMessage });
+                return Ok(lstMessage);
             }
             catch (Exception ex)
             {

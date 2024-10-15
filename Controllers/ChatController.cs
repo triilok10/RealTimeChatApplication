@@ -70,9 +70,9 @@ namespace RealTimeChatApplication.Controllers
                 {
                     dynamic resBody = await res.Content.ReadAsStringAsync();
                     dynamic resData = JsonConvert.DeserializeObject(resBody);
-                    if (resData.lstMessage != null)
+                    if (resData != null)
                     {
-                        List<ChatMessage> lstChat = JsonConvert.DeserializeObject<List<ChatMessage>>(resData.lstMessage);
+                        List<ChatMessage> lstChat = JsonConvert.DeserializeObject<List<ChatMessage>>(resBody);
                     }
 
                 }
