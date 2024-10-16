@@ -73,15 +73,17 @@ namespace RealTimeChatApplication.Controllers
                     if (resData != null)
                     {
                         List<ChatMessage> lstChat = JsonConvert.DeserializeObject<List<ChatMessage>>(resBody);
+                        return Ok(new { lstChat });
                     }
-
+                    else
+                    {
+                        return Ok(new { message = "No data available" });
+                    }
                 }
             }
             catch (Exception ex)
             {
                 message = ex.Message;
-
-
             }
             return RedirectToAction("ChatBox", "Chat");
 

@@ -228,18 +228,18 @@
                 </div>
 
                 <div class="search-container">
-                    <form asp-controller="Chat" asp-action="SearchConnections" method="post" class="flex-grow-1 d-flex flex-column">
-                        <input asp-for="SearchConnection" type="text" id="searchConnections" placeholder="Search for new connections..." class="form-control" />
-                        <button type="submit" class="btn search-button">Search</button>
-                    </form>
+
+                    <input type="text" id="searchConnections" placeholder="Search for new connections..." class="form-control" />
+                    <button type="submit" class="btn search-button" onclick="searchConnections()">Search</button>
+
                 </div>
 
                 <div class="connection-list">
-                    <div class="connection-list-item">User A</div>
+                    @*  <div class="connection-list-item">User A</div>
                     <div class="connection-list-item">User B</div>
                     <div class="connection-list-item">User C</div>
                     <div class="connection-list-item">User D</div>
-                    <div class="connection-list-item">User E</div>
+                    <div class="connection-list-item">User E</div> *@
                 </div>
             </div>
         </div>
@@ -268,7 +268,44 @@
     };
 
 
+    function searchConnections() {
+        var value = $("#searchConnections").val();
 
+        $.ajax({
+            url: "@Url.Action("SearchConnections", "CHAT")",
+            type: "POST",
+            data: {
+                SearchConnection: value
+            },
+            success: function (res) {
+                if (res.lstChat != null) {
+                  
+                    var resultsContainer = document.querySelector(".connection-list");
+                    resultsContainer.innerHTML = ''; 
+
+                    if (res.lstChat.length === 0) {
+                        resultsContainer.innerHTML = '<p class="text-center">No profiles found.</p>';
+                        return;
+                    }
+
+                    res.lstChat.forEach(function (post) {
+                        resultsContainer.innerHTML += `
+                                        <div class="connection-list-item">
+                                            <img src="${'https://via.placeholder.com/100'}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                            <div class="profile-info">
+                                                    <h3>${post.searchConnection || 'No Username'}</h3>
+                                                    <a href="@Url.Action("SearchUserHomePage", "Account")?Id=${post.chatMessageID}">View Profile</a>
+                                            </div>
+                                        </div>
+                                    `;
+                    });
+                }
+            },
+            error: function (err) {
+                console.error("Error fetching connections:", err);
+            }
+        })
+    }
 
 </script>
 
