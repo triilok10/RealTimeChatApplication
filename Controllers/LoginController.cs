@@ -93,7 +93,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     string Message = resData.message;
                     TempData["errorMessage"] = Message;
-                    return RedirectToAction("Login", pChatUser);
+                    return RedirectToAction("Login");
                 }
             }
 

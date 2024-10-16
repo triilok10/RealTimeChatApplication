@@ -3,7 +3,6 @@
     ViewData["Title"] = "Login";
 }
 
-<link href="~/css/bootstrap.min.css" rel="stylesheet" />
 @{
     if (TempData["errorMessage"] != null)
     {
@@ -21,6 +20,7 @@
 }
 
 <!-- Custom Styles -->
+
 <style>
     .containerLogin {
         display: flex;
@@ -33,6 +33,10 @@
     .custom-image-container {
         height: 100%;
         width: 100%;
+    }
+
+    .border-Danger {
+        border-color: red;
     }
 
     .custom-image {
@@ -82,7 +86,7 @@
                     </p>
 
                     <!-- Sign-in Form -->
-                    <form asp-controller="Login" asp-action="Login" method="post" class="flex-grow-1 d-flex flex-column">
+                    <form asp-controller="Login" asp-action="Login" method="post" class="flex-grow-1 d-flex flex-column" onsubmit="return jsValidateSubmit()">
                         <div class="form-group">
                             <label for="username" class="text-muted">Username</label>
                             <input asp-for="UserName" class="form-control" type="text" id="username" name="username" />
@@ -109,26 +113,30 @@
         </div>
     </div>
 </body>
-<!-- Toastr Configuration Script -->
 <script type="text/javascript">
 
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
+    function jsValidateSubmit() {
+
+        var username = $("#username").val().trim();
+        var password = $("#password").val().trim();
+
+        if (!username) {
+            $("#username").addClass("border-Danger");
+            toastr.error("Please enter the Username");
+            return false;
+        } else {
+            $("#username").removeClass("border-Danger");
+        }
+
+        if (!password) {
+            toastr.error("Please enter the Email");
+            $("#password").addClass("border-Danger");
+            return false;
+        } else {
+            $("#email").removeClass("border-Danger");
+        }
+        return true;
+    }
 
 
 </script>
