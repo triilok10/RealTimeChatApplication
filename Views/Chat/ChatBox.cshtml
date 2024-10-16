@@ -201,8 +201,9 @@
         }
 
         .chat-container {
-            height: auto;
-            max-height: 80vh;
+           /*  height: auto;
+            max-height: 80vh; */
+            flex:1;
         }
     }
 
@@ -265,6 +266,10 @@
     function searchConnections() {
         var value = $("#searchConnections").val();
 
+        if (!value) {
+            toastr.error("Please enter the Value");
+            return false;
+        }
 
         $.ajax({
             url: "@Url.Action("SearchConnections", "CHAT")",
@@ -285,14 +290,14 @@
 
                     res.lstChat.forEach(function (post) {
                         resultsContainer.innerHTML += `
-                                                            <div class="connection-list-item">
-                                                                <img src="${'https://via.placeholder.com/100'}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                <div class="profile-info">
-                                                                        <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                        <a href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
-                                                                </div>
-                                                            </div>
-                                                        `;
+                                                                    <div class="connection-list-item">
+                                                                        <img src="${'https://via.placeholder.com/100'}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                        <div class="profile-info">
+                                                                                <h3>${post.searchConnection || 'No Username'}</h3>
+                                                                                <a href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
+                                                                        </div>
+                                                                    </div>
+                                                                `;
                     });
                 }
             },

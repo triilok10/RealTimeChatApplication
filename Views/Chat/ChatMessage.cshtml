@@ -1,20 +1,17 @@
 ﻿@{
     ViewData["Title"] = "ChatMessage";
 }
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/js/toastr.min.js"></script>
-<link href="~/js/toastr.min.css" rel="stylesheet" />
 
-@{
-    if (TempData["successMessage"] != null)
-    {
-        <script>
-            toastr.success("@TempData["successMessage"]");
-        </script>
-    }
+@* Display Success Message Using Toastr *@
+@if (TempData["successMessage"] != null)
+{
+    <script>
+        toastr.success("@TempData["successMessage"]");
+    </script>
 }
 
 <style>
+    /* Reset and Global Styles */
     * {
         box-sizing: border-box;
         margin: 0;
@@ -38,6 +35,7 @@
         --text-color: #ffffff;
     }
 
+    /* Layout and Container Styles */
     .container {
         display: flex;
         flex-direction: row;
@@ -65,6 +63,7 @@
         overflow-y: auto;
     }
 
+    /* Chat Header */
     .chat-header {
         display: flex;
         justify-content: space-between;
@@ -109,15 +108,16 @@
         padding: 5px 10px;
     }
 
-        .settings-dropdown li a {
-            text-decoration: none;
-            color: black;
-        }
+    .settings-dropdown li a {
+        text-decoration: none;
+        color: black;
+    }
 
-        .settings-dropdown li:hover {
-            background-color: #f1f1f1;
-        }
+    .settings-dropdown li:hover {
+        background-color: #f1f1f1;
+    }
 
+    /* Chat Messages */
     .chat-messages {
         flex-grow: 1;
         padding: 10px;
@@ -125,22 +125,40 @@
         border-bottom: 1px solid #ccc;
     }
 
+  .message {
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+   }
+
+    .sent {
+        background-color: #e0ffe0;
+        align-self: flex-start;
+    }
+
+    .received {
+        background-color: #e0f7fa;
+         align-self: flex-end;
+    }
+
+    /* Chat Input Section */
     .chat-input-container {
         display: flex;
         align-items: center;
         padding: 10px;
     }
 
-        .chat-input-container input[type='text'] {
-            flex-grow: 1;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
+    .chat-input-container input[type='text'] {
+        flex-grow: 1;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
 
-        .chat-input-container input[type='file'] {
-            margin-right: 10px;
-        }
+    .chat-input-container input[type='file'] {
+        margin-right: 10px;
+    }
 
     #cameraButton {
         background: none;
@@ -155,29 +173,57 @@
         border-radius: 5px;
     }
 
-        #sendButton:hover {
-            background-color: #0056b3;
-        }
+    #sendButton:hover {
+        background-color: #0056b3;
+    }
 
+    /* Profile Section */
+    .profile-section {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        justify-content:space-between;
+    }
+
+    .profile-photo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .online-dot {
+        width: 10px;
+        height: 10px;
+        background-color: green;
+        border-radius: 50%;
+        margin-bottom: 5px;
+    }
+
+    .last-seen {
+        font-size: 12px;
+        color: gray;
+    }
+
+    /* Responsive Styles */
     @@media (max-width: 768px) {
         .main-container {
             flex-direction: column;
         }
 
-        .left-panel {
-            height: 200px;
-            flex: none;
+         .left-panel {
+            display: none;
         }
 
         .chat-container {
-            height: auto;
-            max-height: 80vh;
-        }
-    }
-
-    @@media (max-width: 480px) {
-        .left-panel {
-            display: none;
+            flex: 1;
+           /*  height: auto;
+            max-height: 80vh; */
         }
     }
 
@@ -188,28 +234,30 @@
             margin-bottom: 10px;
         }
 
-            .chat-input-container input[type='text'],
-            .chat-input-container input[type='file'],
-            #sendButton {
-                width: 100%;
-                margin-bottom: 10px;
-                box-shadow: none;
-                border-radius: 5px;
-                border: 1px solid #ccc;
-                padding-left: 10px;
-                padding-right: 10px;
-                height: 40px;
-                font-size: 16px;
-            }
+        .chat-input-container input[type='text'],
+        .chat-input-container input[type='file'],
+        #sendButton {
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+            .left-panel {
+            display: none;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .left-panel {
+            display: none;
+        }
     }
 </style>
-
-
 
 <body>
     <div class="container">
         <div class="main-container">
-
             <div class="container chat-container">
                 <div class="chat-header">
                     <h1 class="text-center">Chat Application</h1>
@@ -220,16 +268,29 @@
                                 <li><a href="#">Account Settings</a></li>
                                 <li><a href="#">Privacy</a></li>
                                 <li><a href="#">Connections</a></li>
-                                <li><a href="#">Logout</a></li>
+                                <li><a href="@Url.Action("LogOut","Login")">Logout</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-
                 <div class="chat-messages" id="chatMessages">
-                    <!-- Messages will be dynamically added here -->
+                    <div class="profile-section">
+                   <img src="~/images/camera3.svg" alt="Profile Photo" class="profile-photo" />
+                   <div class="profile-info">
+                       <span class="online-dot"></span>
+                       <span class="last-seen">Last seen: 5 minutes ago</span>
+                   </div>
+                  </div>
+
+                    <div class="message received">
+                        <p>Hello! How are you?</p>
+                    </div>
+                    <div class="message sent">
+                        <p>I'm good, thanks! How about you?</p>
+                    </div>
                 </div>
+
                 <div class="chat-input-container">
                     <input type="text" id="messageInput" placeholder="Type your message..." />
                     <button id="cameraButton"><img src="~/images/camera3.svg" alt="Camera" style="width:50px;" /></button>
@@ -244,46 +305,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
 
 <script type="text/javascript">
-
-    toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
-
-
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .build();
-
+    const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
 
     connection.start().then(function () {
         console.log("Connected to SignalR hub");
     }).catch(function (err) {
-        return console.error(err.toString());
+        console.error(err.toString());
     });
-
 
     document.getElementById("sendButton").addEventListener("click", function () {
         const messageInput = document.getElementById("messageInput");
         const message = messageInput.value;
 
         if (message) {
-
             connection.invoke("SendMessage", message).catch(function (err) {
-                return console.error(err.toString());
+                console.error(err.toString());
             });
             messageInput.value = '';
         }
@@ -291,10 +327,9 @@
 
     connection.on("ReceiveMessage", function (user, message) {
         const msg = document.createElement("div");
+        msg.className = "message received";
         msg.textContent = `${user}: ${message}`;
         document.getElementById("chatMessages").appendChild(msg);
-
-
         toastr.success(`New message from ${user}`);
     });
 </script>
