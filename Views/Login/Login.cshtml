@@ -3,13 +3,7 @@
     ViewData["Title"] = "Login";
 }
 
-<!-- External Scripts & Styles -->
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/js/toastr.min.js"></script>
-<link href="~/js/toastr.min.css" rel="stylesheet" />
 <link href="~/css/bootstrap.min.css" rel="stylesheet" />
-
-
 @{
     if (TempData["errorMessage"] != null)
     {
@@ -23,7 +17,7 @@
     if (ViewBag.ErrorMessage != null)
     {
         <text>toastr.error("@ViewBag.ErrorMessage"); </text>
-}
+    }
 }
 
 <!-- Custom Styles -->

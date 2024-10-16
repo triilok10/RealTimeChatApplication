@@ -61,6 +61,7 @@ namespace RealTimeChatApplication.Controllers
                 if (pChatMessage.SearchConnection == null)
                 {
                     TempData["errorMessage"] = "Invalid, Please enter the UserName";
+                    TempData.Keep("errorMessage");
                     return RedirectToAction("ChatBox");
                 }
                 string url = baseUrl + "api/ChatAPI/SearchConnections";
