@@ -53,11 +53,13 @@ namespace RealTimeChatApplication.Controllers
                 return RedirectToAction("ChatBox", "Chat");
             }
 
-            string url = baseUrl + $"api/ChatAPI/GetProfile/Id={Id}";
-            HttpResponseMessage res = await _httpClient.GetAsync(url);
+            string url = baseUrl + $"api/ChatAPI/GetProfile";
+            string fullUrl = url + $"?Id={Id}";
+            HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
             if (res.IsSuccessStatusCode)
             {
-                string resBody = await res.Content.ReadAsStringAsync();
+                dynamic resBody = await res.Content.ReadAsStringAsync();
+                ChatMessage obj = JsonConvert.DeserializeObject<obj>(resBody);
             }
             else
             {

@@ -31,6 +31,7 @@ namespace RealTimeChatApplication.API
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 1);
                     cmd.Parameters.AddWithValue("@UserName", pChatMessage.SearchConnection);
+                    cmd.Parameters.AddWithValue("@ChatUserID", DBNull.Value);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -54,17 +55,19 @@ namespace RealTimeChatApplication.API
         }
 
         [HttpGet]
-        public IActionResult GetProfile(int Id = 0)
+        public IActionResult GetProfile(string Id = "")
         {
             string message = "";
             try
             {
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
+                    con.Open();
                     SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 2);
                     cmd.Parameters.AddWithValue("@ChatUserID", Id);
+                    cmd.Parameters.AddWithValue("UserName", DBNull.Value);
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
