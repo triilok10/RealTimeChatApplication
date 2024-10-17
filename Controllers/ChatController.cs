@@ -47,32 +47,37 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> ChatMessage(int Id = 0)
         {
-            if (Id == 0)
-            {
-                TempData["errorMessage"] = "Please select the User to Send Message";
-                return RedirectToAction("ChatBox", "Chat");
-            }
-
-            string url = baseUrl + $"api/ChatAPI/GetProfile";
-            string fullUrl = url + $"?Id={Id}";
-            HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
-            if (res.IsSuccessStatusCode)
-            {
-                dynamic resBody = await res.Content.ReadAsStringAsync();
-                ChatMessage obj = JsonConvert.DeserializeObject<obj>(resBody);
-            }
-            else
-            {
-
-            }
-
-
-
-
-
-
+            string message = "";
+            bool response = false;
             var actionPath = HttpContext.Request.Path;
             _sessionService.SetString("ActionPath", actionPath);
+
+            try
+            {
+                if (Id == 0)
+                {
+                    TempData["errorMessage"] = "Please select the User to Send Message";
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+
+                string url = baseUrl + $"api/ChatAPI/GetProfile";
+                string fullUrl = url + $"?Id={Id}";
+                HttpResponseMessage res = await _httpClient.GetAsync(fullUrl);
+                if (res.IsSuccessStatusCode)
+                {
+                    dynamic resBody = await res.Content.ReadAsStringAsync();
+                    ChatMessage obj = JsonConvert.DeserializeObject<ChatMessage>(resBody);
+                }
+                else
+                {
+                    message = "Error in the API Call or to Fetch the Data";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = false;
+                message = ex.Message;
+            }
             return View();
         }
 
