@@ -7,6 +7,7 @@ using RealTimeChatApplication.Models;
 using System.Data.SqlTypes;
 using System.Net.Http;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Principal;
 using System.Text;
 
 namespace RealTimeChatApplication.Controllers
@@ -121,27 +122,33 @@ namespace RealTimeChatApplication.Controllers
                 {
                     Directory.CreateDirectory(filePath);
                 }
-                string fileName = "profile_picture.jpg";
+                string DateTimeCam = DateTime.Now.ToString("mm/DD/yyyy hh:mm");
+                string fileName = "ProfileCam" + DateTimeCam;
                 string directoryPath = Path.Combine(filePath, fileName);
 
                 System.IO.File.WriteAllBytes(directoryPath, imageBytes);
+                pChatUser.HdnProfilePicture = fileName;
             }
 
             if (ProfilePictureURL != null)
             {
                 string FileName = Path.GetFileName(ProfilePictureURL.FileName);
-                string FilePath = Path.Combine("wwwroot", "images", "Uploads", FileName);
+                string FileData = Path.Combine("wwwroot", "images", "Uploads");
 
-                if (!Directory.Exists(FilePath))
+                if (!Directory.Exists(FileData))
                 {
-                    Directory.CreateDirectory(FilePath);
+                    Directory.CreateDirectory(FileData);
                 }
+                string FilePath = Path.Combine(FileData, FileName);
                 using (var stream = new FileStream(FilePath, FileMode.Create))
                 {
                     await ProfilePictureURL.CopyToAsync(stream);
                 }
-                pChatUser.HdnProfilePicture = FileName;
 
+                string DateTimePhoto = DateTime.Now.ToString("dd/MM/yyyy hh:mm");
+                pChatUser.HdnProfilePicture = FileName + DateTimePhoto;
+
+                pChatUser.ProfilePictureURL = null;
             }
 
 
