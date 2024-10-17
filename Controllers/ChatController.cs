@@ -45,8 +45,30 @@ namespace RealTimeChatApplication.Controllers
 
 
         [HttpGet]
-        public IActionResult ChatMessage()
+        public async Task<IActionResult> ChatMessage(int Id = 0)
         {
+            if (Id == 0)
+            {
+                TempData["errorMessage"] = "Please select the User to Send Message";
+                return RedirectToAction("ChatBox", "Chat");
+            }
+
+            string url = baseUrl + $"api/ChatAPI/GetProfile/Id={Id}";
+            HttpResponseMessage res = await _httpClient.GetAsync(url);
+            if (res.IsSuccessStatusCode)
+            {
+                string resBody = await res.Content.ReadAsStringAsync();
+            }
+            else
+            {
+
+            }
+
+
+
+
+
+
             var actionPath = HttpContext.Request.Path;
             _sessionService.SetString("ActionPath", actionPath);
             return View();

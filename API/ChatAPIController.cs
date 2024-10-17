@@ -53,5 +53,48 @@ namespace RealTimeChatApplication.API
             }
         }
 
+        [HttpGet]
+        public IActionResult GetProfile(int Id = 0)
+        {
+            string message = "";
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 2);
+                    cmd.Parameters.AddWithValue("@ChatUserID", Id);
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            ChatMessage obj = new ChatMessage
+                            {
+                                ChatMessageID = Convert.ToInt32(rdr["ChatUser"]),
+                                Email = Convert.ToString(rdr["Email"]),
+                                UserName = Convert.ToString(rdr["UserName"]),
+                                ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"])
+                            };
+                            return Ok(obj);
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return StatusCode(500, "An error occurred while searching for connections.");
+            }
+
+
+
+
+
+            return Ok();
+        }
+
     }
 }

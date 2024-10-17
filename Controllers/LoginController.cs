@@ -93,7 +93,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     string Message = resData.message;
                     TempData["errorMessage"] = Message;
-                    return RedirectToAction("Login");
+                    return View("Login");
                 }
             }
 
@@ -202,7 +202,7 @@ namespace RealTimeChatApplication.Controllers
         }
 
 
-        
+
         public IActionResult LogOut()
         {
             HttpContext.Session.Clear();
