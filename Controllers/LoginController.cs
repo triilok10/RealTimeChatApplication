@@ -148,7 +148,7 @@ namespace RealTimeChatApplication.Controllers
                     await ProfilePictureURL.CopyToAsync(stream);
                 }
 
-                pChatUser.HdnProfilePicture = FileName + DateTimePhoto;
+                pChatUser.HdnProfilePicture = fileNameWithDate;
 
                 pChatUser.ProfilePictureURL = null;
             }
