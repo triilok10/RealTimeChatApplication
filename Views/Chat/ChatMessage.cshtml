@@ -1,4 +1,5 @@
-﻿@{
+﻿@model RealTimeChatApplication.Models.ChatMessage
+@{
     ViewData["Title"] = "ChatMessage";
 }
 
@@ -108,14 +109,14 @@
         padding: 5px 10px;
     }
 
-    .settings-dropdown li a {
-        text-decoration: none;
-        color: black;
-    }
+        .settings-dropdown li a {
+            text-decoration: none;
+            color: black;
+        }
 
-    .settings-dropdown li:hover {
-        background-color: #f1f1f1;
-    }
+        .settings-dropdown li:hover {
+            background-color: #f1f1f1;
+        }
 
     /* Chat Messages */
     .chat-messages {
@@ -125,12 +126,12 @@
         border-bottom: 1px solid #ccc;
     }
 
-  .message {
-    max-width: 70%;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-   }
+    .message {
+        max-width: 70%;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
 
     .sent {
         background-color: #e0ffe0;
@@ -139,7 +140,7 @@
 
     .received {
         background-color: #e0f7fa;
-         align-self: flex-end;
+        align-self: flex-end;
     }
 
     /* Chat Input Section */
@@ -149,16 +150,16 @@
         padding: 10px;
     }
 
-    .chat-input-container input[type='text'] {
-        flex-grow: 1;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
+        .chat-input-container input[type='text'] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
 
-    .chat-input-container input[type='file'] {
-        margin-right: 10px;
-    }
+        .chat-input-container input[type='file'] {
+            margin-right: 10px;
+        }
 
     #cameraButton {
         background: none;
@@ -173,16 +174,16 @@
         border-radius: 5px;
     }
 
-    #sendButton:hover {
-        background-color: #0056b3;
-    }
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
 
     /* Profile Section */
     .profile-section {
         display: flex;
         align-items: center;
         margin-bottom: 10px;
-        justify-content:space-between;
+        justify-content: space-between;
     }
 
     .profile-photo {
@@ -216,14 +217,12 @@
             flex-direction: column;
         }
 
-         .left-panel {
+        .left-panel {
             display: none;
         }
 
         .chat-container {
             flex: 1;
-           /*  height: auto;
-            max-height: 80vh; */
         }
     }
 
@@ -234,23 +233,74 @@
             margin-bottom: 10px;
         }
 
-        .chat-input-container input[type='text'],
-        .chat-input-container input[type='file'],
-        #sendButton {
-            width: 100%;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-            .left-panel {
+            .chat-input-container input[type='text'],
+            .chat-input-container input[type='file'],
+            #sendButton {
+                width: 100%;
+                margin-bottom: 10px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                padding: 10px;
+            }
+
+        .left-panel {
             display: none;
+        }
+
+        .resDivButton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 
     @@media (max-width: 480px) {
         .left-panel {
             display: none;
+        }
+
+        .ChatResponsive {
+            padding: 2px;
+            font-size: 20px;
+            justify-content: center;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-photo {
+            width: 30px;
+            height: auto;
+        }
+
+        .userNameRes {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .userNameResDiv {
+            width: 60%;
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+        }
+
+        .profile-info {
+            width: 25%;
+        }
+
+        .sendButton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2px;
+        }
+
+        .resDivButton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 </style>
@@ -260,7 +310,7 @@
         <div class="main-container">
             <div class="container chat-container">
                 <div class="chat-header">
-                    <h1 class="text-center">Chat Application</h1>
+                    <h1 class="text-center ChatResponsive">Chat Application</h1>
                     <div class="settings-container">
                         <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
                         <div class="settings-dropdown">
@@ -276,12 +326,15 @@
 
                 <div class="chat-messages" id="chatMessages">
                     <div class="profile-section">
-                   <img src="~/images/camera3.svg" alt="Profile Photo" class="profile-photo" />
-                   <div class="profile-info">
-                       <span class="online-dot"></span>
-                       <span class="last-seen">Last seen: 5 minutes ago</span>
-                   </div>
-                  </div>
+                        <img src="~/images/camera3.svg" alt="Profile Photo" class="profile-photo" />
+                        <div class="userNameResDiv">
+                            <h3 class="userNameRes">@Model.UserName</h3>
+                        </div>
+                        <div class="profile-info">
+                            <span class="online-dot"></span>
+                            <span class="last-seen">Last seen: 5 minutes ago</span>
+                        </div>
+                    </div>
 
                     <div class="message received">
                         <p>Hello! How are you?</p>
@@ -292,9 +345,11 @@
                 </div>
 
                 <div class="chat-input-container">
-                    <input type="text" id="messageInput" placeholder="Type your message..." />
-                    <button id="cameraButton"><img src="~/images/camera3.svg" alt="Camera" style="width:50px;" /></button>
-                    <button id="sendButton">Send</button>
+                    <input type="text" id="messageInput" placeholder="Type your message..." class="MessageInput" />
+                    <div class="resDivButton">
+                        <button id="cameraButton"><img src="~/images/camera3.svg" alt="Camera" style="width:50px;" /></button>
+                        <button id="sendButton">Send</button>
+                    </div>
                 </div>
             </div>
             <div class="left-panel"></div>

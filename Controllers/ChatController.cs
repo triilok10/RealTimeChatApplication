@@ -67,6 +67,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     dynamic resBody = await res.Content.ReadAsStringAsync();
                     ChatMessage obj = JsonConvert.DeserializeObject<ChatMessage>(resBody);
+                    return View(obj);
                 }
                 else
                 {
