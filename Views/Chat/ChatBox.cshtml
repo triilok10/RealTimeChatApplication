@@ -290,7 +290,7 @@
 
                     res.lstChat.forEach(function (post) {
                         resultsContainer.innerHTML += ` <div class="connection-list-item">
-                                                        <img src="${'https://via.placeholder.com/100'}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                <img src="${"../images/uploads/" + post.profilePictureURL}" alt="Profile Photo" loading="lazy" class="profile-img"/>
                                                         <div class="profile-info">
                                                         <h3>${post.searchConnection || 'No Username'}</h3>
                                                         <a href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>

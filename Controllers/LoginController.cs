@@ -122,8 +122,8 @@ namespace RealTimeChatApplication.Controllers
                 {
                     Directory.CreateDirectory(filePath);
                 }
-                string DateTimeCam = DateTime.Now.ToString("mm/DD/yyyy hh:mm");
-                string fileName = "ProfileCam" + DateTimeCam;
+                string DateTimeCam = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string fileName = "ProfileCam" + DateTimeCam + ".jpg";
                 string directoryPath = Path.Combine(filePath, fileName);
 
                 System.IO.File.WriteAllBytes(directoryPath, imageBytes);
@@ -132,20 +132,22 @@ namespace RealTimeChatApplication.Controllers
 
             if (ProfilePictureURL != null)
             {
-                string FileName = Path.GetFileName(ProfilePictureURL.FileName);
+                string FileName = Path.GetFileNameWithoutExtension(ProfilePictureURL.FileName);
+
                 string FileData = Path.Combine("wwwroot", "images", "Uploads");
 
                 if (!Directory.Exists(FileData))
                 {
                     Directory.CreateDirectory(FileData);
                 }
-                string FilePath = Path.Combine(FileData, FileName);
+                string DateTimePhoto = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string fileNameWithDate = $"{FileName}_{DateTimePhoto}.jpg";
+                string FilePath = Path.Combine(FileData, fileNameWithDate);
                 using (var stream = new FileStream(FilePath, FileMode.Create))
                 {
                     await ProfilePictureURL.CopyToAsync(stream);
                 }
 
-                string DateTimePhoto = DateTime.Now.ToString("dd/MM/yyyy hh:mm");
                 pChatUser.HdnProfilePicture = FileName + DateTimePhoto;
 
                 pChatUser.ProfilePictureURL = null;

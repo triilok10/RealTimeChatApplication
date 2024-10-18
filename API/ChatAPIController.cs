@@ -40,7 +40,8 @@ namespace RealTimeChatApplication.API
                             ChatMessage obj = new ChatMessage
                             {
                                 SearchConnection = reader["UserName"].ToString(),
-                                ChatMessageID = Convert.ToInt32(reader["ChatUser"])
+                                ChatMessageID = Convert.ToInt32(reader["ChatUser"]),
+                                ProfilePictureURL = Convert.ToString(reader["ProfilePictureURL"])
                             };
                             lstMessage.Add(obj);
                         }
