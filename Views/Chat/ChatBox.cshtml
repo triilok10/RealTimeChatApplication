@@ -217,6 +217,11 @@
                     max-height: 80vh; */
             flex: 1;
         }
+
+        .resContainer {
+            margin: 0px;
+            padding: 0px;
+        }
     }
 
     @@media (max-width: 480px) {
@@ -229,16 +234,27 @@
         .left-panel {
             display: none;
         }
+
+
+
+        .ChatResponsive {
+            padding: 2px;
+            font-size: 20px;
+            justify-content: center;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
     }
 </style>
 
 <body>
-    <div class="container">
+    <div class="container resContainer">
         <div class="main-container">
             <div class="left-panel"></div>
             <div class="container chat-container">
                 <div class="chat-header">
-                    <h1 class="text-center">Chat Application</h1>
+                    <h1 class="text-center ChatResponsive">Chat Application</h1>
                     <div class="settings-container">
                         <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
                         <div class="settings-dropdown">
