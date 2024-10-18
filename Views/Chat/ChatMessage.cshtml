@@ -350,6 +350,7 @@
                 </div>
 
                 <div class="chat-input-container">
+                    <input type="hidden" id="recipientUserId" value="@Model.ChatMessageID" />
                     <input type="text" id="messageInput" placeholder="Type your message..." class="MessageInput" />
                     <div class="resDivButton">
                         <button id="cameraButton"><img src="~/images/camera3.svg" alt="Camera" style="width:50px;" /></button>
@@ -373,18 +374,24 @@
         console.error(err.toString());
     });
 
+    // Get the recipient user ID
+    const recipientUserId = document.getElementById("recipientUserId").value;
+
+    //Execute this code when we send the Message
     document.getElementById("sendButton").addEventListener("click", function () {
         const messageInput = document.getElementById("messageInput");
         const message = messageInput.value;
 
-        if (message) {
-            connection.invoke("SendMessage", message).catch(function (err) {
+        if (message && recipientUserId) {
+            
+            connection.invoke("SendMessage", recipientUserId, message).catch(function (err) {
                 console.error(err.toString());
             });
             messageInput.value = '';
         }
     });
 
+    //Execute this code when we receive the Message
     connection.on("ReceiveMessage", function (user, message) {
         const msg = document.createElement("div");
         msg.className = "message received";
