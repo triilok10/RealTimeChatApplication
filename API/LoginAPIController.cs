@@ -86,6 +86,7 @@ namespace RealTimeChatApplication.API
                     cmd.Parameters.AddWithValue("@Gender", DBNull.Value);
                     cmd.Parameters.AddWithValue("@ProfilePictureURL", DBNull.Value);
                     cmd.Parameters.AddWithValue("@ChatUser", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@FullName", DBNull.Value);
 
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
