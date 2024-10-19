@@ -275,6 +275,10 @@
                             <input asp-for="UserName" class="form-control small-input" type="text" id="username" name="username" />
                         </div>
                         <div class="form-group formAlignCenter">
+                            <label for="FullName" class="text-muted">Full Name</label>
+                            <input asp-for="FullName" class="form-control small-input" type="text" id="fullname" name="fullname" />
+                        </div>
+                        <div class="form-group formAlignCenter">
                             <label for="email" class="text-muted">Email</label>
                             <input asp-for="Email" class="form-control small-input" type="email" id="email" name="email" />
                         </div>
@@ -415,6 +419,7 @@
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
+        var fullName = $("#fullname").val().trim();
         console.log(password);
 
         var confirmPassword = $("#confirmPassword").val().trim();
@@ -430,6 +435,14 @@
             return false;
         } else {
             $("#username").removeClass("border-Danger");
+        }
+
+        if (!fullName) {
+            $("#fullname").addClass("border-Danger");
+            toastr.error("Please enter the Full Name");
+            return false;
+        } else {
+            $("#fullName").removeClass("border-Danger");
         }
 
         if (!email) {

@@ -40,6 +40,7 @@ namespace RealTimeChatApplication.API
                         cmd.Parameters.AddWithValue("@Email", pChatUser.Email);
                         cmd.Parameters.AddWithValue("@Gender", pChatUser.Gender);
                         cmd.Parameters.AddWithValue("@ProfilePictureURL", pChatUser.HdnProfilePicture);
+                        cmd.Parameters.AddWithValue("@FullName", pChatUser.FullName);
 
                         SqlParameter outputIdParam = new SqlParameter("@ChatUser", System.Data.SqlDbType.Int)
                         {
