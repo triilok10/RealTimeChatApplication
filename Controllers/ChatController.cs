@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using NuGet.Common;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
+using System.Drawing;
 using System.Text;
 
 namespace RealTimeChatApplication.Controllers
@@ -34,13 +35,41 @@ namespace RealTimeChatApplication.Controllers
 
         #region "ChatBox"
         [HttpGet]
-        public IActionResult ChatBox()
+        public async Task<IActionResult> ChatBox()
         {
+
             var actionPath = HttpContext.Request.Path;
             _sessionService.SetString("ActionPath", actionPath);
+            string message = "";
+            try
+            {
+                var UserId = _sessionService.GetInt32("UserID");
 
-            return View();
+                string url = baseUrl + "api/ChatAPI/LoadChatHistory";
+                ChatMessage pChatMessage = new ChatMessage();
 
+                pChatMessage.ChatMessageID = UserId;
+                string Json = JsonConvert.SerializeObject(pChatMessage);
+                StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+
+                if (res.IsSuccessStatusCode)
+                {
+                    dynamic resBody = await res.Content.ReadAsStringAsync();
+                    List<ChatMessage> lstChatMessage = JsonConvert.DeserializeObject<List<ChatMessage>>(resBody);
+                    return View(lstChatMessage);
+                }
+                else
+                {
+                    return RedirectToAction("", "");
+                }
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return RedirectToAction("", "");
+            }
         }
 
 

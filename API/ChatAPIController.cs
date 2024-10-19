@@ -93,12 +93,52 @@ namespace RealTimeChatApplication.API
                 return StatusCode(500, "An error occurred while searching for connections.");
             }
 
-
-
-
-
             return Ok();
         }
+
+
+        #region "Load Chat History"
+        [HttpPost]
+        public IActionResult LoadChatHistory(ChatMessage chatMessage)
+        {
+            string msg = "";
+            bool res = false;
+            try
+            {
+                List<ChatMessage> lstChatMessage = new List<ChatMessage>();
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 2);
+                    cmd.Parameters.AddWithValue("@ChatMessageID", chatMessage.ChatMessageID);
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            ChatMessage obj = new ChatMessage
+                            {
+                                UserName = Convert.ToString(rdr["UserName"]),
+                                FullName = Convert.ToString(rdr["FullName"]),
+                                ChatReceiverID = Convert.ToInt32(rdr["ChatUserID"])
+                            };
+                            lstChatMessage.Add(obj);
+                        }
+                    }
+                    return Ok(lstChatMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+                return StatusCode(500, "An error occurred while Fetching the Data.");
+            }
+        }
+        #endregion
 
     }
 }
