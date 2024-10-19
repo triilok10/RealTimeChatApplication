@@ -340,12 +340,8 @@
                             <span class="last-seen">Last seen: 5 minutes ago</span>
                         </div>
                     </div>
-
-                    <div class="message received">
-                        <p>Hello! How are you?</p>
-                    </div>
-                    <div class="message sent">
-                        <p>I'm good, thanks! How about you?</p>
+                    <div id="messagesList">
+                        @* Dynamically Load the Message here. When User send the message and when User receive the Message *@
                     </div>
                 </div>
 
@@ -362,41 +358,58 @@
         </div>
     </div>
 </body>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+<script src="~/js/signalr.js"></script>
+@* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script> *@
 
 <script type="text/javascript">
-    const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+    //To create the Connection
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
 
-    connection.start().then(function () {
-        console.log("Connected to SignalR hub");
-    }).catch(function (err) {
-        console.error(err.toString());
-    });
+    connection.start()
+        .then(function () {
+            console.log("Connected to SignalR hub");
+        })
+        .catch(function (err) {
+            console.error(err.toString());
+        });
 
-    // Get the recipient user ID
-    const recipientUserId = document.getElementById("recipientUserId").value;
-
-    //Execute this code when we send the Message
+    const recipientUserIdInput = document.getElementById("recipientUserId");
+    //To send the Message.
     document.getElementById("sendButton").addEventListener("click", function () {
         const messageInput = document.getElementById("messageInput");
         const message = messageInput.value;
+        const recipientUserId = recipientUserIdInput.value; 
 
         if (message && recipientUserId) {
             
-            connection.invoke("SendMessage", recipientUserId, message).catch(function (err) {
-                console.error(err.toString());
-            });
+            connection.invoke("SendMessage", recipientUserId, message)
+                .catch(function (err) {
+                    console.error(err.toString());
+                });
+
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', 'sent');
+            msgDiv.innerHTML = `<p>${message}</p>`;
+            document.getElementById('messagesList').appendChild(msgDiv);
             messageInput.value = '';
+        } else {
+            alert("Please enter a message.");
         }
     });
 
-    //Execute this code when we receive the Message
+
+    //To receive the Message
     connection.on("ReceiveMessage", function (user, message) {
-        const msg = document.createElement("div");
-        msg.className = "message received";
-        msg.textContent = `${user}: ${message}`;
-        document.getElementById("chatMessages").appendChild(msg);
-        toastr.success(`New message from ${user}`);
+        console.log(user); 
+        console.log(message);
+
+        const msgDiv = document.createElement("div");
+        msgDiv.className = "message received";
+        msgDiv.innerHTML = `<p>${user}: ${message}</p>`; 
+
+        document.getElementById("messagesList").appendChild(msgDiv);
+        toastr.success(`New message from ${user}`); 
     });
 </script>
