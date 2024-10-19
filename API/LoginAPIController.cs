@@ -91,7 +91,7 @@ namespace RealTimeChatApplication.API
                     {
                         while (rdr.Read())
                         {
-                            obj.ChatUserID = Convert.ToInt32(rdr["ChatUser"]);
+                            obj.ChatUserID = Convert.ToInt32(rdr["ChatUserID"]);
                             obj.UserName = Convert.ToString(rdr["UserName"]);
                             obj.HdnProfilePicture = Convert.ToString(rdr["ProfilePictureURL"]);
                         }
