@@ -123,7 +123,8 @@ namespace RealTimeChatApplication.API
                             {
                                 UserName = Convert.ToString(rdr["UserName"]),
                                 FullName = Convert.ToString(rdr["FullName"]),
-                                ChatReceiverID = Convert.ToInt32(rdr["ChatUserID"])
+                                ChatReceiverID = Convert.ToInt32(rdr["ChatUserID"]),
+                                ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"])
                             };
                             lstChatMessage.Add(obj);
                         }
