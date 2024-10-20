@@ -97,6 +97,25 @@ namespace RealTimeChatApplication.Controllers
                 {
                     dynamic resBody = await res.Content.ReadAsStringAsync();
                     ChatMessage obj = JsonConvert.DeserializeObject<ChatMessage>(resBody);
+
+
+                    string chatRecordURL = baseUrl + "api/ChatAPI/ChatHistoryRecord";
+
+                    ChatMessage pChatMessage = new ChatMessage();
+                    var chatUserId = _sessionService.GetInt32("UserID");
+                    pChatMessage.ChatMessageID = chatUserId;
+                    pChatMessage.ChatReceiverID = Id;
+                    string JSON = JsonConvert.SerializeObject(obj);
+                    StringContent content = new StringContent(JSON, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage chatResponse = await _httpClient.PostAsync(chatRecordURL, content);
+
+                    if (chatResponse.IsSuccessStatusCode)
+                    {
+                        dynamic chatResData = await chatResponse.Content.ReadAsStringAsync();
+                        List<ChatMessage> lstChatRecord = JsonConvert.DeserializeObject<List<ChatMessage>>(chatResData);
+
+                    }
                     return View(obj);
                 }
                 else

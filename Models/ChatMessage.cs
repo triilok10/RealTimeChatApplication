@@ -9,5 +9,7 @@
         public string? UserName { get; set; }
         public string? FullName { get; set; }
         public string? ProfilePictureURL { get; set; }
+        public string? ChatMessageData { get; set; }
+        public DateTime? TimeStamp { get; set; }
     }
 }

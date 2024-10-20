@@ -99,7 +99,7 @@ namespace RealTimeChatApplication.API
 
         #region "Load Chat History"
         [HttpPost]
-        public IActionResult LoadChatHistory(ChatMessage chatMessage)
+        public IActionResult LoadChatHistory([FromBody] ChatMessage chatMessage)
         {
             string msg = "";
             bool res = false;
@@ -141,5 +141,48 @@ namespace RealTimeChatApplication.API
         }
         #endregion
 
+        #region "Chat History Record"
+        [HttpPost]
+        public IActionResult ChatHistoryRecord([FromBody] ChatMessage chatMessage)
+        {
+            string msg = "";
+            bool res = false;
+            try
+            {
+                List<ChatMessage> lstChatMessage = new List<ChatMessage>();
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 3);
+                    cmd.Parameters.AddWithValue("@SenderID", chatMessage.ChatMessageID);      //User Currently Login to the System -- UserId
+                    cmd.Parameters.AddWithValue("@ReceiverID", chatMessage.ChatReceiverID);   //User Who receive the Message
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            ChatMessage obj = new ChatMessage
+                            {
+                                ChatMessageID = Convert.ToInt32(rdr["SenderID"]),
+                                ChatReceiverID = Convert.ToInt32(rdr["ReceiverID"]),
+                                ChatMessageData = Convert.ToString(rdr["ChatMessage"]),
+                                TimeStamp = Convert.ToDateTime(rdr["TimeStamp"])
+                            };
+                            lstChatMessage.Add(obj);
+                        }
+                    }
+                }
+                return Ok(lstChatMessage);
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                res = false;
+                return StatusCode(500, "An error occurred while Fetching the Data.");
+            }
+        }
+        #endregion
     }
 }
