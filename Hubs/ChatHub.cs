@@ -7,7 +7,13 @@ using System.Collections.Generic;
 
 namespace RealTimeChatApplication.Hubs
 {
-    public class ChatHub : Hub
+    public interface IChatHub
+    {
+        Task SendNotificationToUser(int userId, string message);
+        Task<bool> IsUserConnected(int userId);
+    }
+
+    public class ChatHub : Hub, IChatHub
     {
         private readonly string _connectionString;
         private readonly ISessionService _sessionService;
@@ -101,5 +107,19 @@ namespace RealTimeChatApplication.Hubs
                 Console.WriteLine($"Error saving message: {ex.Message}");
             }
         }
+
+
+        #region "Send Notification"
+        public async Task SendNotificationToUser(int userId, string message)
+        {
+            await Clients.User(userId.ToString()).SendAsync("ReceiveNotification", message);
+        }
+
+        public Task<bool> IsUserConnected(int userId)
+        {
+            return Task.FromResult(_userConnections.ContainsKey(userId.ToString()));
+        }
+
+        #endregion
     }
 }

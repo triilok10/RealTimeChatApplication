@@ -12,6 +12,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<SessionAdmin>();
 builder.Services.AddScoped<RedirectIfLoggedInAttribute>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IChatHub, ChatHub>();
 
 
 builder.Services.AddSession(options =>

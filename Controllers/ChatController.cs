@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using NuGet.Common;
 using RealTimeChatApplication.AppCode;
+using RealTimeChatApplication.Hubs;
 using RealTimeChatApplication.Models;
 using System.Drawing;
 using System.Text;
@@ -15,13 +16,15 @@ namespace RealTimeChatApplication.Controllers
         private readonly HttpClient _httpClient;
         IHttpContextAccessor _httpContextAccessor;
         private readonly dynamic baseUrl;
+        private readonly IChatHub _signalRHub;
 
         private readonly ISessionService _sessionService;
-        public ChatController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ISessionService sessionService)
+        public ChatController(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, ISessionService sessionService, IChatHub signalRHub)
         {
             _httpClient = httpClient;
             _httpContextAccessor = httpContextAccessor;
             _sessionService = sessionService;
+            _signalRHub = signalRHub;
             var request = _httpContextAccessor.HttpContext.Request;
             baseUrl = $"{request.Scheme}://{request.Host.Value}/"; _httpClient.BaseAddress = new Uri(baseUrl);
         }
@@ -175,39 +178,62 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> SendRequest(int Id = 0)
         {
-            bool res = false;
-            string msg = "";
             try
             {
-                if (Id == null)
+                if (Id == 0)
                 {
-                    TempData["errorMessage"] = "Please select the User to Send the Connection Request";
+                    TempData["errorMessage"] = "Please select a user to send the connection request.";
                     return RedirectToAction("ChatBox", "Chat");
                 }
+
                 var loginUserId = _sessionService.GetInt32("UserID");
                 string url = baseUrl + "api/ChatAPI/RequestConnection";
 
-                UserConnection obj = new UserConnection();
-                obj.RequestID = loginUserId;
-                obj.ConnectionID = Id;
+                UserConnection obj = new UserConnection
+                {
+                    RequestID = loginUserId,
+                    ConnectionID = Id
+                };
 
                 string JSON = JsonConvert.SerializeObject(obj);
                 StringContent content = new StringContent(JSON, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+
                 if (response.IsSuccessStatusCode)
                 {
-                    dynamic resBody = await response.Content.ReadAsStringAsync();
-                    UserConnection userConnection = JsonConvert.DeserializeObject<UserConnection>(resBody);
+                    bool isUserConnected = await _signalRHub.IsUserConnected(Id);
+
+                    if (isUserConnected)
+                    {
+                        await _signalRHub.SendNotificationToUser(Id, $"{loginUserId} has sent you a connection request.");
+                    }
+                    else
+                    {
+                        // If user is offline, store the notification to be sent later
+                        //await _notificationRepository.AddNotification(new Notification
+                        //{
+                        //    UserID = Id,
+                        //    Message = $"{loginUserId} has sent you a connection request.",
+                        //    IsSent = false,
+                        //    CreatedDate = DateTime.UtcNow
+                        //});
+                    }
+
+                    TempData["successMessage"] = "Connection request sent successfully.";
+                }
+                else
+                {
+                    TempData["errorMessage"] = "Failed to send the connection request. Please try again.";
                 }
             }
             catch (Exception ex)
             {
-                res = false;
-                msg = ex.Message;
+                TempData["errorMessage"] = $"An error occurred: {ex.Message}";
             }
-            return RedirectToAction("", "");
 
+            return RedirectToAction("ChatBox", "Chat");
         }
+
         #endregion
     }
     public class SessionAdmin : ActionFilterAttribute
