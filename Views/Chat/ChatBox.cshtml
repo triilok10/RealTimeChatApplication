@@ -327,14 +327,14 @@
 
                     res.lstChat.forEach(function (post) {
                         resultsContainer.innerHTML += ` <div class="connection-list-item">
-                                                                                <img src="${"../images/uploads/" + post.profilePictureURL}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                                <div class="profile-info">
-                                                                                    <div class="profile-infoManage">
-                                                                                <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                                <a href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
-                                                                                </div>
-                                                                                </div>
-                                                                                </div>`;
+                                                        <img src="${"../images/uploads/" + post.profilePictureURL}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                        <div class="profile-info">
+                                                        <div class="profile-infoManage">
+                                                        <h3>${post.searchConnection || 'No Username'}</h3>
+                                                        <a href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
+                                                        </div>
+                                                        </div>
+                                                        </div>`;
                     });
                 }
             },
