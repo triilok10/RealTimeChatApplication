@@ -105,7 +105,7 @@ namespace RealTimeChatApplication.Controllers
                     var chatUserId = _sessionService.GetInt32("UserID");
                     pChatMessage.ChatMessageID = chatUserId;
                     pChatMessage.ChatReceiverID = Id;
-                    string JSON = JsonConvert.SerializeObject(obj);
+                    string JSON = JsonConvert.SerializeObject(pChatMessage);
                     StringContent content = new StringContent(JSON, Encoding.UTF8, "application/json");
 
                     HttpResponseMessage chatResponse = await _httpClient.PostAsync(chatRecordURL, content);
@@ -114,8 +114,10 @@ namespace RealTimeChatApplication.Controllers
                     {
                         dynamic chatResData = await chatResponse.Content.ReadAsStringAsync();
                         List<ChatMessage> lstChatRecord = JsonConvert.DeserializeObject<List<ChatMessage>>(chatResData);
-
+                        ViewBag.lstChatRecordConnections = lstChatRecord;
+                        ViewBag.UserLoginID = chatUserId;
                     }
+
                     return View(obj);
                 }
                 else

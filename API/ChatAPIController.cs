@@ -153,7 +153,7 @@ namespace RealTimeChatApplication.API
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                    SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 3);
                     cmd.Parameters.AddWithValue("@SenderID", chatMessage.ChatMessageID);      //User Currently Login to the System -- UserId

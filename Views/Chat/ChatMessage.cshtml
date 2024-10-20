@@ -1,6 +1,7 @@
 ﻿@model RealTimeChatApplication.Models.ChatMessage
 @{
     ViewData["Title"] = "ChatMessage";
+    dynamic lstChatRecordwithConnections = ViewBag.lstChatRecordConnections as IEnumerable<RealTimeChatApplication.Models.ChatMessage>;
 }
 
 @* Display Success Message Using Toastr *@
@@ -340,6 +341,22 @@
                             <span class="last-seen">Last seen: 5 minutes ago</span>
                         </div>
                     </div>
+
+                    @foreach (var Item in lstChatRecordwithConnections)
+                    {
+                        <div id="messagesList">
+                            @if (ViewBag.UserLoginID == @Item.ChatMessageID)
+                            {
+                                <p class="message sent">@Item.ChatMessageData</p>
+                            }
+                            else
+                            {
+                                <p class="message received">
+                                    @Item.ChatMessageData
+                                </p>
+                            }
+                        </div>
+                    }
                     <div id="messagesList">
                         @* Dynamically Load the Message here. When User send the message and when User receive the Message *@
                     </div>
@@ -380,10 +397,10 @@
     document.getElementById("sendButton").addEventListener("click", function () {
         const messageInput = document.getElementById("messageInput");
         const message = messageInput.value;
-        const recipientUserId = recipientUserIdInput.value; 
+        const recipientUserId = recipientUserIdInput.value;
 
         if (message && recipientUserId) {
-            
+
             connection.invoke("SendMessage", recipientUserId, message)
                 .catch(function (err) {
                     console.error(err.toString());
@@ -402,14 +419,14 @@
 
     //To receive the Message
     connection.on("ReceiveMessage", function (user, message) {
-        console.log(user); 
+        console.log(user);
         console.log(message);
 
         const msgDiv = document.createElement("div");
         msgDiv.className = "message received";
-        msgDiv.innerHTML = `<p>${user}: ${message}</p>`; 
+        msgDiv.innerHTML = `<p>${user}: ${message}</p>`;
 
         document.getElementById("messagesList").appendChild(msgDiv);
-        toastr.success(`New message from ${user}`); 
+        toastr.success(`New message from ${user}`);
     });
 </script>
