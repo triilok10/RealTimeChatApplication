@@ -172,8 +172,44 @@ namespace RealTimeChatApplication.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> SendRequest(int Id = 0)
+        {
+            bool res = false;
+            string msg = "";
+            try
+            {
+                if (Id == null)
+                {
+                    TempData["errorMessage"] = "Please select the User to Send the Connection Request";
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+                var loginUserId = _sessionService.GetInt32("UserID");
+                string url = baseUrl + "api/ChatAPI/RequestConnection";
+
+                UserConnection obj = new UserConnection();
+                obj.RequestID = loginUserId;
+                obj.ConnectionID = Id;
+
+                string JSON = JsonConvert.SerializeObject(obj);
+                StringContent content = new StringContent(JSON, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    dynamic resBody = await response.Content.ReadAsStringAsync();
+                    UserConnection userConnection = JsonConvert.DeserializeObject<UserConnection>(resBody);
+                }
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return RedirectToAction("", "");
+
+        }
+        #endregion
     }
-    #endregion
     public class SessionAdmin : ActionFilterAttribute
     {
         private readonly ISessionService _sessionService;

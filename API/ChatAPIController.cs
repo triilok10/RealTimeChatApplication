@@ -184,5 +184,34 @@ namespace RealTimeChatApplication.API
             }
         }
         #endregion
+
+        #region "User Connection Request"
+        [HttpPost]
+        public IActionResult RequestConnection(UserConnection userConnection)
+        {
+            bool res = false;
+            string msg = "";
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 4);
+                    cmd.Parameters.AddWithValue("@RequestID", userConnection.ConnectionID);
+                    cmd.Parameters.AddWithValue("@AcceptID", userConnection.AcceptID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                res = false;
+            }
+            return Ok();
+        }
+
+        #endregion
     }
 }
