@@ -144,6 +144,26 @@
         align-self: flex-end;
     }
 
+    .Historysent {
+        background-color: #e0ffe0;
+        align-self: flex-start;
+    }
+
+    .Historyreceived {
+        background-color: #e0f7fa;
+        align-self: flex-end;
+    }
+
+    .alignHistorySent {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+    }
+
+    .alignHistoryRight {
+        display: flex;
+    }
+
     /* Chat Input Section */
     .chat-input-container {
         display: flex;
@@ -344,16 +364,21 @@
 
                     @foreach (var Item in lstChatRecordwithConnections)
                     {
-                        <div id="messagesList">
+                        <div id="messagesHistoryList">
                             @if (ViewBag.UserLoginID == @Item.ChatMessageID)
                             {
-                                <p class="message sent">@Item.ChatMessageData</p>
+                                <div class="alignHistorySent">
+                                    <p class="message Historysent">@Item.ChatMessageData</p>
+
+                                </div>
                             }
                             else
                             {
-                                <p class="message received">
-                                    @Item.ChatMessageData
-                                </p>
+                                <div class="alignHistoryRight">
+                                    <p class="message Historyreceived">
+                                        @Item.ChatMessageData
+                                    </p>
+                                </div>
                             }
                         </div>
                     }
@@ -406,10 +431,13 @@
                     console.error(err.toString());
                 });
 
+            const alignDiv = document.createElement('div');
+            alignDiv.classList.add('alignHistorySent');
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message', 'sent');
             msgDiv.innerHTML = `<p>${message}</p>`;
-            document.getElementById('messagesList').appendChild(msgDiv);
+            alignDiv.appendChild(msgDiv);
+            document.getElementById('messagesList').appendChild(alignDiv);
             messageInput.value = '';
         } else {
             alert("Please enter a message.");
@@ -419,14 +447,16 @@
 
     //To receive the Message
     connection.on("ReceiveMessage", function (user, message) {
-        console.log(user);
-        console.log(message);
+        //console.log(user);
+        //console.log(message);
 
         const msgDiv = document.createElement("div");
+        const alignDiv = document.createElement("div");
+        alignDiv.className = "alignHistoryRight";
         msgDiv.className = "message received";
-        msgDiv.innerHTML = `<p>${user}: ${message}</p>`;
-
-        document.getElementById("messagesList").appendChild(msgDiv);
+        msgDiv.innerHTML = `<p>${message}</p>`;
+        alignDiv.appendChild(msgDiv);
+        document.getElementById("messagesList").appendChild(alignDiv);
         toastr.success(`New message from ${user}`);
     });
 </script>
