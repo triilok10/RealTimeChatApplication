@@ -459,4 +459,21 @@
         document.getElementById("messagesList").appendChild(alignDiv);
         toastr.success(`New message from ${user}`);
     });
+
+
+
+    // To receive the notification
+    connection.on("ReceiveNotification", function (message) {
+        // const msgDiv = document.createElement("div");
+        // const alignDiv = document.createElement("div");
+        // alignDiv.className = "alignHistoryRight";
+        // msgDiv.className = "message received";
+        // msgDiv.innerHTML = `<p>${message}</p>`;
+        // alignDiv.appendChild(msgDiv);
+        // document.getElementById("notificationsList").appendChild(alignDiv);
+
+        // Display a toast notification when a new message is received
+        toastr.success(`New notification: ${message}`);
+    });
+
 </script>

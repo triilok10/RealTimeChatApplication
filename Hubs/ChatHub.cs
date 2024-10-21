@@ -112,8 +112,21 @@ namespace RealTimeChatApplication.Hubs
         #region "Send Notification"
         public async Task SendNotificationToUser(int userId, string message)
         {
-            await Clients.User(userId.ToString()).SendAsync("ReceiveNotification", message);
+            string userID = userId.ToString();
+
+            if (_userConnections.TryGetValue(userID, out var connectionIds))
+            {
+                foreach (var connectionId in connectionIds)
+                {
+                    await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"User {userId} is not connected. Notification not sent.");
+            }
         }
+
 
         public Task<bool> IsUserConnected(int userId)
         {

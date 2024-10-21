@@ -296,8 +296,42 @@
 
     </div>
 </body>
+@* <script src="~/js/signalr.js"></script> *@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.17/signalr.min.js"></script>
 
 <script type="text/javascript">
+
+    // Establish a connection to the SignalR hub
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    // Start the connection
+    connection.start()
+        .then(function () {
+            console.log("Connected to SignalR hub");
+        })
+        .catch(function (err) {
+            console.error(err.toString());
+        });
+
+    // To receive the notification
+    connection.on("ReceiveNotification", function (message) {
+        // const msgDiv = document.createElement("div");
+        // const alignDiv = document.createElement("div");
+        // alignDiv.className = "alignHistoryRight";
+        // msgDiv.className = "message received";
+        // msgDiv.innerHTML = `<p>${message}</p>`;
+        // alignDiv.appendChild(msgDiv);
+        // document.getElementById("notificationsList").appendChild(alignDiv);
+
+        // Display a toast notification when a new message is received
+        toastr.success(`New notification: ${message}`);
+    });
+
+
+
+
 
 
     function searchConnections() {
@@ -327,15 +361,15 @@
 
                     res.lstChat.forEach(function (post) {
                         resultsContainer.innerHTML += ` <div class="connection-list-item">
-                                                                <img src="${"../images/uploads/" + post.profilePictureURL}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                <div class="profile-info">
-                                                                <div class="profile-infoManage">
-                                                                <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                    <a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>
-                                                                    <a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
-                                                                </div>
-                                                                </div>
-                                                                </div>`;
+                                                                                <img src="${"../images/uploads/" + post.profilePictureURL}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                                <div class="profile-info">
+                                                                                <div class="profile-infoManage">
+                                                                                <h3>${post.searchConnection || 'No Username'}</h3>
+                                                                                    <a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>
+                                                                                    <a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
+                                                                                </div>
+                                                                                </div>
+                                                                                </div>`;
                     });
                 }
             },

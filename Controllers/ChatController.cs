@@ -201,48 +201,94 @@ namespace RealTimeChatApplication.Controllers
                 StringContent content = new StringContent(JSON, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(url, content);
 
+                //if (response.IsSuccessStatusCode)
+                //{
+                //    dynamic resBody = await response.Content.ReadAsStringAsync();
+                //    dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                //    if (resData.res == false)
+                //    {
+                //        msg = resBody.msg;
+                //        return RedirectToAction("ChatBox", "Chat");
+                //    }
+
+
+                //    bool isUserConnected = await _signalRHub.IsUserConnected(Id);
+
+                //    if (isUserConnected)
+                //    {
+                //        await _signalRHub.SendNotificationToUser(Id, $"{loginUserId} has sent you a connection request.");
+                //    }
+                //    else
+                //    {
+                //        // If user is offline, store the notification to be sent later
+                //        //await _notificationRepository.AddNotification(new Notification
+                //        //{
+                //        //    UserID = Id,
+                //        //    Message = $"{loginUserId} has sent you a connection request.",
+                //        //    IsSent = false,
+                //        //    CreatedDate = DateTime.UtcNow
+                //        //});
+
+                //        string DBSaveUrl = baseUrl + "api/ChatAPI/PendingDBNotification";   //User is not Active this time, So data Saved in the DataBase.
+
+                //        UserPendingNotification pUserPendingNotification = new UserPendingNotification();
+
+
+                //        string JsonContent = JsonConvert.SerializeObject(pUserPendingNotification);
+                //        StringContent contentData = new StringContent(JsonContent, Encoding.UTF8, "application/json");
+
+                //        HttpResponseMessage resDB = await _httpClient.PostAsync(DBSaveUrl, contentData);
+
+
+
+
+
+
+                //    }
+
+                //    TempData["successMessage"] = "Connection request sent successfully.";
+                //}
+                //else
+                //{
+                //    TempData["errorMessage"] = "Failed to send the connection request. Please try again.";
+                //}
+
                 if (response.IsSuccessStatusCode)
                 {
                     dynamic resBody = await response.Content.ReadAsStringAsync();
-                    if (resBody.res == false)
+                    dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+
+                    if (resData.res == false)
                     {
                         msg = resBody.msg;
                         return RedirectToAction("ChatBox", "Chat");
                     }
+                    string dbSaveUrl = baseUrl + "api/ChatAPI/PendingDBNotification";
+                    UserPendingNotification pUserPendingNotification = new UserPendingNotification
+                    {
+                        LoginUserID = Id,
+                        Message = $"{loginUserId} has sent you a connection request.",
+                        CreatedDate = DateTime.UtcNow
+                    };
 
+                    string jsonContent = JsonConvert.SerializeObject(pUserPendingNotification);
+                    StringContent contentData = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
+                    //HttpResponseMessage resDB = await _httpClient.PostAsync(dbSaveUrl, contentData);
+
+                    //if (!resDB.IsSuccessStatusCode)
+                    //{
+                    //    TempData["errorMessage"] = "Failed to save the notification in the database.";
+                    //    return RedirectToAction("ChatBox", "Chat");
+                    //}
+
+                    // Check if the user is connected
                     bool isUserConnected = await _signalRHub.IsUserConnected(Id);
 
                     if (isUserConnected)
                     {
+                        // Send real-time notification if the user is connected
                         await _signalRHub.SendNotificationToUser(Id, $"{loginUserId} has sent you a connection request.");
-                    }
-                    else
-                    {
-                        // If user is offline, store the notification to be sent later
-                        //await _notificationRepository.AddNotification(new Notification
-                        //{
-                        //    UserID = Id,
-                        //    Message = $"{loginUserId} has sent you a connection request.",
-                        //    IsSent = false,
-                        //    CreatedDate = DateTime.UtcNow
-                        //});
-
-                        string DBSaveUrl = baseUrl + "api/ChatAPI/PendingDBNotification";   //User is not Active this time, So data Saved in the DataBase.
-
-                        UserPendingNotification pUserPendingNotification = new UserPendingNotification();
-
-
-                        string JsonContent = JsonConvert.SerializeObject(pUserPendingNotification);
-                        StringContent contentData = new StringContent(JsonContent, Encoding.UTF8, "application/json");
-
-                        HttpResponseMessage resDB = await _httpClient.PostAsync(DBSaveUrl, contentData);
-
-
-
-
-
-
                     }
 
                     TempData["successMessage"] = "Connection request sent successfully.";
@@ -251,6 +297,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     TempData["errorMessage"] = "Failed to send the connection request. Please try again.";
                 }
+
             }
             catch (Exception ex)
             {
