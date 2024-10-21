@@ -178,6 +178,8 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> SendRequest(int Id = 0)
         {
+            bool res = false;
+            string msg = "";
             try
             {
                 if (Id == 0)
@@ -201,6 +203,14 @@ namespace RealTimeChatApplication.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
+                    dynamic resBody = await response.Content.ReadAsStringAsync();
+                    if (resBody.res == false)
+                    {
+                        msg = resBody.msg;
+                        return RedirectToAction("ChatBox", "Chat");
+                    }
+
+
                     bool isUserConnected = await _signalRHub.IsUserConnected(Id);
 
                     if (isUserConnected)
@@ -217,6 +227,22 @@ namespace RealTimeChatApplication.Controllers
                         //    IsSent = false,
                         //    CreatedDate = DateTime.UtcNow
                         //});
+
+                        string DBSaveUrl = baseUrl + "api/ChatAPI/PendingDBNotification";   //User is not Active this time, So data Saved in the DataBase.
+
+                        UserPendingNotification pUserPendingNotification = new UserPendingNotification();
+
+
+                        string JsonContent = JsonConvert.SerializeObject(pUserPendingNotification);
+                        StringContent contentData = new StringContent(JsonContent, Encoding.UTF8, "application/json");
+
+                        HttpResponseMessage resDB = await _httpClient.PostAsync(DBSaveUrl, contentData);
+
+
+
+
+
+
                     }
 
                     TempData["successMessage"] = "Connection request sent successfully.";

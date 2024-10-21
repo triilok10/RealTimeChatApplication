@@ -215,5 +215,38 @@ namespace RealTimeChatApplication.API
         }
 
         #endregion
+
+        #region "Pending Notification Code"
+        [HttpPost]
+        public IActionResult PendingDBNotification([FromBody] UserPendingNotification notification)
+        {
+            bool res = false;
+            string msg = "";
+            try
+            {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("", 1);
+                    cmd.Parameters.AddWithValue("", 1);
+                    cmd.Parameters.AddWithValue("", 1);
+                    cmd.Parameters.AddWithValue("", 1);
+                    cmd.Parameters.AddWithValue("", 1);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                res = false;
+            }
+            return Ok(new { res, msg });
+
+        }
+
+
+        #endregion
     }
 }
