@@ -191,8 +191,8 @@ namespace RealTimeChatApplication.Controllers
 
                 UserConnection obj = new UserConnection
                 {
-                    RequestID = loginUserId,
-                    ConnectionID = Id
+                    RequestID = loginUserId, //Current Login
+                    AcceptID = Id
                 };
 
                 string JSON = JsonConvert.SerializeObject(obj);
