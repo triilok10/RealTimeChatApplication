@@ -11,12 +11,14 @@ namespace RealTimeChatApplication.Hubs
     {
         Task SendNotificationToUser(int userId, string message);
         Task<bool> IsUserConnected(int userId);
+        Task SendMessage(string recipientUserId, string message);
     }
 
     public class ChatHub : Hub, IChatHub
     {
         private readonly string _connectionString;
         private readonly ISessionService _sessionService;
+
 
         private static readonly ConcurrentDictionary<string, List<string>> _userConnections = new ConcurrentDictionary<string, List<string>>();
 
@@ -29,18 +31,21 @@ namespace RealTimeChatApplication.Hubs
         public override async Task OnConnectedAsync()
         {
             string connectionId = Context.ConnectionId;
-            _sessionService.SetString("connectionId", connectionId);
-
             var userId = _sessionService.GetInt32("UserID");
-            string userID = Convert.ToString(userId);
 
-            _userConnections.AddOrUpdate(userID, new List<string> { connectionId }, (key, existingList) =>
+            if (userId.HasValue)
             {
-                existingList.Add(connectionId);
-                return existingList;
-            });
+                string userID = userId.ToString();
 
-            Console.WriteLine($"User {userId} connected with Connection ID: {connectionId}");
+
+                _userConnections.AddOrUpdate(userID, new List<string> { connectionId }, (key, existingList) =>
+                {
+                    existingList.Add(connectionId);
+                    return existingList;
+                });
+
+                Console.WriteLine($"User {userId} connected with Connection ID: {connectionId}");
+            }
 
             await base.OnConnectedAsync();
         }
@@ -49,19 +54,25 @@ namespace RealTimeChatApplication.Hubs
         {
             string connectionId = Context.ConnectionId;
             var userId = _sessionService.GetInt32("UserID");
-            string userID = Convert.ToString(userId);
 
-            if (_userConnections.TryGetValue(userID, out var connections))
+            if (userId.HasValue)
             {
-                connections.Remove(connectionId);
+                string userID = userId.ToString();
 
-                if (connections.Count == 0)
+                // Remove connection ID from the list of user connections
+                if (_userConnections.TryGetValue(userID, out var connections))
                 {
-                    _userConnections.TryRemove(userID, out _);
-                }
-            }
+                    connections.Remove(connectionId);
 
-            Console.WriteLine($"User {userId} disconnected with Connection ID: {connectionId}");
+                    // Remove the user from the dictionary if no connections are left
+                    if (connections.Count == 0)
+                    {
+                        _userConnections.TryRemove(userID, out _);
+                    }
+                }
+
+                Console.WriteLine($"User {userId} disconnected with Connection ID: {connectionId}");
+            }
 
             await base.OnDisconnectedAsync(exception);
         }
@@ -72,6 +83,7 @@ namespace RealTimeChatApplication.Hubs
 
             var senderUserName = _sessionService.GetString("UserName");
 
+            // Send message to all connections of the recipient
             if (_userConnections.TryGetValue(recipientUserId, out var connectionIds))
             {
                 foreach (var connectionId in connectionIds)
@@ -87,6 +99,12 @@ namespace RealTimeChatApplication.Hubs
             {
                 var senderUserId = _sessionService.GetInt32("UserID");
 
+                if (!senderUserId.HasValue)
+                {
+                    Console.WriteLine("Sender user ID is not available.");
+                    return;
+                }
+
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     await con.OpenAsync();
@@ -94,7 +112,7 @@ namespace RealTimeChatApplication.Hubs
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@Mode", 1);
-                        cmd.Parameters.AddWithValue("@SenderID", senderUserId);
+                        cmd.Parameters.AddWithValue("@SenderID", senderUserId.Value);
                         cmd.Parameters.AddWithValue("@ReceiverID", recipientId);
                         cmd.Parameters.AddWithValue("@Message", message);
 
@@ -108,18 +126,26 @@ namespace RealTimeChatApplication.Hubs
             }
         }
 
-
         #region "Send Notification"
         public async Task SendNotificationToUser(int userId, string message)
         {
             string userID = userId.ToString();
 
+            // Send notification to all connections of the user
             if (_userConnections.TryGetValue(userID, out var connectionIds))
             {
                 foreach (var connectionId in connectionIds)
                 {
-                    await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+                    try
+                    {
+                        await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error sending notification to connection {connectionId}: {ex.Message}");
+                    }
                 }
+
             }
             else
             {
@@ -127,12 +153,10 @@ namespace RealTimeChatApplication.Hubs
             }
         }
 
-
         public Task<bool> IsUserConnected(int userId)
         {
             return Task.FromResult(_userConnections.ContainsKey(userId.ToString()));
         }
-
         #endregion
     }
 }

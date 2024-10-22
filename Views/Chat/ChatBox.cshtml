@@ -301,33 +301,33 @@
 
 <script type="text/javascript">
 
-    // Establish a connection to the SignalR hub
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/chathub")
-        .build();
+    // // Establish a connection to the SignalR hub
+    // const connection = new signalR.HubConnectionBuilder()
+    //     .withUrl("/chathub")
+    //     .build();
 
-    // Start the connection
-    connection.start()
-        .then(function () {
-            console.log("Connected to SignalR hub");
-        })
-        .catch(function (err) {
-            console.error(err.toString());
-        });
+    // // Start the connection
+    // connection.start()
+    //     .then(function () {
+    //         console.log("Connected to SignalR hub");
+    //     })
+    //     .catch(function (err) {
+    //         console.error(err.toString());
+    //     });
 
-    // To receive the notification
-    connection.on("ReceiveNotification", function (message) {
-        // const msgDiv = document.createElement("div");
-        // const alignDiv = document.createElement("div");
-        // alignDiv.className = "alignHistoryRight";
-        // msgDiv.className = "message received";
-        // msgDiv.innerHTML = `<p>${message}</p>`;
-        // alignDiv.appendChild(msgDiv);
-        // document.getElementById("notificationsList").appendChild(alignDiv);
+    // // To receive the notification
+    // connection.on("ReceiveNotification", function (message) {
+    //     // const msgDiv = document.createElement("div");
+    //     // const alignDiv = document.createElement("div");
+    //     // alignDiv.className = "alignHistoryRight";
+    //     // msgDiv.className = "message received";
+    //     // msgDiv.innerHTML = `<p>${message}</p>`;
+    //     // alignDiv.appendChild(msgDiv);
+    //     // document.getElementById("notificationsList").appendChild(alignDiv);
 
-        // Display a toast notification when a new message is received
-        toastr.success(`New notification: ${message}`);
-    });
+    //     // Display a toast notification when a new message is received
+    //     toastr.success(`New notification: ${message}`);
+    // });
 
 
 
