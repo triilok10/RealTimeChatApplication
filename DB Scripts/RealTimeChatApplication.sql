@@ -267,7 +267,7 @@ BEGIN
             SELECT * 
             FROM ChatMessage 
             WHERE 
-                (SenderID = @SenderID AND ReceiverID = @ReceiverID);
+                (SenderID = @SenderID OR ReceiverID = @ReceiverID);
         END
 
         IF (@SenderID <> @ReceiverID)
