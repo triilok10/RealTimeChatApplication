@@ -113,7 +113,7 @@ namespace RealTimeChatApplication.API
                     SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 2);
-                    cmd.Parameters.AddWithValue("@ChatMessageID", chatMessage.ChatMessageID);
+                    cmd.Parameters.AddWithValue("@ChatMessageID", chatMessage.ChatMessageID);                  
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
@@ -158,6 +158,7 @@ namespace RealTimeChatApplication.API
                     cmd.Parameters.AddWithValue("@Mode", 3);
                     cmd.Parameters.AddWithValue("@SenderID", chatMessage.ChatMessageID);      //User Currently Login to the System -- UserId
                     cmd.Parameters.AddWithValue("@ReceiverID", chatMessage.ChatReceiverID);   //User Who receive the Message
+
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
