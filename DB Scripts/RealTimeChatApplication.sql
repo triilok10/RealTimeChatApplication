@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [RealTimeChatApplication]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  Database [RealTimeChatApplication]    Script Date: 26-10-2024 22:24:01 ******/
 CREATE DATABASE [RealTimeChatApplication]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,7 +80,7 @@ ALTER DATABASE [RealTimeChatApplication] SET QUERY_STORE = OFF
 GO
 USE [RealTimeChatApplication]
 GO
-/****** Object:  Table [dbo].[ChatMessage]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  Table [dbo].[ChatMessage]    Script Date: 26-10-2024 22:24:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -97,7 +97,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ChatUser]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  Table [dbo].[ChatUser]    Script Date: 26-10-2024 22:24:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -118,7 +118,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserConnectionList]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  Table [dbo].[UserConnectionList]    Script Date: 26-10-2024 22:24:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -135,7 +135,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ChatMessage]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  StoredProcedure [dbo].[usp_ChatMessage]    Script Date: 26-10-2024 22:24:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -159,7 +159,7 @@ CREATE PROC [dbo].[usp_ChatMessage]
   END  
 END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ChatUser]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  StoredProcedure [dbo].[usp_ChatUser]    Script Date: 26-10-2024 22:24:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -215,71 +215,70 @@ BEGIN
  END  
 END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_MessageRecord]    Script Date: 24-10-2024 07:29:38 ******/
+/****** Object:  StoredProcedure [dbo].[usp_MessageRecord]    Script Date: 26-10-2024 22:24:01 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_MessageRecord]
-(
-    @Mode             INT = 0,
-    @SenderID         INT = 0,
-    @ReceiverID       INT = 0,
-    @Message          VARCHAR(100) = '',
+CREATE PROCEDURE [dbo].[usp_MessageRecord]    
+(    
+    @Mode             INT = 0,    
+    @SenderID         INT = 0,    
+    @ReceiverID       INT = 0,    
+    @Message          VARCHAR(100) = '',    
     @ChatMessageID    INT = 0
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
+)    
+AS    
+BEGIN    
+    SET NOCOUNT ON;    
+    DECLARE @LoginID INT;
 
-    -- Insert a new chat message
-    IF (@Mode = 1)
+    -- Insert a new chat message    
+    IF (@Mode = 1)    
+    BEGIN    
+        INSERT INTO ChatMessage (SenderID, ReceiverID, ChatMessage, TimeStamp)    
+        VALUES (@SenderID, @ReceiverID, @Message, GETDATE());    
+    END    
+    
+    -- Chat History List    
+    IF (@Mode = 2)    
     BEGIN
-        INSERT INTO ChatMessage (SenderID, ReceiverID, ChatMessage, TimeStamp)
-        VALUES (@SenderID, @ReceiverID, @Message, GETDATE());
-    END
+	      
+		 SELECT TOP 1 @LoginID = ChatUserID FROM ChatUser WHERE ChatUserId IN ( SELECT DISTINCT ReceiverID FROM ChatMessage  
+         WHERE SenderID = @ChatMessageID OR (ReceiverID = @ChatMessageID AND ReceiverID <> 0));
 
-    -- Chat History List
-    IF (@Mode = 2)
-    BEGIN
-        SELECT 
-            UserName, 
-            FullName, 
-            ProfilePictureURL, 
-            ChatUserID 
-        FROM 
-            ChatUser 
-        WHERE 
-            ChatUserId IN (
-                SELECT DISTINCT ReceiverID 
-                FROM ChatMessage 
-                WHERE 
-                    SenderID = @ChatMessageID OR 
-                    (ReceiverID = @ChatMessageID AND ReceiverID <> 0)
-            );
-    END
 
-    -- Chat Record between the Users
-    IF (@Mode = 3)
-    BEGIN
-        IF (@SenderID = @ReceiverID)
-        BEGIN
-            SELECT * 
-            FROM ChatMessage 
-            WHERE 
-                (SenderID = @SenderID AND ReceiverID = @ReceiverID);
-        END
-
-        IF (@SenderID <> @ReceiverID)
-        BEGIN
-            SELECT * 
-            FROM ChatMessage 
-            WHERE 
-                (SenderID = @SenderID OR ReceiverID = @SenderID) AND 
-                (ReceiverID = @ReceiverID OR SenderID = @ReceiverID);
-        END
-    END
-END
+		 IF (@LoginID = @ChatMessageID)
+           BEGIN
+              SELECT UserName, FullName, ProfilePictureURL, ChatUserID FROM ChatUser WHERE ChatUserId IN ( SELECT DISTINCT SenderID FROM ChatMessage  WHERE SenderID = @ChatMessageID OR (ReceiverID = @ChatMessageID AND ReceiverID <> 0)); 
+           END
+		 ELSE
+		   BEGIN
+		       SELECT UserName, FullName, ProfilePictureURL, ChatUserID FROM ChatUser WHERE ChatUserId IN ( SELECT DISTINCT ReceiverID FROM ChatMessage  WHERE SenderID = @ChatMessageID OR (ReceiverID = @ChatMessageID AND ReceiverID <> 0)); 
+		   END
+    END    
+    
+    -- Chat Record between the Users    
+    IF (@Mode = 3)    
+    BEGIN    
+        IF (@SenderID = @ReceiverID)    
+        BEGIN    
+            SELECT *     
+            FROM ChatMessage     
+            WHERE     
+                (SenderID = @SenderID AND ReceiverID = @ReceiverID);    
+        END    
+    
+        IF (@SenderID <> @ReceiverID)    
+        BEGIN    
+            SELECT *     
+            FROM ChatMessage     
+            WHERE     
+                (SenderID = @SenderID OR ReceiverID = @SenderID) AND     
+                (ReceiverID = @ReceiverID OR SenderID = @ReceiverID);    
+        END    
+    END    
+END 
 GO
 USE [master]
 GO
