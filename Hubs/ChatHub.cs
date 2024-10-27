@@ -130,36 +130,39 @@ namespace RealTimeChatApplication.Hubs
         public async Task SendNotificationToUser(int userId, string message)
         {
             string userID = userId.ToString();
-            string senderUserName = "";
+            string senderUserName = _sessionService.GetString("UserName");
 
+            // Check if user has any active connections
             if (_userConnections.TryGetValue(userID, out var connectionIds))
             {
+                if (connectionIds == null || connectionIds.Count == 0)
+                {
+                    Console.WriteLine($"User {userID} has no active connections.");
+                    return; // Exit if there are no active connections
+                }
+
                 foreach (var connectionId in connectionIds)
                 {
-                    Console.WriteLine($"Using connection ID: {connectionId}");
-                    
                     if (string.IsNullOrEmpty(connectionId))
                     {
                         Console.WriteLine("Connection ID is null or empty.");
-                        continue; 
+                        continue;
                     }
 
                     try
-                    {   
+                    {
                         await Clients.Client(connectionId).SendAsync("ReceiveMessages", senderUserName, message);
+                        Console.WriteLine($"Sent message to {connectionId}: {message}");
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error sending notification to connection {connectionId}: {ex.Message}");
                     }
                 }
-
-
-
             }
             else
             {
-                Console.WriteLine($"User {userId} is not connected. Notification not sent.");
+                Console.WriteLine($"No connections found for user {userID}. Notification not sent.");
             }
         }
 

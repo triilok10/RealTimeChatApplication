@@ -330,12 +330,13 @@
     });
 
     connection.on("ReceiveMessages", function (user, message) {
-        //console.log(user);
-        //console.log(message);
- 
-        toastr.success(`New message from ${user, message}`);
-    });
+        // Log user and message for debugging (optional)
+        console.log(user);
+        console.log(message);
 
+        // Correctly format the success message
+        toastr.success(`New message from ${user}: ${message}`);
+    });
 
 
 
