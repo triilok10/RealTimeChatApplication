@@ -135,6 +135,8 @@ namespace RealTimeChatApplication.Hubs
             // Check if user has any active connections
             if (_userConnections.TryGetValue(userID, out var connectionIds))
             {
+                Console.WriteLine($"User {userID} has {connectionIds.Count} active connections.");
+
                 if (connectionIds == null || connectionIds.Count == 0)
                 {
                     Console.WriteLine($"User {userID} has no active connections.");
@@ -151,12 +153,12 @@ namespace RealTimeChatApplication.Hubs
 
                     try
                     {
-                        await Clients.Client(connectionId).SendAsync("ReceiveMessages", senderUserName, message);
-                        Console.WriteLine($"Sent message to {connectionId}: {message}");
+                        await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+                        Console.WriteLine($"Sent notification to {connectionId}: {message}");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error sending notification to connection {connectionId}: {ex.Message}");
+                        Console.WriteLine($"Error sending notification to connection {connectionId}: {ex}");
                     }
                 }
             }

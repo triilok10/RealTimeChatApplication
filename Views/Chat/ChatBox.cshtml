@@ -329,17 +329,6 @@
         toastr.success(`New notification: ${message}`);
     });
 
-    connection.on("ReceiveMessages", function (user, message) {
-        // Log user and message for debugging (optional)
-        console.log(user);
-        console.log(message);
-
-        // Correctly format the success message
-        toastr.success(`New message from ${user}: ${message}`);
-    });
-
-
-
 
     function searchConnections() {
         var value = $("#searchConnections").val();
