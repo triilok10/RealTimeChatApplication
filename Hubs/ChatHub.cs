@@ -130,21 +130,31 @@ namespace RealTimeChatApplication.Hubs
         public async Task SendNotificationToUser(int userId, string message)
         {
             string userID = userId.ToString();
+            string senderUserName = "";
 
-            // Send notification to all connections of the user
             if (_userConnections.TryGetValue(userID, out var connectionIds))
             {
                 foreach (var connectionId in connectionIds)
                 {
-                    try
+                    Console.WriteLine($"Using connection ID: {connectionId}");
+                    
+                    if (string.IsNullOrEmpty(connectionId))
                     {
-                        await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+                        Console.WriteLine("Connection ID is null or empty.");
+                        continue; 
+                    }
+
+                    try
+                    {   
+                        await Clients.Client(connectionId).SendAsync("ReceiveMessages", senderUserName, message);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Error sending notification to connection {connectionId}: {ex.Message}");
                     }
                 }
+
+
 
             }
             else

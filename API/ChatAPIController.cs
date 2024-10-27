@@ -200,8 +200,8 @@ namespace RealTimeChatApplication.API
                     SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 4);
-                    cmd.Parameters.AddWithValue("@RequestID", userConnection.RequestID);  //Current Login User
-                    cmd.Parameters.AddWithValue("@AcceptID", userConnection.AcceptID);
+                    cmd.Parameters.AddWithValue("@SenderID", userConnection.RequestID);  //Current Login User
+                    cmd.Parameters.AddWithValue("@ReceiverID", userConnection.AcceptID);
                     cmd.ExecuteNonQuery();
                 }
                 msg = "Data inserted successfully of the Request";
