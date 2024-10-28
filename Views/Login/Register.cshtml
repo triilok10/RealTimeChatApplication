@@ -303,6 +303,7 @@
                         <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
                         <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
                         <input type="hidden" asp-for="TermsCondition" id="TermsCondition" value="" />
+                        <input type="hidden" asp-for="FCMToken" id="FCMToken">
                         <div class="form-group formAlignCenter">
                             <a href="JavaScript:Void()" class="" onclick="js_TermsandCondition();">Terms and Condition.</a><span>(Please read carefully)</span>
                             <br />
@@ -494,7 +495,7 @@
             return false;
         }
 
-
+        getFCMToken();
         return true;
     }
 
@@ -544,7 +545,7 @@
     const messaging = firebase.messaging();
 
     function getFCMToken() {
-        return messaging.getToken({ vapidKey: 'YOUR_VAPID_KEY' })
+        return messaging.getToken({ vapidKey: 'BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE' })
             .then((currentToken) => {
                 if (currentToken) {
                     document.getElementById('FCMToken').value = currentToken;
@@ -558,10 +559,10 @@
     }
 
     
-    function jsValidateSubmit() {
-        getFCMToken(); // Fetch the FCM token and set it in the hidden input
-        return true; 
-    }
+    // function jsValidateSubmit() {
+    //     getFCMToken(); 
+    //     return true; 
+    // }
 
 
 </script>
