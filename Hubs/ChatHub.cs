@@ -9,8 +9,8 @@ namespace RealTimeChatApplication.Hubs
 {
     public interface IChatHub
     {
-        Task SendNotificationToUser(int userId, string message);
-        Task<bool> IsUserConnected(int userId);
+        //Task SendNotificationToUser(int userId, string message);
+       // Task<bool> IsUserConnected(int userId);
         Task SendMessage(string recipientUserId, string message);
     }
 

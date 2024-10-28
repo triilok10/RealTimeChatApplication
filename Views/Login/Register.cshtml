@@ -319,6 +319,9 @@
 </body>
 
 <script src="~/js/webcam.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script>
+
 <script type="text/javascript">
 
 
@@ -523,5 +526,42 @@
         })
 
     }
+
+
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
+        authDomain: "realtimechatapplication-trilok.firebaseapp.com",
+        projectId: "realtimechatapplication-trilok",
+        storageBucket: "realtimechatapplication-trilok.appspot.com",
+        messagingSenderId: "965800671505",
+        appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
+        measurementId: "G-LCJX2K7LR6"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    function getFCMToken() {
+        return messaging.getToken({ vapidKey: 'YOUR_VAPID_KEY' })
+            .then((currentToken) => {
+                if (currentToken) {
+                    document.getElementById('FCMToken').value = currentToken;
+                } else {
+                    console.log('No registration token available. Request permission to generate one.');
+                }
+            })
+            .catch((err) => {
+                console.error('An error occurred while retrieving token. ', err);
+            });
+    }
+
+    
+    function jsValidateSubmit() {
+        getFCMToken(); // Fetch the FCM token and set it in the hidden input
+        return true; 
+    }
+
 
 </script>

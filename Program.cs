@@ -40,20 +40,21 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts(); 
+    app.UseHsts();
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
 
-app.UseRouting();
+    app.UseRouting();
 
-app.UseSession();
-app.UseAuthorization();
+    app.UseSession();
+    app.UseAuthorization();
 
-app.MapHub<ChatHub>("/chathub");
+    app.MapHub<ChatHub>("/chathub");
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Login}/{id?}");
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Login}/{action=Login}/{id?}");
 
-app.Run();
+    app.Run();
+}

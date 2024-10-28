@@ -231,12 +231,12 @@ namespace RealTimeChatApplication.Controllers
                     //}
 
                     // Check if the user is connected
-                    bool isUserConnected = await _signalRHub.IsUserConnected(Id);
+                  //  bool isUserConnected = await _signalRHub.IsUserConnected(Id);
 
-                    if (isUserConnected)
-                    {
-                        await _signalRHub.SendNotificationToUser(Id, $"{loginUserId} has sent you a connection request.");
-                    }
+                    //if (isUserConnected)
+                    //{
+                    //    await _signalRHub.SendNotificationToUser(Id, $"{loginUserId} has sent you a connection request.");
+                    //}
 
                     TempData["successMessage"] = "Connection request sent successfully.";
                 }
