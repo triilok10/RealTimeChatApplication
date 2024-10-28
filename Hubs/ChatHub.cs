@@ -126,52 +126,52 @@ namespace RealTimeChatApplication.Hubs
             }
         }
 
-        #region "Send Notification"
-        public async Task SendNotificationToUser(int userId, string message)
-        {
-            string userID = userId.ToString();
-            string senderUserName = _sessionService.GetString("UserName");
+        //#region "Send Notification"
+        //public async Task SendNotificationToUser(int userId, string message)
+        //{
+        //    string userID = userId.ToString();
+        //    string senderUserName = _sessionService.GetString("UserName");
 
-            // Check if user has any active connections
-            if (_userConnections.TryGetValue(userID, out var connectionIds))
-            {
-                Console.WriteLine($"User {userID} has {connectionIds.Count} active connections.");
+        //    // Check if user has any active connections
+        //    if (_userConnections.TryGetValue(userID, out var connectionIds))
+        //    {
+        //        Console.WriteLine($"User {userID} has {connectionIds.Count} active connections.");
 
-                if (connectionIds == null || connectionIds.Count == 0)
-                {
-                    Console.WriteLine($"User {userID} has no active connections.");
-                    return; // Exit if there are no active connections
-                }
+        //        if (connectionIds == null || connectionIds.Count == 0)
+        //        {
+        //            Console.WriteLine($"User {userID} has no active connections.");
+        //            return; // Exit if there are no active connections
+        //        }
 
-                foreach (var connectionId in connectionIds)
-                {
-                    if (string.IsNullOrEmpty(connectionId))
-                    {
-                        Console.WriteLine("Connection ID is null or empty.");
-                        continue;
-                    }
+        //        foreach (var connectionId in connectionIds)
+        //        {
+        //            if (string.IsNullOrEmpty(connectionId))
+        //            {
+        //                Console.WriteLine("Connection ID is null or empty.");
+        //                continue;
+        //            }
 
-                    try
-                    {
-                        await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
-                        Console.WriteLine($"Sent notification to {connectionId}: {message}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error sending notification to connection {connectionId}: {ex}");
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine($"No connections found for user {userID}. Notification not sent.");
-            }
-        }
+        //            try
+        //            {
+        //                await Clients.Client(connectionId).SendAsync("ReceiveNotification", message);
+        //                Console.WriteLine($"Sent notification to {connectionId}: {message}");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Console.WriteLine($"Error sending notification to connection {connectionId}: {ex}");
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine($"No connections found for user {userID}. Notification not sent.");
+        //    }
+        //}
 
-        public Task<bool> IsUserConnected(int userId)
-        {
-            return Task.FromResult(_userConnections.ContainsKey(userId.ToString()));
-        }
-        #endregion
+        //public Task<bool> IsUserConnected(int userId)
+        //{
+        //    return Task.FromResult(_userConnections.ContainsKey(userId.ToString()));
+        //}
+        //#endregion
     }
 }

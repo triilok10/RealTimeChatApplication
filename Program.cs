@@ -1,20 +1,24 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.Extensions.FileProviders;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Controllers;
 using RealTimeChatApplication.Hubs;
+using RealTimeChatApplication.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSignalR();
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient(); 
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<SessionAdmin>();
 builder.Services.AddScoped<RedirectIfLoggedInAttribute>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IChatHub, ChatHub>();
 
-
+// Configure session settings
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(5);
@@ -22,25 +26,29 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-var app = builder.Build();
+var firebaseConfig = builder.Configuration.GetSection("Firebase").Get<FirebaseConfig>();
 
+var serviceAccountPath = Path.Combine(Directory.GetCurrentDirectory(), firebaseConfig.ServiceAccountFile.TrimStart('~', '/').Replace('/', Path.DirectorySeparatorChar));
+
+FirebaseApp.Create(new AppOptions
+{
+    Credential = GoogleCredential.FromFile(serviceAccountPath)
+});
+
+var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
+    app.UseHsts(); 
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-
 app.UseSession();
-
 app.UseAuthorization();
-
 
 app.MapHub<ChatHub>("/chathub");
 
