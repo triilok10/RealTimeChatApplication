@@ -320,9 +320,10 @@
 </body>
 
 <script src="~/js/webcam.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script>
-
+@* <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script> *@
+<script type="module" src="~/js/firebase-app.js"></script>
+<script type="module" src="~/js/firebase-messaging.js"></script>
 <script type="text/javascript">
 
 
@@ -418,8 +419,8 @@
     }
     window.onload = geoLocation;
 
-    function jsValidateSubmit() {
-
+    function jsValidateSubmit(event) {
+        event.preventDefault();
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
@@ -495,8 +496,14 @@
             return false;
         }
 
-        getFCMToken();
-        return true;
+        getFCMToken().then(() => {
+            $("form").off('submit').submit();
+        }).catch((error) => {
+            console.error('Error retrieving FCM token:', error);
+            toastr.error('Failed to retrieve FCM token. Please try again.');
+        });
+
+        return false;
     }
 
 
@@ -541,6 +548,7 @@
     };
 
     // Initialize Firebase
+    debugger;
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
@@ -549,6 +557,7 @@
             .then((currentToken) => {
                 if (currentToken) {
                     document.getElementById('FCMToken').value = currentToken;
+                    console.log(currentToken);
                 } else {
                     console.log('No registration token available. Request permission to generate one.');
                 }
@@ -558,10 +567,10 @@
             });
     }
 
-    
+
     function jsValidateSubmit() {
-        getFCMToken(); 
-        return true; 
+        getFCMToken();
+        return true;
     }
 
 
