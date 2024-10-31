@@ -1,7 +1,7 @@
 // Import Firebase libraries
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js');
-
+importScripts('/js/firebase-app-compat.js');
+importScripts('/js/firebase-messaging-compat.js');
+debugger;
 // Initialize Firebase
 firebase.initializeApp({
     apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
@@ -17,9 +17,9 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // Handle background messages
-messaging.onBackgroundMessage(function(payload) {
+messaging.onBackgroundMessage(function (payload) {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    
+
     const notificationTitle = payload.notification.title || 'Background Message Title';
     const notificationOptions = {
         body: payload.notification.body,
