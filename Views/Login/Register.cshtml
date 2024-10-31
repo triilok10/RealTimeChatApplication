@@ -322,8 +322,8 @@
 
 
 <script src="~/js/webcam.min.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js" defer></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/10.0.0/firebase-messaging.js" defer></script>
+@* <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js" defer></script>
+ <script type="module" src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js" defer></script>*@
 
 <script type="text/javascript">
 
@@ -421,20 +421,20 @@
     window.onload = geoLocation;
 
     async function jsValidateSubmit() {
+        // Get form values
 
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
         var fullName = $("#fullname").val().trim();
-        console.log(password);
-
         var confirmPassword = $("#confirmPassword").val().trim();
-        console.log(confirmPassword);
         var gender = $("#Gender").val();
         var termsCondition = $("#TermsCondition").val();
+
+        // Regular expression for password validation
         var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
-
+        // Validation checks
         if (!username) {
             $("#username").addClass("border-Danger");
             toastr.error("Please enter the Username");
@@ -448,7 +448,7 @@
             toastr.error("Please enter the Full Name");
             return false;
         } else {
-            $("#fullName").removeClass("border-Danger");
+            $("#fullname").removeClass("border-Danger");
         }
 
         if (!email) {
@@ -468,14 +468,12 @@
         }
 
         if (!passwordRegex.test(password)) {
-            console.log(password);
             toastr.error("Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.");
             $("#password").addClass("border-Danger");
             return false;
         } else {
             $("#password").removeClass("border-Danger");
         }
-
 
         if (!confirmPassword) {
             toastr.error("Please enter the Confirm Password");
@@ -485,45 +483,20 @@
             $("#confirmPassword").removeClass("border-Danger");
         }
 
-
-
         if (password !== confirmPassword) {
             toastr.error("Password and Confirm Password must be the same");
             return false;
         }
 
-        if (termsCondition == false || termsCondition == "") {
+        if (termsCondition === false || termsCondition === "") {
             toastr.error("Please read the Terms and Condition");
             return false;
         }
 
+        requestNotificationPermission();
 
-        debugger;
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
-            authDomain: "realtimechatapplication-trilok.firebaseapp.com",
-            projectId: "realtimechatapplication-trilok",
-            storageBucket: "realtimechatapplication-trilok.appspot.com",
-            messagingSenderId: "965800671505",
-            appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
-            measurementId: "G-LCJX2K7LR6"
-        };
-
-        try {
-            debugger;
-            firebase.initializeApp(firebaseConfig);
-            const messaging = firebase.messaging();
-            const token = await messaging.getToken({ vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
-            document.getElementById('FCMToken').value = token;
-            return token;
-        } catch (error) {
-            console.error('Error getting FCM token:', error);
-            throw error;
-        }
-
-        return true;
+        return true; // Return true to allow form submission
     }
-
 
     function js_TermsandCondition() {
 
@@ -553,4 +526,51 @@
 
     }
 
-</script>           
+</script>
+<script type="module">
+    // Import necessary Firebase functions
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
+
+    // Firebase configuration object
+    const firebaseConfig = {
+        apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
+        authDomain: "realtimechatapplication-trilok.firebaseapp.com",
+        projectId: "realtimechatapplication-trilok",
+        storageBucket: "realtimechatapplication-trilok.appspot.com",
+        messagingSenderId: "965800671505",
+        appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
+        measurementId: "G-LCJX2K7LR6"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Set up Firebase Messaging
+    const messaging = getMessaging(app);
+
+    // Request notification permission and get FCM token
+    async function requestNotificationPermission() {
+        try {
+            debugger;
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const token = await getToken(messaging, { vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
+                if (token) {
+                    console.log('FCM Token:', token);
+                    // Send the token to your server here
+                } else {
+                    console.log('No registration token available.');
+                }
+            } else {
+                console.log('Notification permission not granted.');
+            }
+        } catch (err) {
+            console.error('Error getting FCM token: ', err);
+        }
+    }
+
+
+    // Call the function to request permission and get the token
+    requestNotificationPermission();
+</script>
