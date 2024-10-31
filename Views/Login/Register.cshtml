@@ -319,14 +319,11 @@
         <!-- Partial View content will be injected here -->
     </div>
 </body>
-
 <script src="~/js/webcam.min.js"></script>
 <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js" defer></script>
 <script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging.js" defer></script>
-@* <script type="module" src="~/js/firebase-app.js"></script>
-<script type="module" src="~/js/firebase-messaging.js"></script> *@
-<script type="text/javascript">
 
+<script type="text/javascript">
 
     Webcam.set({
         width: 320,
@@ -352,13 +349,9 @@
 
     function takeSnapshot() {
         Webcam.snap(function (data_uri) {
-
             document.getElementById('ProfilePictureURLCamera').value = data_uri;
-
             document.getElementById('profilePicturePreview').src = data_uri;
-
             document.getElementById('profilePicturePreview').style.display = 'block';
-
             document.getElementById('my_camera').style.display = 'none';
             Webcam.reset();
             document.getElementById('captureButton').style.display = 'none';
@@ -403,107 +396,91 @@
     }
 
     function showError(error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                alert("User denied the request for Geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                alert("The request to get user location timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-                alert("An unknown error occurred.");
-                break;
-        }
+        const errorMessage = {
+            1: "User denied the request for Geolocation.",
+            2: "Location information is unavailable.",
+            3: "The request to get user location timed out.",
+            4: "An unknown error occurred."
+        };
+        alert(errorMessage[error.code] || "An unknown error occurred.");
     }
+
     window.onload = geoLocation;
 
     function jsValidateSubmit() {
-
-        var username = $("#username").val().trim();
-        var email = $("#email").val().trim();
-        var password = $("#password").val().trim();
-        var fullName = $("#fullname").val().trim();
-        console.log(password);
-
-        var confirmPassword = $("#confirmPassword").val().trim();
-        console.log(confirmPassword);
-        var gender = $("#Gender").val();
-        var termsCondition = $("#TermsCondition").val();
-        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-
+        const username = $("#username").val().trim();
+        const email = $("#email").val().trim();
+        const password = $("#password").val().trim();
+        const confirmPassword = $("#confirmPassword").val().trim();
+        const fullName = $("#fullname").val().trim();
+        const gender = $("#Gender").val();
+        const termsCondition = $("#TermsCondition").is(":checked");
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
         if (!username) {
             $("#username").addClass("border-Danger");
             toastr.error("Please enter the Username");
             return false;
-        } else {
-            $("#username").removeClass("border-Danger");
         }
-
         if (!fullName) {
             $("#fullname").addClass("border-Danger");
             toastr.error("Please enter the Full Name");
             return false;
-        } else {
-            $("#fullName").removeClass("border-Danger");
         }
-
         if (!email) {
-            toastr.error("Please enter the Email");
             $("#email").addClass("border-Danger");
+            toastr.error("Please enter the Email");
             return false;
-        } else {
-            $("#email").removeClass("border-Danger");
         }
-
-        if (gender === "0" || gender === null) {
-            toastr.error("Please select a Gender");
+        if (gender === "0") {
             $("#Gender").addClass("border-Danger");
+            toastr.error("Please select a Gender");
             return false;
-        } else {
-            $("#Gender").removeClass("border-Danger");
         }
-
         if (!passwordRegex.test(password)) {
-            console.log(password);
-            toastr.error("Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.");
             $("#password").addClass("border-Danger");
+            toastr.error("Password must meet security requirements");
             return false;
-        } else {
-            $("#password").removeClass("border-Danger");
         }
-
-
-        if (!confirmPassword) {
-            toastr.error("Please enter the Confirm Password");
-            $("#confirmPassword").addClass("border-Danger");
-            return false;
-        } else {
-            $("#confirmPassword").removeClass("border-Danger");
-        }
-
-
-
         if (password !== confirmPassword) {
-            toastr.error("Password and Confirm Password must be the same");
+            toastr.error("Password and Confirm Password must match");
+            return false;
+        }
+        if (!termsCondition) {
+            toastr.error("Please accept the Terms and Conditions");
             return false;
         }
 
-        if (termsCondition == false || termsCondition == "") {
-            toastr.error("Please read the Terms and Condition");
-            return false;
-        }
-
-        initializeFirebase();
-        firebase.initializeApp(firebaseConfig);
-        const messaging = firebase.messaging();
-
-        getFCMToken();
-
+        getFCMToken(); // Get FCM token on form submission
         return true;
+    }
+
+
+
+    async function getFCMToken() {
+        try {
+            const firebaseConfig = {
+                apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
+                authDomain: "realtimechatapplication-trilok.firebaseapp.com",
+                projectId: "realtimechatapplication-trilok",
+                storageBucket: "realtimechatapplication-trilok.appspot.com",
+                messagingSenderId: "965800671505",
+                appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
+                measurementId: "G-LCJX2K7LR6"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+
+            const token = await messaging.getToken({
+                vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE"
+            });
+            document.getElementById('FCMToken').value = token;
+            console.log("FCM Token:", token);
+        } catch (error) {
+            console.error('Error getting FCM token:', error);
+        }
     }
 
 
@@ -534,43 +511,4 @@
         })
 
     }
-
-
-    function initializeFirebase() {
-        debugger;
-        const firebaseConfig = {
-            apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
-            authDomain: "realtimechatapplication-trilok.firebaseapp.com",
-            projectId: "realtimechatapplication-trilok",
-            storageBucket: "realtimechatapplication-trilok.appspot.com",
-            messagingSenderId: "965800671505",
-            appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
-            measurementId: "G-LCJX2K7LR6"
-        };
-
-    }
-
-    // // Call the function to initialize Firebase when the window loads
-    // window.onload = function () {
-    //     const messaging = initializeFirebase();
-    //     getFCMToken(messaging);
-    // };
-
-
-
-    async function getFCMToken() {
-        try {
-            debugger;
-            const messaging = firebase.messaging();
-            const token = await messaging.getToken({ vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
-            document.getElementById('FCMToken').value = token;
-            return token;
-        } catch (error) {
-            console.error('Error getting FCM token:', error);
-            throw error;
-        }
-    }
-
-
-
-</script>                   
+</script>
