@@ -234,6 +234,7 @@
     }
 </style>
 
+
 <body>
     <div class="container" id="registerContainer">
         <div class="image-section" style="background-image: url('../images/registerChat.svg');"></div>
@@ -320,10 +321,10 @@
 </body>
 
 <script src="~/js/webcam.min.js"></script>
-@* <script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script type="module" src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js"></script> *@
-<script type="module" src="~/js/firebase-app.js"></script>
-<script type="module" src="~/js/firebase-messaging.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js" defer></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging.js" defer></script>
+@* <script type="module" src="~/js/firebase-app.js"></script>
+<script type="module" src="~/js/firebase-messaging.js"></script> *@
 <script type="text/javascript">
 
 
@@ -419,8 +420,8 @@
     }
     window.onload = geoLocation;
 
-    function jsValidateSubmit(event) {
-        event.preventDefault();
+    function jsValidateSubmit() {
+
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
         var password = $("#password").val().trim();
@@ -496,14 +497,13 @@
             return false;
         }
 
-        getFCMToken().then(() => {
-            $("form").off('submit').submit();
-        }).catch((error) => {
-            console.error('Error retrieving FCM token:', error);
-            toastr.error('Failed to retrieve FCM token. Please try again.');
-        });
+        initializeFirebase();
+        firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
 
-        return false;
+        getFCMToken();
+
+        return true;
     }
 
 
@@ -536,42 +536,41 @@
     }
 
 
+    function initializeFirebase() {
+        debugger;
+        const firebaseConfig = {
+            apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
+            authDomain: "realtimechatapplication-trilok.firebaseapp.com",
+            projectId: "realtimechatapplication-trilok",
+            storageBucket: "realtimechatapplication-trilok.appspot.com",
+            messagingSenderId: "965800671505",
+            appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
+            measurementId: "G-LCJX2K7LR6"
+        };
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
-        authDomain: "realtimechatapplication-trilok.firebaseapp.com",
-        projectId: "realtimechatapplication-trilok",
-        storageBucket: "realtimechatapplication-trilok.appspot.com",
-        messagingSenderId: "965800671505",
-        appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
-        measurementId: "G-LCJX2K7LR6"
-    };
+    }
 
-    // Initialize Firebase
-    debugger;
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
+    // // Call the function to initialize Firebase when the window loads
+    // window.onload = function () {
+    //     const messaging = initializeFirebase();
+    //     getFCMToken(messaging);
+    // };
 
-    function getFCMToken() {
-        return messaging.getToken({ vapidKey: 'BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE' })
-            .then((currentToken) => {
-                if (currentToken) {
-                    document.getElementById('FCMToken').value = currentToken;
-                    console.log(currentToken);
-                } else {
-                    console.log('No registration token available. Request permission to generate one.');
-                }
-            })
-            .catch((err) => {
-                console.error('An error occurred while retrieving token. ', err);
-            });
+
+
+    async function getFCMToken() {
+        try {
+            debugger;
+            const messaging = firebase.messaging();
+            const token = await messaging.getToken({ vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
+            document.getElementById('FCMToken').value = token;
+            return token;
+        } catch (error) {
+            console.error('Error getting FCM token:', error);
+            throw error;
+        }
     }
 
 
-    function jsValidateSubmit() {
-        getFCMToken();
-        return true;
-    }
 
-
-</script>
+</script>                   
