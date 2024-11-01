@@ -39,15 +39,19 @@ namespace RealTimeChatApplication.API
                         {
                             ChatMessage obj = new ChatMessage
                             {
-                                SearchConnection = reader["UserName"].ToString(),
-                                ChatMessageID = Convert.ToInt32(reader["ChatUserID"]),
-                                ProfilePictureURL = Convert.ToString(reader["ProfilePictureURL"])
+                                SearchConnection = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
+                                ChatMessageID = reader["ChatUserID"] != DBNull.Value ? Convert.ToInt32(reader["ChatUserID"]) : 0,
+                                ProfilePictureURL = reader["ProfilePictureURL"] != DBNull.Value ? Convert.ToString(reader["ProfilePictureURL"]) : string.Empty,
+                                IsRequestAccepted = reader["IsRequestAccepted"] != DBNull.Value ? Convert.ToBoolean(reader["IsRequestAccepted"]) : false,
+                                RequestID = reader["RequestID"] != DBNull.Value ? Convert.ToInt32(reader["RequestID"]) : 0,
+                                AcceptID = reader["AcceptID"] != DBNull.Value ? Convert.ToInt32(reader["AcceptID"]) : 0
                             };
+
                             lstMessage.Add(obj);
                         }
                     }
+                    return Ok(lstMessage);
                 }
-                return Ok(lstMessage);
             }
             catch (Exception ex)
             {

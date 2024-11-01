@@ -11,5 +11,8 @@
         public string? ProfilePictureURL { get; set; }
         public string? ChatMessageData { get; set; }
         public DateTime? TimeStamp { get; set; }
+        public bool? IsRequestAccepted { get; set; }
+        public int? RequestID { get; set; }
+        public int? AcceptID { get; set; }
     }
 }
