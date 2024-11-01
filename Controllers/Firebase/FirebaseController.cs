@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RealTimeChatApplication.Models;
-using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Text;
 
 namespace RealTimeChatApplication.Controllers.Firebase
@@ -14,64 +13,77 @@ namespace RealTimeChatApplication.Controllers.Firebase
     {
 
         private readonly HttpClient _httpClient;
+        private readonly string _serviceAccountKeyPath = "D:/.NET/RealTimeChatApplication/RealTimeChatApplication/wwwroot/Firebase Secret File/realtimechatapplication-trilok-firebase-adminsdk-elzcb-c844b026a9.json";
 
-        public FirebaseController(IHttpClientFactory httpClientFactory)
+
+        public FirebaseController(HttpClient httpClient)
         {
-            _httpClient = httpClientFactory.CreateClient();
+            _httpClient = httpClient;
         }
 
-        public async Task<IActionResult> SendNotification([FromBody] UserPendingNotification notification)
+        public IActionResult Test()
         {
+            string success = "";
+            return Ok(new { success = "AiSuccess" });        }
+
+
+        [HttpPost("SendNotificationAsync")]
+        public async Task<IActionResult> SendNotificationAsync([FromBody] UserPendingNotification notification)
+        {
+            string msg = "";
             try
             {
-                if (notification == null || string.IsNullOrEmpty(notification.FCMToken))
-                {
-                    return BadRequest("Invalid notification data.");
-                }
-
-                string firebaseUrl = "https://fcm.googleapis.com/fcm/send";
 
 
-                string serverKey = "YOUR_SERVER_KEY";
+                var googleCredential = GoogleCredential.FromFile(_serviceAccountKeyPath).CreateScoped("https://www.googleapis.com/auth/firebase.messaging");
+
+                var accessToken = await googleCredential.UnderlyingCredential.GetAccessTokenForRequestAsync();
+
+
+                var firebaseUrl = "https://fcm.googleapis.com/v1/projects/realtimechatapplication-trilok/messages:send";
+
 
                 var fcmMessage = new
                 {
-                    to = notification.FCMToken,
-                    notification = new
+                    message = new
                     {
-                        title = "New Connection Request",
-                        body = notification.Message
-                    },
-                    data = new
-                    {
-                        userId = notification.LoginUserID,
-                        message = notification.Message
+                        token = notification.FCMToken,
+                        notification = new
+                        {
+                            title = notification.Message,
+                            body = notification.Message
+                        }
                     }
                 };
-                string fcmJson = JsonConvert.SerializeObject(fcmMessage);
-                StringContent content = new StringContent(fcmJson, Encoding.UTF8, "application/json");
 
-              
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("key", "=" + serverKey);
 
-                
-                HttpResponseMessage response = await _httpClient.PostAsync(firebaseUrl, content);
+                string jsonMessage = JsonConvert.SerializeObject(fcmMessage);
+                var content = new StringContent(jsonMessage, Encoding.UTF8, "application/json");
+
+
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+
+                var response = await _httpClient.PostAsync(firebaseUrl, content);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return Ok("Notification sent successfully.");
+                    Console.WriteLine("Notification sent successfully.");
                 }
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
-                    return StatusCode((int)response.StatusCode, $"Failed to send notification. Error: {error}");
+                    Console.WriteLine($"Failed to send notification. Error: {error}");
                 }
-
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+            }
             return Ok();
         }
 
-
     }
 }
+
+

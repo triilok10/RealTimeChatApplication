@@ -217,7 +217,7 @@ namespace RealTimeChatApplication.Controllers
                         msg = resBody.msg;
                         return RedirectToAction("ChatBox", "Chat");
                     }
-                    string dbSaveUrl = baseUrl + "api/Firebase/SendNotification";
+                    string dbSaveUrl = baseUrl + "api/Firebase/SendNotificationAsync";
                     UserPendingNotification pUserPendingNotification = new UserPendingNotification
                     {
                         LoginUserID = Id,
