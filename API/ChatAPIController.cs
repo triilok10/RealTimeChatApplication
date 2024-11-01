@@ -113,7 +113,7 @@ namespace RealTimeChatApplication.API
                     SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 2);
-                    cmd.Parameters.AddWithValue("@ChatMessageID", chatMessage.ChatMessageID);                  
+                    cmd.Parameters.AddWithValue("@ChatMessageID", chatMessage.ChatMessageID);
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
@@ -194,6 +194,7 @@ namespace RealTimeChatApplication.API
             string msg = "";
             try
             {
+                ChatUser obj = new ChatUser();
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     con.Open();
@@ -203,16 +204,26 @@ namespace RealTimeChatApplication.API
                     cmd.Parameters.AddWithValue("@SenderID", userConnection.RequestID);  //Current Login User
                     cmd.Parameters.AddWithValue("@ReceiverID", userConnection.AcceptID);
                     cmd.ExecuteNonQuery();
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            obj.FCMToken = Convert.ToString(rdr["FCMToken"]);
+                        }
+                    }
                 }
                 msg = "Data inserted successfully of the Request";
                 res = true;
+                return Ok(new { msg, res, FCMToken = obj.FCMToken });
             }
             catch (Exception ex)
             {
                 msg = ex.Message;
                 res = false;
+                return Ok(new { msg, res });
             }
-            return Ok(new { msg, res });
+
         }
 
         #endregion

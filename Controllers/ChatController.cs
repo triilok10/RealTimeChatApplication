@@ -180,6 +180,7 @@ namespace RealTimeChatApplication.Controllers
         {
             bool res = false;
             string msg = "";
+            string FCMToken = "";
             try
             {
                 if (Id == 0)
@@ -206,21 +207,37 @@ namespace RealTimeChatApplication.Controllers
                     dynamic resBody = await response.Content.ReadAsStringAsync();
                     dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
 
+                    if (resData.fcmToken != null)
+                    {
+                        FCMToken = resData.fcmToken;
+                    }
+
                     if (resData.res == false)
                     {
                         msg = resBody.msg;
                         return RedirectToAction("ChatBox", "Chat");
                     }
-                    string dbSaveUrl = baseUrl + "api/ChatAPI/PendingDBNotification";
+                    string dbSaveUrl = baseUrl + "api/Firebase/SendNotification";
                     UserPendingNotification pUserPendingNotification = new UserPendingNotification
                     {
                         LoginUserID = Id,
                         Message = $"{loginUserId} has sent you a connection request.",
-                        CreatedDate = DateTime.UtcNow
+                        CreatedDate = DateTime.UtcNow,
+                        FCMToken = FCMToken
                     };
 
                     string jsonContent = JsonConvert.SerializeObject(pUserPendingNotification);
                     StringContent contentData = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+
+                    HttpResponseMessage resDB = await _httpClient.PostAsync(dbSaveUrl, contentData);
+
+                    if (!resDB.IsSuccessStatusCode)
+                    {
+                        TempData["errorMessage"] = "Failed to save the notification in the database.";
+                        return RedirectToAction("ChatBox", "Chat");
+                    }
+
 
                     //HttpResponseMessage resDB = await _httpClient.PostAsync(dbSaveUrl, contentData);
 
@@ -231,7 +248,7 @@ namespace RealTimeChatApplication.Controllers
                     //}
 
                     // Check if the user is connected
-                  //  bool isUserConnected = await _signalRHub.IsUserConnected(Id);
+                    //  bool isUserConnected = await _signalRHub.IsUserConnected(Id);
 
                     //if (isUserConnected)
                     //{

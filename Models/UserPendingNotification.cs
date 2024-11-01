@@ -6,5 +6,6 @@
         public string? Message { get; set; }
         public bool? IsSent { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public string? FCMToken { get; set; }
     }
 }
