@@ -181,6 +181,7 @@ namespace RealTimeChatApplication.Controllers
             bool res = false;
             string msg = "";
             string FCMToken = "";
+            string resMessage = "";
             try
             {
                 if (Id == 0)
@@ -232,37 +233,49 @@ namespace RealTimeChatApplication.Controllers
 
                     HttpResponseMessage resDB = await _httpClient.PostAsync(dbSaveUrl, contentData);
 
-                    if (!resDB.IsSuccessStatusCode)
+                    if (resDB.IsSuccessStatusCode)
                     {
                         dynamic resNotification = await resDB.Content.ReadAsStringAsync();
                         dynamic resNotificationData = JsonConvert.DeserializeObject(resNotification);
 
-                        if (resNotificationData.res = true)
+                        string strSaveNotificationURL = baseUrl + "api/ChatAPI/NotificationMessage";
+
+
+                        SendNotificationMessage pSendNotificationMessage = new SendNotificationMessage
                         {
-                            string strSaveNotificationURL = baseUrl + "api/ChatAPI/NotificationMessage";
+                            SenderID = Convert.ToInt32(loginUserId),
+                            ReceiverID = Id,
+                            MessageData = resNotificationData.msg,
+                            IsNotificationSend = resNotificationData.res,
+                        };
+
+                        string saveNotification = JsonConvert.SerializeObject(pSendNotificationMessage);
+                        StringContent saveNotificationContent = new StringContent(saveNotification, Encoding.UTF8, "application/json");
+
+
+                        HttpResponseMessage resSaveNotification = await _httpClient.PostAsync(strSaveNotificationURL, saveNotificationContent);
+
+                        if (resSaveNotification.IsSuccessStatusCode)
+                        {
+
+                            dynamic SaveNotificationResponse = await resSaveNotification.Content.ReadAsStringAsync();
+                            dynamic SaveNotificationBody = JsonConvert.DeserializeObject(SaveNotificationResponse);
+
+                            if (resNotificationData.res == true)
+                            {
+                                resMessage = resNotificationData.msg;
+                                TempData["successmessage"] = resMessage;
+                            }
+                            if (resNotificationData.res == false)
+                            {
+                                resMessage = resNotificationData.msg;
+                                TempData["errorMessage"] = resMessage;
+                            }
+
+                            return RedirectToAction("ChatBox", "Chat");
                         }
 
-
                     }
-
-
-                    //HttpResponseMessage resDB = await _httpClient.PostAsync(dbSaveUrl, contentData);
-
-                    //if (!resDB.IsSuccessStatusCode)
-                    //{
-                    //    TempData["errorMessage"] = "Failed to save the notification in the database.";
-                    //    return RedirectToAction("ChatBox", "Chat");
-                    //}
-
-                    // Check if the user is connected
-                    //  bool isUserConnected = await _signalRHub.IsUserConnected(Id);
-
-                    //if (isUserConnected)
-                    //{
-                    //    await _signalRHub.SendNotificationToUser(Id, $"{loginUserId} has sent you a connection request.");
-                    //}
-
-                    TempData["successMessage"] = "Connection request sent successfully.";
                 }
                 else
                 {

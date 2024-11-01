@@ -87,7 +87,6 @@ namespace RealTimeChatApplication.Controllers
                     _sessionService.SetInt32("UserID", UserId);
                     _sessionService.SetString("UserName", Username);
                     TempData["successMessage"] = Message;
-                    TempData.Keep("successMessage");
                     return RedirectToAction("ChatBox", "Chat");
                 }
                 else

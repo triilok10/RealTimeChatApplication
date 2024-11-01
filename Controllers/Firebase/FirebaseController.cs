@@ -76,6 +76,8 @@ namespace RealTimeChatApplication.Controllers.Firebase
                 else
                 {
                     var error = await response.Content.ReadAsStringAsync();
+                    res = false;
+                    msg = error;
                     Console.WriteLine($"Failed to send notification. Error: {error}");
                 }
             }

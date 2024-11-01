@@ -230,22 +230,23 @@ namespace RealTimeChatApplication.API
 
         #region "Pending Notification Code"
         [HttpPost]
-        public IActionResult NotificationMessage([FromBody] UserPendingNotification notification)
+        public IActionResult NotificationMessage([FromBody] SendNotificationMessage notification)
         {
             bool res = false;
             string msg = "";
+
             try
             {
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("", con);
+                    SqlCommand cmd = new SqlCommand("usp_NotificationRecord", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("", 1);
-                    cmd.Parameters.AddWithValue("", 1);
-                    cmd.Parameters.AddWithValue("", 1);
-                    cmd.Parameters.AddWithValue("", 1);
-                    cmd.Parameters.AddWithValue("", 1);
+                    cmd.Parameters.AddWithValue("@Mode", 1);
+                    cmd.Parameters.AddWithValue("@SenderID", notification.SenderID);
+                    cmd.Parameters.AddWithValue("@ReceiverID", notification.ReceiverID);
+                    cmd.Parameters.AddWithValue("@MessageData", notification.MessageData);
+                    cmd.Parameters.AddWithValue("@IsNotificationSend", notification.IsNotificationSend);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -254,7 +255,7 @@ namespace RealTimeChatApplication.API
                 msg = ex.Message;
                 res = false;
             }
-            return Ok(new { res, msg });
+            return Ok(new { res = res, msg = msg });
 
         }
 
