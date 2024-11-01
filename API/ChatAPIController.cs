@@ -230,7 +230,7 @@ namespace RealTimeChatApplication.API
 
         #region "Pending Notification Code"
         [HttpPost]
-        public IActionResult PendingDBNotification([FromBody] UserPendingNotification notification)
+        public IActionResult NotificationMessage([FromBody] UserPendingNotification notification)
         {
             bool res = false;
             string msg = "";

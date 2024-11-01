@@ -234,8 +234,15 @@ namespace RealTimeChatApplication.Controllers
 
                     if (!resDB.IsSuccessStatusCode)
                     {
-                        TempData["errorMessage"] = "Failed to save the notification in the database.";
-                        return RedirectToAction("ChatBox", "Chat");
+                        dynamic resNotification = await resDB.Content.ReadAsStringAsync();
+                        dynamic resNotificationData = JsonConvert.DeserializeObject(resNotification);
+
+                        if (resNotificationData.res = true)
+                        {
+                            string strSaveNotificationURL = baseUrl + "api/ChatAPI/NotificationMessage";
+                        }
+
+
                     }
 
 

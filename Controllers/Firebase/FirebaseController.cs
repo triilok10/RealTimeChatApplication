@@ -31,6 +31,7 @@ namespace RealTimeChatApplication.Controllers.Firebase
         public async Task<IActionResult> SendNotificationAsync([FromBody] UserPendingNotification notification)
         {
             string msg = "";
+            bool res = false;
             try
             {
 
@@ -68,6 +69,8 @@ namespace RealTimeChatApplication.Controllers.Firebase
 
                 if (response.IsSuccessStatusCode)
                 {
+                    res = true;
+                    msg = "Notification sent successfully.";
                     Console.WriteLine("Notification sent successfully.");
                 }
                 else
@@ -79,8 +82,9 @@ namespace RealTimeChatApplication.Controllers.Firebase
             catch (Exception ex)
             {
                 msg = ex.Message;
+                res = false;
             }
-            return Ok();
+            return Ok(new { msg = msg, res = res });
         }
 
     }
