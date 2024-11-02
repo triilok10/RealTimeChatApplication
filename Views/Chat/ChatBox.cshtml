@@ -98,6 +98,16 @@
         overflow-y: auto;
     }
 
+    .chat-containerPartial {
+        flex: 0.7;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        height: 100vh;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+    }
+
     .chat-header {
         display: flex;
         justify-content: space-between;
@@ -253,7 +263,7 @@
     <div class="container resContainer">
         <div class="main-container">
             <div class="left-panel"></div>
-            <div class="container chat-container">
+            <div class="container chat-container resFixContainer">
                 <div class="chat-header">
                     <h1 class="text-center ChatResponsive">Chat Application</h1>
                     <div class="settings-container">
@@ -262,8 +272,7 @@
                             <ul>
                                 <li><a href="#">Account Settings</a></li>
                                 <li><a href="#">Privacy</a></li>
-                                <li><a href="@Url.Action("ConnectionList","Connections")">Connections</a></li>
-                                @* <li><a href="JavaScript:Void()" onclick="js_PartialConnectionList();">Connections</a></li> *@
+                                <li><a href="JavaScript:Void()" onclick="js_PartialConnectionList();">Connections</a></li>
                                 <li><a href="@Url.Action("LogOut","Login")">Logout</a></li>
                             </ul>
                         </div>
@@ -292,10 +301,13 @@
                 </div>
                 <div class="connection-list">
                 </div>
+
             </div>
+            <div class="connection-listOptions chat-containerPartial" style="display:none"> </div>
         </div>
 
     </div>
+
 </body>
 <script src="~/js/signalr.js"></script>
 @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.17/signalr.min.js"></script> *@
@@ -368,15 +380,15 @@
                             actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
                         }
                         resultsContainer.innerHTML += `
-                                                            <div class="connection-list-item">
-                                                                <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                <div class="profile-info">
-                                                                    <div class="profile-infoManage">
-                                                                        <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                        ${actionButtons}
-                                                                    </div>
-                                                                </div>
-                                                            </div>`;
+                                      <div class="connection-list-item">
+                                          <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                          <div class="profile-info">
+                                              <div class="profile-infoManage">
+                                                  <h3>${post.searchConnection || 'No Username'}</h3>
+                                                  ${actionButtons}
+                                              </div>
+                                          </div>
+                                      </div>`;
                     });
                 }
             },
@@ -389,20 +401,33 @@
 
 
     function js_PartialConnectionList() {
-
-
         $.ajax({
             url: "@Url.Action("ConnectionList", "Connections")",
             type: "GET",
-            Cache: false,
+            cache: false,
             success: function (res) {
 
+                $(".connection-listOptions").css('display', 'block');
+                $(".resFixContainer").css('display', 'none');
+
+
+                var resultsContainer = document.querySelector(".connection-listOptions");
+                resultsContainer.innerHTML = res;
             },
             error: function (err) {
-
+                console.error("Error loading partial view:", err);
             }
-        })
+        });
     }
+
+
+    function showPanel(panelId) {
+        document.getElementById('connectionList').classList.remove('active');
+        document.getElementById('pendingRequests').classList.remove('active');
+        document.getElementById(panelId).classList.add('active');
+    }
+
+    document.getElementById('connectionsListBtn').click();
 
 </script>
 

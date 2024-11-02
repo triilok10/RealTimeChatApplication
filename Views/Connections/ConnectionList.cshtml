@@ -1,60 +1,6 @@
-﻿<div class="main-container">
-    <h1 class="main-heading">Connections</h1>
-
-    <div class="toggle-buttons">
-        <button id="connectionsListBtn" onclick="showPanel('connectionList')">Connections List</button>
-        <button id="pendingRequestsBtn" onclick="showPanel('pendingRequests')">Pending Requests</button>
-    </div>
-
-    <div id="connectionList" class="panel">
-        <h2>Connections List</h2>
-        <ul>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="connection-name">John Doe</span>
-                </div>
-                <button class="view-profile-btn">View Profile</button>
-            </li>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="connection-name">Jane Smith</span>
-                </div>
-                <button class="view-profile-btn">View Profile</button>
-            </li>
-        </ul>
-    </div>
-
-    <div id="pendingRequests" class="panel hidden">
-        <h2>Pending Requests</h2>
-        <ul>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="request-name">Alex Johnson</span>
-                </div>
-                <div class="action-buttons">
-                    <button class="accept-btn">Accept</button>
-                    <button class="reject-btn">Reject</button>
-                </div>
-            </li>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="request-name">Emily Brown</span>
-                </div>
-                <div class="action-buttons">
-                    <button class="accept-btn">Accept</button>
-                    <button class="reject-btn">Reject</button>
-                </div>
-            </li>
-        </ul>
-    </div>
-</div>
-
+﻿
 <style>
-    .main-container {
+    .main-containers {
         width: 100%;
         max-width: 800px;
         margin: 0 auto;
@@ -75,19 +21,19 @@
         margin-bottom: 20px;
     }
 
-    .toggle-buttons button {
-        padding: 10px 20px;
-        font-size: 1em;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: #007bff;
-        color: #fff;
-    }
+        .toggle-buttons button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+        }
 
-    .toggle-buttons button:hover {
-        background-color: #0056b3;
-    }
+            .toggle-buttons button:hover {
+                background-color: #0056b3;
+            }
 
     .panel {
         display: none;
@@ -97,28 +43,28 @@
         background-color: #f9f9f9;
     }
 
-    .panel h2 {
-        font-size: 1.5em;
-        margin-bottom: 15px;
-        color: #333;
-    }
+        .panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+        }
 
-    .panel ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
+        .panel ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    .panel li {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #fff;
-    }
+        .panel li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
 
     .profile-picture {
         width: 40px;
@@ -176,6 +122,64 @@
         }
     }
 </style>
+<div class="main-containers">
+
+    <button class="btn btn-primary">Back</button>
+    <h1 class="main-heading">Connections</h1>
+
+    <div class="toggle-buttons">
+        <button id="connectionsListBtn" onclick="showPanel('connectionList')">Connections List</button>
+        <button id="pendingRequestsBtn" onclick="showPanel('pendingRequests')">Pending Requests</button>
+    </div>
+
+    <div id="connectionList" class="panel">
+        <h2>Connections List</h2>
+        <ul>
+            <li>
+                <div class="action-buttons">
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
+                    <span class="connection-name">John Doe</span>
+                </div>
+                <button class="view-profile-btn">View Profile</button>
+            </li>
+            <li>
+                <div class="action-buttons">
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
+                    <span class="connection-name">Jane Smith</span>
+                </div>
+                <button class="view-profile-btn">View Profile</button>
+            </li>
+        </ul>
+    </div>
+
+    <div id="pendingRequests" class="panel hidden">
+        <h2>Pending Requests</h2>
+        <ul>
+            <li>
+                <div class="action-buttons">
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
+                    <span class="request-name">Alex Johnson</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="accept-btn">Accept</button>
+                    <button class="reject-btn">Reject</button>
+                </div>
+            </li>
+            <li>
+                <div class="action-buttons">
+                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
+                    <span class="request-name">Emily Brown</span>
+                </div>
+                <div class="action-buttons">
+                    <button class="accept-btn">Accept</button>
+                    <button class="reject-btn">Reject</button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
 
 <script>
     function showPanel(panelId) {
