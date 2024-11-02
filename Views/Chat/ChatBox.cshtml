@@ -357,16 +357,25 @@
                     }
 
                     res.lstChat.forEach(function (post) {
-                        resultsContainer.innerHTML += ` <div class="connection-list-item">
-                                    <img src="${"../images/uploads/" + post.profilePictureURL}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                    <div class="profile-info">
+                        let actionButtons = '';
+
+                        if (post.acceptID > 0 && post.isRequestAccepted === false) {
+                            actionButtons = `<a class="btn btn-danger" href="@Url.Action("CancelRequest", "Chat")?Id=${post.chatMessageID}">Cancel Request</a>`;
+                        } else if (post.isRequestAccepted === true && post.acceptID > 0) {
+                            actionButtons = `<a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>`;
+                        } else if (post.acceptID === 0 && post.isRequestAccepted === false) {
+                            actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
+                        }
+                        resultsContainer.innerHTML += `
+                            <div class="connection-list-item">
+                                <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                <div class="profile-info">
                                     <div class="profile-infoManage">
-                                    <h3>${post.searchConnection || 'No Username'}</h3>
-                                        <a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>
-                                        <a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>
+                                        <h3>${post.searchConnection || 'No Username'}</h3>
+                                        ${actionButtons}
                                     </div>
-                                    </div>
-                                    </div>`;
+                                </div>
+                            </div>`;
                     });
                 }
             },
