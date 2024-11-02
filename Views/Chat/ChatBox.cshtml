@@ -262,7 +262,8 @@
                             <ul>
                                 <li><a href="#">Account Settings</a></li>
                                 <li><a href="#">Privacy</a></li>
-                                <li><a href="#">Connections</a></li>
+                                <li><a href="@Url.Action("ConnectionList","Connections")">Connections</a></li>
+                                @* <li><a href="JavaScript:Void()" onclick="js_PartialConnectionList();">Connections</a></li> *@
                                 <li><a href="@Url.Action("LogOut","Login")">Logout</a></li>
                             </ul>
                         </div>
@@ -367,20 +368,38 @@
                             actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
                         }
                         resultsContainer.innerHTML += `
-                            <div class="connection-list-item">
-                                <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                <div class="profile-info">
-                                    <div class="profile-infoManage">
-                                        <h3>${post.searchConnection || 'No Username'}</h3>
-                                        ${actionButtons}
-                                    </div>
-                                </div>
-                            </div>`;
+                                                            <div class="connection-list-item">
+                                                                <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                <div class="profile-info">
+                                                                    <div class="profile-infoManage">
+                                                                        <h3>${post.searchConnection || 'No Username'}</h3>
+                                                                        ${actionButtons}
+                                                                    </div>
+                                                                </div>
+                                                            </div>`;
                     });
                 }
             },
             error: function (err) {
                 console.error("Error fetching connections:", err);
+            }
+        })
+    }
+
+
+
+    function js_PartialConnectionList() {
+
+
+        $.ajax({
+            url: "@Url.Action("ConnectionList", "Connections")",
+            type: "GET",
+            Cache: false,
+            success: function (res) {
+
+            },
+            error: function (err) {
+
             }
         })
     }

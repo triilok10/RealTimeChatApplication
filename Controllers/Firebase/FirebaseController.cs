@@ -24,7 +24,8 @@ namespace RealTimeChatApplication.Controllers.Firebase
         public IActionResult Test()
         {
             string success = "";
-            return Ok(new { success = "AiSuccess" });        }
+            return Ok(new { success = "AiSuccess" });
+        }
 
 
         [HttpPost("SendNotificationAsync")]

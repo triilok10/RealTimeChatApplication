@@ -207,7 +207,6 @@ namespace RealTimeChatApplication.API
                     cmd.Parameters.AddWithValue("@Mode", 4);
                     cmd.Parameters.AddWithValue("@SenderID", userConnection.RequestID);  //Current Login User
                     cmd.Parameters.AddWithValue("@ReceiverID", userConnection.AcceptID);
-                    cmd.ExecuteNonQuery();
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
