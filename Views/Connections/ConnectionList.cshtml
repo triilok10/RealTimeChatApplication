@@ -124,7 +124,7 @@
 </style>
 <div class="main-containers">
 
-    <button class="btn btn-primary">Back</button>
+    <a class="btn btn-primary" href="@Url.Action("ChatBox","Chat")">Back</a>
     <h1 class="main-heading">Connections</h1>
 
     <div class="toggle-buttons">
@@ -180,13 +180,3 @@
 </div>
 
 
-
-<script>
-    function showPanel(panelId) {
-        document.getElementById('connectionList').classList.remove('active');
-        document.getElementById('pendingRequests').classList.remove('active');
-        document.getElementById(panelId).classList.add('active');
-    }
-
-    document.getElementById('connectionsListBtn').click();
-</script>
