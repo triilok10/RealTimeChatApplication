@@ -101,5 +101,38 @@ namespace RealTimeChatApplication.Controllers
                 return Json(new { lst });
             }
         }
+
+
+        [HttpGet]
+        public async Task<JsonResult> AcceptRequest(string id = "")
+        {
+
+            string url = baseUrl + $"api/ConnectionRequest/AcceptRequest?Id={id}";
+
+            HttpResponseMessage res = await _httpClient.GetAsync(url);
+            if (res.IsSuccessStatusCode)
+            {
+                dynamic resBody = await res.Content.ReadAsStringAsync();
+                dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+            }
+
+            return Json(new { });
+        }
+
+
+        [HttpGet]
+        public async Task<JsonResult> RejectRequest(string id = "")
+        {
+            string url = baseUrl + $"api/ConnectionRequest/RejectRequest?Id={id}";
+
+            HttpResponseMessage res = await _httpClient.GetAsync(url);
+            if (res.IsSuccessStatusCode)
+            {
+                dynamic resBody = await res.Content.ReadAsStringAsync();
+                dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+            }
+
+            return Json(new { });
+        }
     }
 }

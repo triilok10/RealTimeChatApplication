@@ -103,5 +103,44 @@ namespace RealTimeChatApplication.API
                 return Ok(new { res = res, msg = msg });
             }
         }
+
+        #region "Accept Request"
+
+        [HttpGet]
+        public IActionResult AcceptRequest(string ID = "")
+        {
+            bool res = false;
+            string msg = "";
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return Ok();
+        }
+        #endregion
+
+        #region "Accept Request"
+        [HttpGet]
+        public IActionResult RejectRequest(string ID = "")
+        {
+            bool res = false;
+            string msg = "";
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return Ok();
+        }
+        #endregion
     }
 }
