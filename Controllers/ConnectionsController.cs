@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Models;
+using System.Collections.Generic;
 using System.Text;
 
 namespace RealTimeChatApplication.Controllers
@@ -41,20 +42,36 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public async Task<JsonResult> GetPendingRequests()
         {
+            try
+            {
 
-            var UserId = _sessionService.GetInt32("UserID");
+                var UserId = _sessionService.GetInt32("UserID");
 
-            string url = baseUrl + "api/ConnectionRequest/GetPendingRequests";
+                string url = baseUrl + "api/ConnectionRequest/GetPendingRequests";
 
-            ChatMessage obj = new ChatMessage();
-            obj.ChatMessageID = UserId;
-            string JsonData = JsonConvert.SerializeObject(obj);
-            StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
+                ChatMessage obj = new ChatMessage();
+                obj.ChatMessageID = UserId;
+                string JsonData = JsonConvert.SerializeObject(obj);
+                StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
 
-            HttpResponseMessage res = await _httpClient.PostAsync(url, content);
-
-
-            return Json(new { });
+                HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                if (res.IsSuccessStatusCode)
+                {
+                    dynamic resData = await res.Content.ReadAsStringAsync();
+                    List<ChatMessage> lst = JsonConvert.DeserializeObject<List<ChatMessage>>(resData);
+                    return Json(new { lst });
+                }
+                else
+                {
+                    List<ChatMessage> lst = new List<ChatMessage>();
+                    lst = null;
+                    return Json(new { lst });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { });
+            }
         }
 
         [HttpGet]
@@ -71,7 +88,18 @@ namespace RealTimeChatApplication.Controllers
 
 
             HttpResponseMessage res = await _httpClient.PostAsync(url, content);
-            return Json(new { });
+            if (res.IsSuccessStatusCode)
+            {
+                dynamic resData = await res.Content.ReadAsStringAsync();
+                List<ChatMessage> lst = JsonConvert.DeserializeObject<List<ChatMessage>>(resData);
+                return Json(new { lst });
+            }
+            else
+            {
+                List<ChatMessage> lst = new List<ChatMessage>();
+                lst = null;
+                return Json(new { lst });
+            }
         }
     }
 }

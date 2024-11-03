@@ -14,5 +14,6 @@
         public bool? IsRequestAccepted { get; set; }
         public int? RequestID { get; set; }
         public int? AcceptID { get; set; }
+        public int? ChatUserID { get; set; }
     }
 }
