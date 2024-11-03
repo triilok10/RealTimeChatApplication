@@ -451,35 +451,36 @@
             content += '<h2>Connections List</h2><ul>';
             data.lst.forEach(connection => {
                 content += `
-                                     <li>
-                                         <div class="action-buttons">
-                                                 <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                 <span class="connection-name">${connection.fullName}</span>
-                                         </div>
-                                         <button class="view-profile-btn">View Profile</button>
-                                     </li>
-                                  `;
+                    <li>
+                        <div class="action-buttons">
+                            <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                            <span class="connection-name">${connection.fullName}</span>
+                        </div>
+                        <button class="view-profile-btn">View Profile</button>
+                    </li>
+                `;
             });
             content += '</ul>';
         } else if (data.type === 'pendingRequests') {
             content += '<h2>Pending Requests</h2><ul>';
             data.lst.forEach(request => {
                 content += `
-                                  <li>
-                                      <div class="action-buttons">
-                                              <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                              <span class="request-name">${request.fullName}</span>
-                                      </div>
-                                      <div class="action-buttons">
-                                          <button class="accept-btn">Accept</button>
-                                          <button class="reject-btn">Reject</button>
-                                      </div>
-                                  </li>
-                              `;
+                    <li>
+                        <div class="action-buttons">
+                            <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                            <span class="request-name">${request.fullName}</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="accept-btn">Accept</button>
+                            <button class="reject-btn">Reject</button>
+                        </div>
+                    </li>
+                `;
             });
             content += '</ul>';
         }
         return content;
     }
+
 </script>
 

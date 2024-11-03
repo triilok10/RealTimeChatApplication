@@ -59,7 +59,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     dynamic resData = await res.Content.ReadAsStringAsync();
                     List<ChatMessage> lst = JsonConvert.DeserializeObject<List<ChatMessage>>(resData);
-                    return Json(new { lst });
+                    return Json(new { type = "pendingRequests", lst });
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace RealTimeChatApplication.Controllers
             {
                 dynamic resData = await res.Content.ReadAsStringAsync();
                 List<ChatMessage> lst = JsonConvert.DeserializeObject<List<ChatMessage>>(resData);
-                return Json(new { lst });
+                return Json(new { type = "connections", lst });
             }
             else
             {
