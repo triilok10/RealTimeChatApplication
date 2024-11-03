@@ -107,31 +107,55 @@ namespace RealTimeChatApplication.API
         #region "Accept Request"
 
         [HttpGet]
-        public IActionResult AcceptRequest(string ID = "")
+        public IActionResult AcceptRequest(string AcceptID = "", string RequestID = "")
         {
             bool res = false;
             string msg = "";
             try
             {
-
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_ConnectionRequest", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 3);
+                    cmd.Parameters.AddWithValue("@AcceptID", AcceptID);
+                    cmd.Parameters.AddWithValue("@RequestID", RequestID);
+                    cmd.ExecuteNonQuery();
+                    res = true;
+                    msg = "Connection request accepted";
+                }
             }
             catch (Exception ex)
             {
                 res = false;
                 msg = ex.Message;
             }
-            return Ok();
+            return Ok(new { res, msg });
         }
         #endregion
 
         #region "Accept Request"
         [HttpGet]
-        public IActionResult RejectRequest(string ID = "")
+        public IActionResult RejectRequest(string AcceptID = "", string RequestID = "")
         {
             bool res = false;
             string msg = "";
             try
             {
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_ConnectionRequest", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 4);
+                    cmd.Parameters.AddWithValue("@AcceptID", AcceptID);
+                    cmd.Parameters.AddWithValue("@RequestID", RequestID);
+                    cmd.ExecuteNonQuery();
+                    res = true;
+                    msg = "Connection request accepted";
+
+                }
 
             }
             catch (Exception ex)
@@ -139,7 +163,7 @@ namespace RealTimeChatApplication.API
                 res = false;
                 msg = ex.Message;
             }
-            return Ok();
+            return Ok(new { res, msg });
         }
         #endregion
     }

@@ -380,15 +380,15 @@
                             actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
                         }
                         resultsContainer.innerHTML += `
-                                                                                                          <div class="connection-list-item">
-                                                                                                              <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                                                              <div class="profile-info">
-                                                                                                                  <div class="profile-infoManage">
-                                                                                                                      <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                                                                      ${actionButtons}
-                                                                                                                  </div>
-                                                                                                              </div>
-                                                                                                          </div>`;
+                                                                                                                  <div class="connection-list-item">
+                                                                                                                      <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                                                                      <div class="profile-info">
+                                                                                                                          <div class="profile-infoManage">
+                                                                                                                              <h3>${post.searchConnection || 'No Username'}</h3>
+                                                                                                                              ${actionButtons}
+                                                                                                                          </div>
+                                                                                                                      </div>
+                                                                                                                  </div>`;
                     });
                 }
             },
@@ -451,31 +451,31 @@
             content += '<h2>Connections List</h2><ul>';
             data.lst.forEach(connection => {
                 content += `
-                                                        <li>
-                                                            <div class="action-buttons">
-                                                                <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                <span class="connection-name">${connection.fullName}</span>
-                                                            </div>
-                                                            <button class="view-profile-btn">View Profile</button>
-                                                        </li>
-                                                    `;
+                                                                <li>
+                                                                    <div class="action-buttons">
+                                                                        <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                        <span class="connection-name">${connection.fullName}</span>
+                                                                    </div>
+                                                                    <button class="view-profile-btn">View Profile</button>
+                                                                </li>
+                                                            `;
             });
             content += '</ul>';
         } else if (data.type === 'pendingRequests') {
             content += '<h2>Pending Requests</h2><ul>';
             data.lst.forEach(request => {
                 content += `
-                                                        <li>
-                                                            <div class="action-buttons">
-                                                                <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                <span class="request-name">${request.fullName}</span>
-                                                            </div>
-                                                            <div class="action-buttons">
-                                                                     <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
-                                                                    <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
-                                                            </div>
-                                                        </li>
-                                                    `;
+                                                                <li>
+                                                                    <div class="action-buttons">
+                                                                        <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                        <span class="request-name">${request.fullName}</span>
+                                                                    </div>
+                                                                    <div class="action-buttons">
+                                                                             <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
+                                                                            <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
+                                                                    </div>
+                                                                </li>
+                                                            `;
             });
             content += '</ul>';
         }
@@ -494,6 +494,11 @@
             data: data,
             cache: false,
             success: function (res) {
+                if (res.response == true) {
+                    toastr.success(res.message);
+                } else {
+                    toastr.error(res.message);
+                }
             },
             error: function (err) {
 
@@ -513,6 +518,11 @@
             data: data,
             cache: false,
             success: function (res) {
+                if (res.response == true) {
+                    toastr.success(res.message);
+                } else {
+                    toastr.error(res.message);
+                }
             },
             error: function (err) {
 

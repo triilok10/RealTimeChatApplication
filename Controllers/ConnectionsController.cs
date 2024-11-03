@@ -106,33 +106,42 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public async Task<JsonResult> AcceptRequest(string id = "")
         {
-
-            string url = baseUrl + $"api/ConnectionRequest/AcceptRequest?Id={id}";
+            string message = "";
+            bool response = false;
+            var UserId = _sessionService.GetInt32("UserID");
+            string url = baseUrl + $"api/ConnectionRequest/AcceptRequest?AcceptID={UserId}&RequestID={id}";
 
             HttpResponseMessage res = await _httpClient.GetAsync(url);
             if (res.IsSuccessStatusCode)
             {
                 dynamic resBody = await res.Content.ReadAsStringAsync();
                 dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                message = resData.msg;
+                response = resData.res;
+
             }
 
-            return Json(new { });
+            return Json(new { message, response });
         }
 
 
         [HttpGet]
         public async Task<JsonResult> RejectRequest(string id = "")
         {
-            string url = baseUrl + $"api/ConnectionRequest/RejectRequest?Id={id}";
+            string message = "";
+            bool response = false;
+            var UserId = _sessionService.GetInt32("UserID");
+            string url = baseUrl + $"api/ConnectionRequest/RejectRequest?AcceptID={UserId}&RequestID={id}";
 
             HttpResponseMessage res = await _httpClient.GetAsync(url);
             if (res.IsSuccessStatusCode)
             {
                 dynamic resBody = await res.Content.ReadAsStringAsync();
                 dynamic resData = JsonConvert.DeserializeObject<dynamic>(resBody);
+                message = resData.msg;
+                response = resData.res;
             }
-
-            return Json(new { });
+            return Json(new { message, response });
         }
     }
 }
