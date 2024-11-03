@@ -420,8 +420,8 @@
     }
     window.onload = geoLocation;
 
-    async function jsValidateSubmit() {
-        // Get form values
+    function jsValidateSubmit() {
+        debugger;
 
         var username = $("#username").val().trim();
         var email = $("#email").val().trim();
@@ -495,7 +495,7 @@
 
         requestNotificationPermission();
 
-        return true; // Return true to allow form submission
+        return true;
     }
 
     function js_TermsandCondition() {
@@ -530,7 +530,7 @@
 
 
 <script type="module">
-    
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
     import { getMessaging, getToken, deleteToken } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
 
@@ -558,24 +558,24 @@
             });
     }
 
-    
+
     async function requestNotificationPermission() {
         try {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
-              
+
                 // const currentToken = await getToken(messaging, { vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
                 // if (currentToken) {
                 //     await deleteToken(messaging);
                 //     console.log('Existing FCM token deleted.');
                 // }
 
-               
+
                 const newToken = await getToken(messaging, { vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
                 if (newToken) {
                     console.log('New FCM Token:', newToken);
                     document.getElementById("FCMToken").value = newToken;
-                    
+
                 } else {
                     console.log('No new registration token available.');
                 }

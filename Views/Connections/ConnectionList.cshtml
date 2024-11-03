@@ -128,55 +128,15 @@
     <h1 class="main-heading">Connections</h1>
 
     <div class="toggle-buttons">
-        <button id="connectionsListBtn" onclick="showPanel('connectionList')">Connections List</button>
-        <button id="pendingRequestsBtn" onclick="showPanel('pendingRequests')">Pending Requests</button>
+        <button id="connectionsListBtn" onclick="loadPanel('connectionList')">Connections List</button>
+        <button id="pendingRequestsBtn" onclick="loadPanel('pendingRequests')">Pending Requests</button>
     </div>
 
-    <div id="connectionList" class="panel">
-        <h2>Connections List</h2>
-        <ul>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="connection-name">John Doe</span>
-                </div>
-                <button class="view-profile-btn">View Profile</button>
-            </li>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="connection-name">Jane Smith</span>
-                </div>
-                <button class="view-profile-btn">View Profile</button>
-            </li>
-        </ul>
-    </div>
+    <div id="connectionList" class="panel hidden"></div>
 
-    <div id="pendingRequests" class="panel hidden">
-        <h2>Pending Requests</h2>
-        <ul>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="request-name">Alex Johnson</span>
-                </div>
-                <div class="action-buttons">
-                    <button class="accept-btn">Accept</button>
-                    <button class="reject-btn">Reject</button>
-                </div>
-            </li>
-            <li>
-                <div class="action-buttons">
-                    <img src="https://via.placeholder.com/40" alt="Profile Picture" class="profile-picture">
-                    <span class="request-name">Emily Brown</span>
-                </div>
-                <div class="action-buttons">
-                    <button class="accept-btn">Accept</button>
-                    <button class="reject-btn">Reject</button>
-                </div>
-            </li>
-        </ul>
-    </div>
+    <div id="pendingRequests" class="panel hidden"></div>
 </div>
+
+
 
 

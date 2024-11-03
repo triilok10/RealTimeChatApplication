@@ -47,7 +47,7 @@ namespace RealTimeChatApplication.Controllers
             try
             {
                 var UserId = _sessionService.GetInt32("UserID");
-
+                
                 string url = baseUrl + "api/ChatAPI/LoadChatHistory";
                 ChatMessage pChatMessage = new ChatMessage();
 
@@ -148,6 +148,8 @@ namespace RealTimeChatApplication.Controllers
                     TempData.Keep("errorMessage");
                     return RedirectToAction("ChatBox");
                 }
+                var UserId = _sessionService.GetInt32("UserID");
+                pChatMessage.ChatMessageID = Convert.ToInt32(UserId);
                 string url = baseUrl + "api/ChatAPI/SearchConnections";
                 string Json = JsonConvert.SerializeObject(pChatMessage);
                 StringContent content = new StringContent(Json, Encoding.UTF8, "application/json");

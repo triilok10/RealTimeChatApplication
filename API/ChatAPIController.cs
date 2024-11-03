@@ -31,7 +31,7 @@ namespace RealTimeChatApplication.API
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 1);
                     cmd.Parameters.AddWithValue("@UserName", pChatMessage.SearchConnection);
-                    cmd.Parameters.AddWithValue("@ChatUserID", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@ChatUserID", pChatMessage.ChatMessageID);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {

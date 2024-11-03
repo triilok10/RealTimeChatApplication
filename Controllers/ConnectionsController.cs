@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using RealTimeChatApplication.AppCode;
+using RealTimeChatApplication.Models;
+using System.Text;
 
 namespace RealTimeChatApplication.Controllers
 {
@@ -31,30 +34,44 @@ namespace RealTimeChatApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> ConnectionList()
         {
-            bool res = false;
-            string msg = "";
-            try
-            {
-                //string url = baseUrl + "";
-                //HttpResponseMessage apiRes = await _httpClient.GetAsync(url);
-
-                //if (apiRes.IsSuccessStatusCode)
-                //{
-
-                //}
-
-
-                return PartialView();
-            }
-            catch (Exception ex)
-            {
-                msg = ex.Message;
-                res = false;
-                return RedirectToAction("", "");
-            }
-
+            return PartialView();
         }
 
 
+        [HttpGet]
+        public async Task<JsonResult> GetPendingRequests()
+        {
+
+            var UserId = _sessionService.GetInt32("UserID");
+
+            string url = baseUrl + "api/ConnectionRequest/GetPendingRequests";
+
+            ChatMessage obj = new ChatMessage();
+            obj.ChatMessageID = UserId;
+            string JsonData = JsonConvert.SerializeObject(obj);
+            StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+
+
+            return Json(new { });
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetConnections()
+        {
+            var UserId = _sessionService.GetInt32("UserID");
+
+            string url = baseUrl + "api/ConnectionRequest/GetConnections";
+
+            ChatMessage obj = new ChatMessage();
+            obj.ChatMessageID = UserId;
+            string JsonData = JsonConvert.SerializeObject(obj);
+            StringContent content = new StringContent(JsonData, Encoding.UTF8, "application/json");
+
+
+            HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+            return Json(new { });
+        }
     }
 }

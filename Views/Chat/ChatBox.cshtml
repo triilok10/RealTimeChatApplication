@@ -345,7 +345,7 @@
 
     function searchConnections() {
         var value = $("#searchConnections").val();
-
+        debugger;
         if (!value) {
             toastr.error("Please enter the Value");
             return false;
@@ -371,7 +371,7 @@
 
                     res.lstChat.forEach(function (post) {
                         let actionButtons = '';
-
+                        debugger;
                         if (post.acceptID > 0 && post.isRequestAccepted === false) {
                             actionButtons = `<a class="btn btn-danger" href="@Url.Action("CancelRequest", "Chat")?Id=${post.chatMessageID}">Cancel Request</a>`;
                         } else if (post.isRequestAccepted === true && post.acceptID > 0) {
@@ -380,15 +380,15 @@
                             actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
                         }
                         resultsContainer.innerHTML += `
-                                      <div class="connection-list-item">
-                                          <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                          <div class="profile-info">
-                                              <div class="profile-infoManage">
-                                                  <h3>${post.searchConnection || 'No Username'}</h3>
-                                                  ${actionButtons}
-                                              </div>
-                                          </div>
-                                      </div>`;
+                                                  <div class="connection-list-item">
+                                                      <img src="${"../images/uploads/" + (post.profilePictureURL || 'default.png')}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                      <div class="profile-info">
+                                                          <div class="profile-infoManage">
+                                                              <h3>${post.searchConnection || 'No Username'}</h3>
+                                                              ${actionButtons}
+                                                          </div>
+                                                      </div>
+                                                  </div>`;
                     });
                 }
             },
@@ -421,12 +421,65 @@
     }
 
 
-    function showPanel(panelId) {
-        document.getElementById('connectionList').classList.remove('active');
-        document.getElementById('pendingRequests').classList.remove('active');
-        document.getElementById(panelId).classList.add('active');
+
+
+
+</script>
+<script>
+    function loadPanel(panelId) {
+        const url = panelId === 'connectionList' ? '/Connections/GetConnections' : '/Connections/GetPendingRequests';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                const panel = $('#' + panelId);
+                panel.html(generatePanelContent(data));
+                $('.panel').addClass('hidden');
+                panel.removeClass('hidden');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error loading data:', error);
+            }
+        });
     }
 
-
+    function generatePanelContent(data) {
+        let content = '';
+        if (data.type === 'connections') {
+            content += '<h2>Connections List</h2><ul>';
+            data.connections.forEach(connection => {
+                content += `
+                            <li>
+                                <div class="action-buttons">
+                                    <img src="${connection.picture}" alt="Profile Picture" class="profile-picture">
+                                    <span class="connection-name">${connection.name}</span>
+                                </div>
+                                <button class="view-profile-btn">View Profile</button>
+                            </li>
+                        `;
+            });
+            content += '</ul>';
+        } else if (data.type === 'pendingRequests') {
+            content += '<h2>Pending Requests</h2><ul>';
+            data.requests.forEach(request => {
+                content += `
+                            <li>
+                                <div class="action-buttons">
+                                    <img src="${request.picture}" alt="Profile Picture" class="profile-picture">
+                                    <span class="request-name">${request.name}</span>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="accept-btn">Accept</button>
+                                    <button class="reject-btn">Reject</button>
+                                </div>
+                            </li>
+                        `;
+            });
+            content += '</ul>';
+        }
+        return content;
+    }
 </script>
 
