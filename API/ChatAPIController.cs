@@ -262,7 +262,37 @@ namespace RealTimeChatApplication.API
 
         }
 
+        [HttpPost]
+        public IActionResult CancelRequest(UserConnection userConnection)
+        {
+            bool res = false;
+            string msg = "";
+            try
+            {
 
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_MessageRecord", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 5);
+                    cmd.Parameters.AddWithValue("@SenderID", userConnection.RequestID);
+                    cmd.Parameters.AddWithValue("@ReceiverID", userConnection.AcceptID);
+                    cmd.ExecuteNonQuery();
+                    msg = "Connection request cancalled successfully";
+                    res = true;
+                    return Ok(new { msg, res });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                res = false;
+                return Ok(new { msg, res });
+            }
+
+        }
         #endregion
     }
 }

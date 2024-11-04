@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Newtonsoft.Json;
 using NuGet.Common;
 using RealTimeChatApplication.AppCode;
@@ -294,8 +295,10 @@ namespace RealTimeChatApplication.Controllers
         }
 
         [HttpGet]
-        public IActionResult CancelRequest(int Id = 0)
+        public async Task<IActionResult> CancelRequest(int Id = 0)
         {
+            string message = "";
+            bool response = false;
             try
             {
                 if (Id == 0)
@@ -306,13 +309,47 @@ namespace RealTimeChatApplication.Controllers
 
                 var loginUserId = _sessionService.GetInt32("UserID");
                 string url = baseUrl + "api/ChatAPI/CancelRequest";
+                UserConnection obj = new UserConnection
+                {
+                    RequestID = loginUserId, //Current Login
+                    AcceptID = Id
+                };
+
+                string JSON = JsonConvert.SerializeObject(obj);
+                StringContent content = new StringContent(JSON, Encoding.UTF8, "application/json");
+                HttpResponseMessage res = await _httpClient.PostAsync(url, content);
+                if (res.IsSuccessStatusCode)
+                {
+                    dynamic resBody = await res.Content.ReadAsStringAsync();
+                    dynamic resData = JsonConvert.DeserializeObject(resBody);
+
+                    message = resData.msg;
+                    response = resData.res;
+
+
+                    if (response == true)
+                    {
+                        TempData["successMessage"] = message;
+                    }
+                    else
+                    {
+                        TempData["errorMessage"] = message;
+                    }
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+                else
+                {
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+
             }
             catch (Exception ex)
             {
                 TempData["errorMessage"] = $"An error occurred: {ex.Message}";
+                return RedirectToAction("ChatBox", "Chat");
             }
 
-            return RedirectToAction("ChatBox", "Chat");
+
         }
 
         #endregion
