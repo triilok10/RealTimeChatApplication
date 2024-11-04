@@ -47,7 +47,7 @@ namespace RealTimeChatApplication.Controllers
             try
             {
                 var UserId = _sessionService.GetInt32("UserID");
-                
+
                 string url = baseUrl + "api/ChatAPI/LoadChatHistory";
                 ChatMessage pChatMessage = new ChatMessage();
 
@@ -284,6 +284,28 @@ namespace RealTimeChatApplication.Controllers
                     TempData["errorMessage"] = "Failed to send the connection request. Please try again.";
                 }
 
+            }
+            catch (Exception ex)
+            {
+                TempData["errorMessage"] = $"An error occurred: {ex.Message}";
+            }
+
+            return RedirectToAction("ChatBox", "Chat");
+        }
+
+        [HttpGet]
+        public IActionResult CancelRequest(int Id = 0)
+        {
+            try
+            {
+                if (Id == 0)
+                {
+                    TempData["errorMessage"] = "Please select a user to send the connection request.";
+                    return RedirectToAction("ChatBox", "Chat");
+                }
+
+                var loginUserId = _sessionService.GetInt32("UserID");
+                string url = baseUrl + "api/ChatAPI/CancelRequest";
             }
             catch (Exception ex)
             {
