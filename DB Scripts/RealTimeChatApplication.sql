@@ -1,6 +1,5 @@
-USE [master]
-GO
-/****** Object:  Database [RealTimeChatApplication]    Script Date: 04-11-2024 09:50:52 ******/
+
+/****** Object:  Database [RealTimeChatApplication]    Script Date: 06-11-2024 21:44:36 ******/
 CREATE DATABASE [RealTimeChatApplication]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -80,7 +79,7 @@ ALTER DATABASE [RealTimeChatApplication] SET QUERY_STORE = OFF
 GO
 USE [RealTimeChatApplication]
 GO
-/****** Object:  Table [dbo].[ChatMessage]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  Table [dbo].[ChatMessage]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -97,7 +96,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ChatUser]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  Table [dbo].[ChatUser]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -119,7 +118,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SendNotificationMessage]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  Table [dbo].[SendNotificationMessage]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -137,7 +136,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserConnectionList]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  Table [dbo].[UserConnectionList]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -154,89 +153,114 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ChatMessage]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  Table [dbo].[UserLoginData]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROC [dbo].[usp_ChatMessage]        
-( @Mode               INT,        
-  @UserName           VARCHAR,      
-  @ChatUserID    INT      
-)        
- AS        
- BEGIN        
- SET NOCOUNT ON;        
-  IF(@Mode=1)        
+CREATE TABLE [dbo].[UserLoginData](
+	[UserLoginDataID] [int] IDENTITY(1,1) NOT NULL,
+	[ChatUserID] [int] NOT NULL,
+	[LastLoginTime] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[UserLoginDataID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_ChatMessage]    Script Date: 06-11-2024 21:44:36 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROC [dbo].[usp_ChatMessage]          
+( @Mode               INT,          
+  @UserName           VARCHAR,        
+  @ChatUserID    INT        
+)          
+ AS          
+ BEGIN          
+ SET NOCOUNT ON;          
+  IF(@Mode=1)          
+  BEGIN          
+        SELECT  CS.ChatUserID,CS.UserName,  UCL.RequestID, UCL.AcceptID,  UCL.IsRequestAccepted,  CS.ProfilePictureURL   
+    FROM  ChatUser CS LEFT JOIN UserConnectionList UCL ON (UCL.AcceptID = CS.ChatUserID OR UCL.RequestID = CS.ChatUserID) AND (UCL.RequestID = @ChatUserID  OR UCL.AcceptID = @ChatUserID)
+   WHERE CS.UserName LIKE '%' + @UserName + '%' GROUP BY CS.ChatUserID, CS.UserName, UCL.RequestID, UCL.AcceptID, UCL.IsRequestAccepted, CS.ProfilePictureURL;  
+  END         
+  IF(@Mode=2)        
   BEGIN        
-        SELECT  CS.ChatUserID,CS.UserName,  UCL.RequestID, UCL.AcceptID,  UCL.IsRequestAccepted,  CS.ProfilePictureURL 
-    FROM  ChatUser CS LEFT JOIN UserConnectionList UCL ON UCL.AcceptID = CS.ChatUserID AND UCL.RequestID = @ChatUserID
-   WHERE CS.UserName LIKE '%' + @UserName + '%' GROUP BY CS.ChatUserID, CS.UserName, UCL.RequestID, UCL.AcceptID, UCL.IsRequestAccepted, CS.ProfilePictureURL;
-  END       
-  IF(@Mode=2)      
-  BEGIN      
-         Select UserName,ProfilePictureURL,Email,ChatUserID from ChatUser Where ChatUserID = @ChatUserID      
-  END      
+         Select UserName,ProfilePictureURL,Email,ChatUserID from ChatUser Where ChatUserID = @ChatUserID        
+  END        
 END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ChatUser]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  StoredProcedure [dbo].[usp_ChatUser]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_ChatUser]            
-(            
-    @Mode                INT,            
-    @UserName            VARCHAR(30) ,            
-    @Password            VARCHAR(20) ,            
-    @Email               VARCHAR(50) ,          
-    @Gender              VARCHAR(10) ,          
-    @ProfilePictureURL   VARCHAR(100) NULL = '',
-	@FCMToken			 VARCHAR(350) = '',
-    @FullName            VARCHAR(50) ,  
-    @ChatUser            INT OUTPUT  -- Changed to OUTPUT parameter      
-)            
-AS             
-BEGIN             
-    SET NOCOUNT ON;            
-      
-    DECLARE @EmailMessage VARCHAR(150);        
-    DECLARE @UserMessage VARCHAR(150);        
-      
-    -- Insert            
-    IF (@Mode = 1)            
-    BEGIN          
-        -- Check the Email availability        
-        IF EXISTS (SELECT 1 FROM ChatUser WHERE Email = @Email)        
-        BEGIN        
-            SET @EmailMessage = 'Email ID already exists. Please use a new email to register or login with the same email.';        
-            RAISERROR(@EmailMessage, 16, 1);        
-            RETURN;        
-        END        
+CREATE PROCEDURE [dbo].[usp_ChatUser]              
+(              
+    @Mode                INT,              
+    @UserName            VARCHAR(30) ,              
+    @Password            VARCHAR(20) ,              
+    @Email               VARCHAR(50) ,            
+    @Gender              VARCHAR(10) ,            
+    @ProfilePictureURL   VARCHAR(100) NULL = '',  
+ @FCMToken    VARCHAR(350) = '',  
+    @FullName            VARCHAR(50) ,    
+    @ChatUser            INT OUTPUT  -- Changed to OUTPUT parameter        
+)              
+AS               
+BEGIN               
+    SET NOCOUNT ON;              
         
-        -- Check the UserName availability        
-        IF EXISTS (SELECT 1 FROM ChatUser WHERE UserName = @UserName)        
-        BEGIN        
-            SET @UserMessage = 'Username already exists. Please use a new username to register or login with the same username.';        
-            RAISERROR(@UserMessage, 16, 1);        
-            RETURN;        
-        END        
+    DECLARE @EmailMessage VARCHAR(150);          
+    DECLARE @UserMessage VARCHAR(150);          
         
-        -- Insert the Data for Creating New User        
-        INSERT INTO ChatUser (UserName, Email, Password, AuthenticationTime, Gender, ProfilePictureURL, FullName, FCMToken)            
-        VALUES (@UserName, @Email, @Password, GETDATE(), @Gender, @ProfilePictureURL, @FullName , @FCMToken);           
-        
-        -- Return the Last Id Inserted Here        
-        SET @ChatUser = SCOPE_IDENTITY();        
-    END    
- --For Login    
- IF (@Mode = 2)     
- BEGIN    
-      SELECT * FROM ChatUser WHERE UserName=@UserName AND Password = @Password    
- END    
-END   
+    -- Insert              
+    IF (@Mode = 1)              
+    BEGIN            
+        -- Check the Email availability          
+        IF EXISTS (SELECT 1 FROM ChatUser WHERE Email = @Email)          
+        BEGIN          
+            SET @EmailMessage = 'Email ID already exists. Please use a new email to register or login with the same email.';          
+            RAISERROR(@EmailMessage, 16, 1);          
+            RETURN;          
+        END          
+          
+        -- Check the UserName availability          
+        IF EXISTS (SELECT 1 FROM ChatUser WHERE UserName = @UserName)          
+        BEGIN          
+            SET @UserMessage = 'Username already exists. Please use a new username to register or login with the same username.';          
+            RAISERROR(@UserMessage, 16, 1);          
+            RETURN;          
+        END          
+          
+        -- Insert the Data for Creating New User          
+        INSERT INTO ChatUser (UserName, Email, Password, AuthenticationTime, Gender, ProfilePictureURL, FullName, FCMToken)              
+        VALUES (@UserName, @Email, @Password, GETDATE(), @Gender, @ProfilePictureURL, @FullName , @FCMToken);             
+          
+        -- Return the Last Id Inserted Here          
+        SET @ChatUser = SCOPE_IDENTITY();          
+    END      
+ --For Login      
+ IF (@Mode = 2)       
+ BEGIN      
+      SELECT * FROM ChatUser WHERE UserName=@UserName AND Password = @Password      
+
+	  Declare @ChatUserID INT;
+	  SET @ChatUserID = ( SELECT ChatUserID FROM ChatUser WHERE UserName=@UserName AND Password = @Password )
+
+	--Insert the Login time when User is Login Every Time
+	  IF(@ChatUserID<>NULL)
+	  BEGIN
+	   INSERT INTO UserLoginData(ChatUserID, LastLoginTime)
+	   Values(@ChatUserID,GETDATE())
+	  END
+ END      
+END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ConnectionRequest]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  StoredProcedure [dbo].[usp_ConnectionRequest]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -292,7 +316,7 @@ BEGIN
     END      
 END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_MessageRecord]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  StoredProcedure [dbo].[usp_MessageRecord]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -376,7 +400,7 @@ BEGIN
   END
 END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_NotificationRecord]    Script Date: 04-11-2024 09:50:53 ******/
+/****** Object:  StoredProcedure [dbo].[usp_NotificationRecord]    Script Date: 06-11-2024 21:44:36 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

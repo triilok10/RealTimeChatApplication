@@ -97,6 +97,7 @@ namespace RealTimeChatApplication.API
                             obj.ChatUserID = Convert.ToInt32(rdr["ChatUserID"]);
                             obj.UserName = Convert.ToString(rdr["UserName"]);
                             obj.HdnProfilePicture = Convert.ToString(rdr["ProfilePictureURL"]);
+
                         }
                         res = true;
                         msg = "User Login Successfully";
