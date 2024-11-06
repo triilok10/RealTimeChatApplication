@@ -21,7 +21,6 @@ namespace RealTimeChatApplication.Models
         public string? HdnTermsCondition { get; set; }
         public GenderType? Gender { get; set; }
         public string? FCMToken { get; set; }
-        public DateTime? LastLoginTime { get; set; }
         public enum GenderType
         {
             Male,
