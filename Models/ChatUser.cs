@@ -19,8 +19,8 @@ namespace RealTimeChatApplication.Models
         public string? Latitude { get; set; }
         public bool? TermsCondition { get; set; }
         public string? HdnTermsCondition { get; set; }
-        public GenderType? Gender { get; set; }
         public string? FCMToken { get; set; }
+        public GenderType? Gender { get; set; }
         public enum GenderType
         {
             Male,

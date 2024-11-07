@@ -97,7 +97,22 @@ namespace RealTimeChatApplication.API
                             obj.ChatUserID = Convert.ToInt32(rdr["ChatUserID"]);
                             obj.UserName = Convert.ToString(rdr["UserName"]);
                             obj.HdnProfilePicture = Convert.ToString(rdr["ProfilePictureURL"]);
-
+                            if (rdr["Gender"] != DBNull.Value)
+                            {
+                                int genderValue = Convert.ToInt16(rdr["Gender"]);
+                                if (Enum.IsDefined(typeof(GenderType), genderValue))
+                                {
+                                    obj.Gender = (GenderType)genderValue;
+                                }
+                                else
+                                {
+                                    obj.Gender = null;
+                                }
+                            }
+                            else
+                            {
+                                obj.Gender = null; 
+                            }
                         }
                         res = true;
                         msg = "User Login Successfully";
