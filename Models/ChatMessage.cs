@@ -15,5 +15,12 @@
         public int? RequestID { get; set; }
         public int? AcceptID { get; set; }
         public int? ChatUserID { get; set; }
+        public GenderType? Gender { get; set; }
+        public enum GenderType
+        {
+            Male,
+            Female,
+            Other
+        }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using RealTimeChatApplication.Models;
 using System.Data;
 using System.Data.SqlClient;
-using static RealTimeChatApplication.Models.ChatUser;
 
 namespace RealTimeChatApplication.API
 {
@@ -130,23 +129,8 @@ namespace RealTimeChatApplication.API
                                 FullName = Convert.ToString(rdr["FullName"]),
                                 ChatReceiverID = Convert.ToInt32(rdr["ChatUserID"]),
                                 ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"]),
-                                if (rdr["Gender"] != DBNull.Value)
-                            {
-                                int genderValue = Convert.ToInt16(rdr["Gender"]);
-                                if (Enum.IsDefined(typeof(GenderType), genderValue))
-                                {
-                                    Gender = (GenderType)genderValue;
-                                }
-                                else
-                                {
-                                    Gender = null;
-                                }
-                            }
-                            else
-                            {
-                                Gender = null;
-                            }
-                        };
+                                Gender = rdr["Gender"] != DBNull.Value ? (ChatMessage.GenderType?)Enum.ToObject(typeof(ChatMessage.GenderType), Convert.ToInt16(rdr["Gender"])) : null
+                            };
                             lstChatMessage.Add(obj);
                         }
                     }
