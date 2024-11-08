@@ -352,7 +352,26 @@
 
                 <div class="chat-messages" id="chatMessages">
                     <div class="profile-section">
-                        <img src="~/images/uploads/@Model.ProfilePictureURL" alt="Profile Photo" class="profile-photo" />
+                        @if (!string.IsNullOrWhiteSpace(Model.ProfilePictureURL))
+                        {
+                            <img src="~/images/uploads/Model.ProfilePictureURL" alt="Profile Photo" loading="lazy" class="profile-photo" />
+
+                        }
+                        else
+                        {
+                            @if (Model.Gender == RealTimeChatApplication.Models.ChatMessage.GenderType.Male)
+                            {
+                                <img src="~/images/Gender/Male.svg" alt="Profile Photo" loading="lazy" class="profile-photo" />
+                            }
+                            else if (Model.Gender == RealTimeChatApplication.Models.ChatMessage.GenderType.Female)
+                            {
+                                <img src="~/images/Gender/Female.svg" alt="Profile Photo" loading="lazy" class="profile-photo" />
+                            }
+                            else
+                            {
+                                <img src="~/images/uploads/Model.ProfilePictureURL" alt="Profile Photo" loading="lazy" class="profile-photo" />
+                            }
+                        }
                         <div class="userNameResDiv">
                             <h3 class="userNameRes">@Model.UserName</h3>
                         </div>

@@ -83,7 +83,8 @@ namespace RealTimeChatApplication.API
                                 ChatMessageID = Convert.ToInt32(rdr["ChatUserID"]),
                                 Email = Convert.ToString(rdr["Email"]),
                                 UserName = Convert.ToString(rdr["UserName"]),
-                                ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"])
+                                ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"]),
+                                Gender = rdr["Gender"] != DBNull.Value ? (ChatMessage.GenderType?)Enum.ToObject(typeof(ChatMessage.GenderType), Convert.ToInt16(rdr["Gender"])) : null
                             };
                             return Ok(obj);
                         }
