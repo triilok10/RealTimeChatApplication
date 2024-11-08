@@ -48,7 +48,7 @@ namespace RealTimeChatApplication.Controllers
             try
             {
                 var UserId = _sessionService.GetInt32("UserID");
-
+                ViewBag.UserID = UserId;
                 string url = baseUrl + "api/ChatAPI/LoadChatHistory";
                 ChatMessage pChatMessage = new ChatMessage();
 

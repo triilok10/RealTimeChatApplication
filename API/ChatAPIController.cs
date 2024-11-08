@@ -44,7 +44,8 @@ namespace RealTimeChatApplication.API
                                 ProfilePictureURL = reader["ProfilePictureURL"] != DBNull.Value ? Convert.ToString(reader["ProfilePictureURL"]) : string.Empty,
                                 IsRequestAccepted = reader["IsRequestAccepted"] != DBNull.Value ? Convert.ToBoolean(reader["IsRequestAccepted"]) : false,
                                 RequestID = reader["RequestID"] != DBNull.Value ? Convert.ToInt32(reader["RequestID"]) : 0,
-                                AcceptID = reader["AcceptID"] != DBNull.Value ? Convert.ToInt32(reader["AcceptID"]) : 0
+                                AcceptID = reader["AcceptID"] != DBNull.Value ? Convert.ToInt32(reader["AcceptID"]) : 0,
+                                Gender = reader["Gender"] != DBNull.Value ? (ChatMessage.GenderType?)Enum.ToObject(typeof(ChatMessage.GenderType), Convert.ToInt16(reader["Gender"])) : null
                             };
 
                             lstMessage.Add(obj);
