@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
+//using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Newtonsoft.Json;
-using NuGet.Common;
+//using NuGet.Common;
 using RealTimeChatApplication.AppCode;
 using RealTimeChatApplication.Hubs;
 using RealTimeChatApplication.Models;
@@ -85,13 +85,28 @@ namespace RealTimeChatApplication.Controllers
             bool response = false;
             var actionPath = HttpContext.Request.Path;
             _sessionService.SetString("ActionPath", actionPath);
-
+            var chatUserId = _sessionService.GetInt32("UserID");
             try
             {
                 if (Id == 0)
                 {
                     TempData["errorMessage"] = "Please select the User to Send Message";
                     return RedirectToAction("ChatBox", "Chat");
+                }
+
+                //User only Inseract with the Connection's.
+                string VerityURL = baseUrl + "api/ChatAPI/ChatVerifyUser";
+
+                ChatMessage verifyUser = new ChatMessage();
+                verifyUser.ChatMessageID = chatUserId;
+                verifyUser.ChatReceiverID = Id;
+                string JSONVerify = JsonConvert.SerializeObject(verifyUser);
+                StringContent contentVerify = new StringContent(JSONVerify, Encoding.UTF8, "application/json");
+                HttpResponseMessage chatResponse = await _httpClient.PostAsync(VerityURL, contentVerify);
+
+                if (chatResponse.IsSuccessStatusCode)
+                {
+
                 }
 
                 string url = baseUrl + $"api/ChatAPI/GetProfile";
@@ -106,7 +121,7 @@ namespace RealTimeChatApplication.Controllers
                     string chatRecordURL = baseUrl + "api/ChatAPI/ChatHistoryRecord";
 
                     ChatMessage pChatMessage = new ChatMessage();
-                    var chatUserId = _sessionService.GetInt32("UserID");
+
                     pChatMessage.ChatMessageID = chatUserId;
                     pChatMessage.ChatReceiverID = Id;
                     string JSON = JsonConvert.SerializeObject(pChatMessage);

@@ -77,6 +77,13 @@
 
     .settings-container {
         position: relative;
+        margin: 5px;
+    }
+
+    .btnAlign {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .settings-button {
@@ -337,15 +344,21 @@
             <div class="container chat-container">
                 <div class="chat-header">
                     <h1 class="text-center ChatResponsive">Chat Application</h1>
-                    <div class="settings-container">
-                        <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
-                        <div class="settings-dropdown">
-                            <ul>
-                                <li><a href="#">Account Settings</a></li>
-                                <li><a href="#">Privacy</a></li>
-                                <li><a href="#">Connections</a></li>
-                                <li><a href="@Url.Action("LogOut","Login")">Logout</a></li>
-                            </ul>
+                    <div class="btnAlign">
+                        <div class="settings-container">
+                            <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
+                            <div class="settings-dropdown">
+                                <ul>
+                                    <li><a href="#">Account Settings</a></li>
+                                    <li><a href="#">Privacy</a></li>
+                                    <li><a href="#">Connections</a></li>
+                                    <li><a href="@Url.Action("LogOut","Login")">Logout</a></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div class="Back-container">
+                            <a type="button" class="btn btn-primary" href="@Url.Action("ChatBox","Chat")">Back</a>
                         </div>
                     </div>
                 </div>

@@ -297,5 +297,46 @@ namespace RealTimeChatApplication.API
 
         }
         #endregion
+
+
+
+        [HttpPost]
+        public IActionResult ChatVerifyUser([FromBody] ChatMessage pChatMessage)
+        {
+            bool res = false;
+            string msg = "";
+            ChatMessage obj = new ChatMessage();
+            try
+            {
+
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Mode", 3);
+                    cmd.Parameters.AddWithValue("@AcceptID", pChatMessage.ChatMessageID);
+                    cmd.Parameters.AddWithValue("@RequestID", pChatMessage.ChatReceiverID);
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            obj.IsRequestAccepted = Convert.ToBoolean(rdr["IsRequestAccepted"]);
+                        }
+                    }
+                    res = true;
+                    msg = "User Connected";
+                }
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return Ok(new { data = obj, res = res, msg = msg });
+
+        }
     }
 }
