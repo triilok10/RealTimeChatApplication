@@ -113,6 +113,10 @@
         margin: 0;
     }
 
+    #my_camera {
+        max-width: 100%;
+    }
+
     .settings-dropdown li {
         padding: 5px 10px;
     }
@@ -417,13 +421,18 @@
                     <div id="messagesList">
                         @* Dynamically Load the Message here. When User send the message and when User receive the Message *@
                     </div>
+                    <div class="cameraAlignCenter">
+                        <div id="my_camera" style="display:none;"></div>
+                    </div>
                 </div>
 
                 <div class="chat-input-container">
                     <input type="hidden" id="recipientUserId" value="@Model.ChatMessageID" />
                     <input type="text" id="messageInput" placeholder="Type your message..." class="MessageInput" />
                     <div class="resDivButton">
-                        <button id="cameraButton"><img src="~/images/camera3.svg" alt="Camera" style="width:50px;" /></button>
+                        <a href="javascript:void(0)" id="cameraButton" onclick="toggleCamera()">
+                            <img src="~/images/camera3.svg" alt="Camera" style="width:50px;" />
+                        </a>
                         <button id="sendButton">Send</button>
                     </div>
                 </div>
@@ -511,4 +520,38 @@
         image_format: 'jpeg',
         jpeg_quality: 90
     });
+
+    //Function to Open/Close the Camera
+
+    function toggleCamera() {
+        const cameraDiv = document.getElementById('my_camera');
+        document.getElementById('cameraButton').style.display = 'none';
+        if (cameraDiv.style.display === 'none') {
+            cameraDiv.style.display = 'block';
+            Webcam.attach(cameraDiv);
+            document.getElementById('captureButton').style.display = 'block';
+            document.getElementById('profilePicturePreview').style.display = 'none';
+        } else {
+            cameraDiv.style.display = 'none';
+            Webcam.reset();
+            document.getElementById('captureButton').style.display = 'none';
+        }
+    }
+
+
+    function takeSnapshot() {
+        Webcam.snap(function (data_uri) {
+
+            document.getElementById('ProfilePictureURLCamera').value = data_uri;
+
+            document.getElementById('profilePicturePreview').src = data_uri;
+
+            document.getElementById('profilePicturePreview').style.display = 'block';
+
+            document.getElementById('my_camera').style.display = 'none';
+            Webcam.reset();
+            document.getElementById('captureButton').style.display = 'none';
+            document.getElementById('cameraButton').style.display = 'block';
+        });
+    }
 </script>
