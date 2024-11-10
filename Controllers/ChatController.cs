@@ -94,20 +94,48 @@ namespace RealTimeChatApplication.Controllers
                     return RedirectToAction("ChatBox", "Chat");
                 }
 
-                //User only Inseract with the Connection's.
-                string VerityURL = baseUrl + "api/ChatAPI/ChatVerifyUser";
-
-                ChatMessage verifyUser = new ChatMessage();
-                verifyUser.ChatMessageID = chatUserId;
-                verifyUser.ChatReceiverID = Id;
-                string JSONVerify = JsonConvert.SerializeObject(verifyUser);
-                StringContent contentVerify = new StringContent(JSONVerify, Encoding.UTF8, "application/json");
-                HttpResponseMessage chatResponse = await _httpClient.PostAsync(VerityURL, contentVerify);
-
-                if (chatResponse.IsSuccessStatusCode)
+                if (Id != chatUserId)
                 {
+                    //User only Inseract with the Connection's.
+                    string VerityURL = baseUrl + "api/ChatAPI/ChatVerifyUser";
+
+                    ChatMessage verifyUser = new ChatMessage();
+                    verifyUser.ChatMessageID = chatUserId;
+                    verifyUser.ChatReceiverID = Id;
+                    string JSONVerify = JsonConvert.SerializeObject(verifyUser);
+                    StringContent contentVerify = new StringContent(JSONVerify, Encoding.UTF8, "application/json");
+                    HttpResponseMessage chatVerify = await _httpClient.PostAsync(VerityURL, contentVerify);
+
+                    if (chatVerify.IsSuccessStatusCode)
+                    {
+                        dynamic verifyBody = await chatVerify.Content.ReadAsStringAsync();
+                        ChatMessage verifyData = JsonConvert.DeserializeObject<ChatMessage>(verifyBody);
+
+                        if (verifyData.IsRequestAccepted == false)
+                        {
+                            TempData["errorMessage"] = "Please select a connection to send the Message";
+                            return RedirectToAction("ChatBox", "Chat");
+                        }
+                    }
+                }
+
+                //To get the User Last Login Time API
+
+                string LoginTimeURL = baseUrl + $"api/ChatAPI/LastLoginTime?LastLoginTimeID={Id}";
+
+                HttpResponseMessage LastLoginTimeRes = await _httpClient.GetAsync(LoginTimeURL);
+
+                if (LastLoginTimeRes.IsSuccessStatusCode)
+                {
+                    dynamic LastLoginTimeResBody = await LastLoginTimeRes.Content.ReadAsStringAsync();
+                    ChatMessage LastLoginObj = JsonConvert.DeserializeObject<ChatMessage>(LastLoginTimeResBody);
+
+                    var LastLoginTime = LastLoginObj.TimeStamp;
+                    ViewBag.LastLoginTime = LastLoginTime;
 
                 }
+
+
 
                 string url = baseUrl + $"api/ChatAPI/GetProfile";
                 string fullUrl = url + $"?Id={Id}";
@@ -143,6 +171,7 @@ namespace RealTimeChatApplication.Controllers
                 {
                     message = "Error in the API Call or to Fetch the Data";
                 }
+
             }
             catch (Exception ex)
             {

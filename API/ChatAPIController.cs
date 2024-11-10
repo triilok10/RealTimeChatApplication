@@ -103,6 +103,51 @@ namespace RealTimeChatApplication.API
         }
 
 
+        [HttpGet]
+        public IActionResult LastLoginTime(string LastLoginTimeID = "")
+        {
+            bool res = false;
+            string msg = "";
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(LastLoginTimeID))
+                {
+                    res = false;
+                    msg = "Please select the User";
+                    return Ok(new { res, msg });
+                }
+
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Mode", 4);
+                    cmd.Parameters.AddWithValue("@ChatUserID", LastLoginTimeID);
+
+                    ChatMessage Obj = new ChatMessage();
+
+                    using (SqlDataReader rdr = cmd.ExecuteReader())
+                    {
+                        while (rdr.Read())
+                        {
+                            Obj.TimeStamp = Convert.ToDateTime(rdr["LastLoginTime"]);
+                        }
+                        res = true;
+                        msg = "Data received successfully";
+                    }
+                    return Ok(Obj);
+                }
+            }
+            catch (Exception ex)
+            {
+                res = false;
+                msg = ex.Message;
+            }
+            return Ok(new { res, msg });
+        }
+
         #region "Load Chat History"
         [HttpPost]
         public IActionResult LoadChatHistory([FromBody] ChatMessage chatMessage)
@@ -328,14 +373,16 @@ namespace RealTimeChatApplication.API
                     }
                     res = true;
                     msg = "User Connected";
+                    return Ok(obj);
                 }
             }
             catch (Exception ex)
             {
                 res = false;
                 msg = ex.Message;
+                return Ok(new { data = obj, res = res, msg = msg });
             }
-            return Ok(new { data = obj, res = res, msg = msg });
+
 
         }
     }

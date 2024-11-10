@@ -390,7 +390,7 @@
                         </div>
                         <div class="profile-info">
                             <span class="online-dot"></span>
-                            <span class="last-seen">Last seen: 5 minutes ago</span>
+                            <span class="last-seen">Last Login Time: @ViewBag.LastLoginTime</span>
                         </div>
                     </div>
 
@@ -433,6 +433,7 @@
     </div>
 </body>
 <script src="~/js/signalr.js"></script>
+<script src="~/js/webcam.min.js"></script>
 @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script> *@
 
 <script type="text/javascript">
@@ -499,4 +500,15 @@
         toastr.success(`New notification: ${message}`);
     });
 
+
+
+
+
+    //Camera Option
+    Webcam.set({
+        width: 320,
+        height: 240,
+        image_format: 'jpeg',
+        jpeg_quality: 90
+    });
 </script>
