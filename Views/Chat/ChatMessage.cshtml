@@ -49,6 +49,28 @@
         width: 100%;
     }
 
+
+    .cameraAlignCenter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cameraContainer {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        align-items: center;
+        align-content: center;
+    }
+
+        .cameraContainer img,
+        #profilePicturePreview {
+            max-width: 100%;
+            height: 200px;
+            width: auto;
+        }
+
     .left-panel {
         flex: 0.3;
         background-image: url('../images/svg1.svg');
@@ -424,16 +446,26 @@
                     <div class="cameraAlignCenter">
                         <div id="my_camera" style="display:none;"></div>
                     </div>
+                    <div class="cameraContainer">
+                        <input type="hidden" asp-for="ChatPhoto" id="ProfilePictureURLCamera">
+                    </div>
+                    <div class="cameraContainer" style="display:flex; justify-content:right">
+                        <img id="profilePicturePreview" src="" class="profile-picture-preview mt-2" style="width:350px;height:auto">
+                    </div>
                 </div>
 
                 <div class="chat-input-container">
                     <input type="hidden" id="recipientUserId" value="@Model.ChatMessageID" />
                     <input type="text" id="messageInput" placeholder="Type your message..." class="MessageInput" />
-                    <div class="resDivButton">
+                    <div class="resDivButton" id="resDivButtonID">
                         <a href="javascript:void(0)" id="cameraButton" onclick="toggleCamera()">
                             <img src="~/images/camera3.svg" alt="Camera" style="width:50px;" />
                         </a>
                         <button id="sendButton">Send</button>
+                    </div>
+                    <div class="cameraContainer" id="cameraContainerID" style="display:none">
+                        <a href="" class="btn btn-outline-danger" style="display:none;" id="cancelButton">Cancel</a>
+                        <a class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</a>
                     </div>
                 </div>
             </div>
@@ -510,18 +542,15 @@
     });
 
 
-
-
-
     //Camera Option
     Webcam.set({
-        width: 320,
-        height: 240,
+        width: 460,
+        height: 460,
         image_format: 'jpeg',
         jpeg_quality: 90
     });
 
-    //Function to Open/Close the Camera
+    //Function to Open-Close the Camera
 
     function toggleCamera() {
         const cameraDiv = document.getElementById('my_camera');
@@ -530,7 +559,12 @@
             cameraDiv.style.display = 'block';
             Webcam.attach(cameraDiv);
             document.getElementById('captureButton').style.display = 'block';
-            document.getElementById('profilePicturePreview').style.display = 'none';
+            document.getElementById('cancelButton').style.display = 'block';
+            document.getElementById('cameraContainerID').style.display = 'block';
+            //document.getElementById('profilePicturePreview').style.display = 'none';
+            document.getElementById('recipientUserId').style.display = 'none';
+            document.getElementById('messageInput').style.display = 'none';
+            document.getElementById('resDivButtonID').style.display = 'none';
         } else {
             cameraDiv.style.display = 'none';
             Webcam.reset();
@@ -538,20 +572,31 @@
         }
     }
 
-
+    //This function is used to Capture the Photo
     function takeSnapshot() {
         Webcam.snap(function (data_uri) {
-
             document.getElementById('ProfilePictureURLCamera').value = data_uri;
-
             document.getElementById('profilePicturePreview').src = data_uri;
-
             document.getElementById('profilePicturePreview').style.display = 'block';
-
             document.getElementById('my_camera').style.display = 'none';
             Webcam.reset();
             document.getElementById('captureButton').style.display = 'none';
             document.getElementById('cameraButton').style.display = 'block';
         });
+    }
+
+    //This photo is used to preview the Photo.
+    function loadFile(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('profilePicturePreview').src = e.target.result;
+                document.getElementById('profilePicturePreview').style.display = 'block';
+                document.getElementById('my_camera').style.display = 'none';
+                Webcam.reset();
+            }
+            reader.readAsDataURL(file);
+        }
     }
 </script>
