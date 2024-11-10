@@ -14,6 +14,7 @@
         public bool? IsRequestAccepted { get; set; } = false;
         public int? RequestID { get; set; } = 0;
         public int? AcceptID { get; set; } = 0;
+        public int? Accept { get; set; } = 0;
         public int? ChatUserID { get; set; } = 0;
         public IFormFile? ChatPhoto { get; set; } 
         public GenderType? Gender { get; set; }

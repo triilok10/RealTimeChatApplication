@@ -15,6 +15,7 @@ namespace RealTimeChatApplication.Models
         public string? HdnProfilePicture { get; set; }
         public IFormFile? ProfilePictureURLCamera { get; set; }
         public bool? Status { get; set; }
+        public bool? Success { get; set; }
         public string? Longitude { get; set; }
         public string? Latitude { get; set; }
         public bool? TermsCondition { get; set; }

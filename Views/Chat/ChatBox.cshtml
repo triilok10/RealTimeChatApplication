@@ -270,8 +270,7 @@
                         <button class="settings-button"><i class="fas fa-cog"></i> Settings</button>
                         <div class="settings-dropdown">
                             <ul>
-                                <li><a href="#">Account Settings</a></li>
-                                <li><a href="#">Privacy</a></li>
+                                <li><a href="@Url.Action("UpdateProfile","Profile")">Account Settings</a></li>
                                 <li><a href="JavaScript:Void()" onclick="js_PartialConnectionList();">Connections</a></li>
                                 <li><a href="@Url.Action("LogOut","Login")">Logout</a></li>
                             </ul>
@@ -398,41 +397,43 @@
                         } else if (post.chatMessageID == currentUserID) {
                             actionButtons = `<a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>`;
                         } else if (post.acceptID === 0 && post.isRequestAccepted === false && post.chatMessageID != currentUserID) {
-                        actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
-                    }
-
-
-                    // Determine profile image based on gender
-                    let profileImageSrc = "../images/uploads/" + (post.profilePictureURL || 'default.png');
-                    if (!post.profilePictureURL) {
-                        debugger;
-                        if (post.gender == 0) {
-                            profileImageSrc = "../images/Gender/Male.svg";
-                        } else if (post.gender == 1) {
-                            profileImageSrc = "../images/Gender/Female.svg";
-                        } else {
-                            profileImageSrc = "../images/Gender/Other.svg";
+                            actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Send Request</a>`;
+                        } else if (post.acceptID === currentUserID) {
+                            actionButtons = `<a class="btn btn-primary" href="@Url.Action("SendRequest", "Chat")?Id=${post.chatMessageID}">Accept Request</a>`;
                         }
-                    }
 
-                    resultsContainer.innerHTML += `
-                                    <div class="connection-list-item">
-                                        <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                        <div class="profile-info">
-                                            <div class="profile-infoManage">
-                                                <h3>${post.searchConnection || 'No Username'}</h3>
-                                                ${actionButtons}
-                                            </div>
-                                        </div>
-                                    </div>`;
-                });
+
+                        // Determine profile image based on gender
+                        let profileImageSrc = "../images/uploads/" + (post.profilePictureURL || 'default.png');
+                        if (!post.profilePictureURL) {
+                            debugger;
+                            if (post.gender == 0) {
+                                profileImageSrc = "../images/Gender/Male.svg";
+                            } else if (post.gender == 1) {
+                                profileImageSrc = "../images/Gender/Female.svg";
+                            } else {
+                                profileImageSrc = "../images/Gender/Other.svg";
+                            }
+                        }
+
+                        resultsContainer.innerHTML += `
+                                            <div class="connection-list-item">
+                                                <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                <div class="profile-info">
+                                                    <div class="profile-infoManage">
+                                                        <h3>${post.searchConnection || 'No Username'}</h3>
+                                                        ${actionButtons}
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                    });
+                }
+            },
+            error: function (err) {
+                console.error("Error fetching connections:", err);
+            }
+        })
     }
-                },
-    error: function (err) {
-        console.error("Error fetching connections:", err);
-    }
-            })
-        }
 
 
 
@@ -487,31 +488,31 @@
             content += '<h2>Connections List</h2><ul>';
             data.lst.forEach(connection => {
                 content += `
-                                                                                                <li>
-                                                                                                    <div class="action-buttons">
-                                                                                                        <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                                                        <span class="connection-name">${connection.fullName}</span>
-                                                                                                    </div>
-                                                                                                   <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
-                                                                                                </li>
-                                                                                            `;
+                                                                                                        <li>
+                                                                                                            <div class="action-buttons">
+                                                                                                                <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                                                                <span class="connection-name">${connection.fullName}</span>
+                                                                                                            </div>
+                                                                                                           <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
+                                                                                                        </li>
+                                                                                                    `;
             });
             content += '</ul>';
         } else if (data.type === 'pendingRequests') {
             content += '<h2>Pending Requests</h2><ul>';
             data.lst.forEach(request => {
                 content += `
-                                                                                     <li>
-                                                                                         <div class="action-buttons">
-                                                                                             <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                                             <span class="request-name">${request.fullName}</span>
-                                                                                         </div>
-                                                                                         <div class="action-buttons">
-                                                                                                  <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
-                                                                                                 <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
-                                                                                         </div>
-                                                                                     </li>
-                                                                                 `;
+                                                                                             <li>
+                                                                                                 <div class="action-buttons">
+                                                                                                     <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                                                     <span class="request-name">${request.fullName}</span>
+                                                                                                 </div>
+                                                                                                 <div class="action-buttons">
+                                                                                                          <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
+                                                                                                         <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
+                                                                                                 </div>
+                                                                                             </li>
+                                                                                         `;
             });
             content += '</ul>';
         }
