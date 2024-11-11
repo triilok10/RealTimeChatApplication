@@ -79,9 +79,21 @@ namespace RealTimeChatApplication.Controllers
 
 
         [HttpGet]
-        public PartialViewResult _SeeProfile(int Id = 0)
+        public async Task<PartialViewResult> _SeeProfile(int Id = 0)
         {
-            return PartialView();
+            var chatUserId = _sessionService.GetInt32("UserID");
+            UserConnection user = new UserConnection();
+            ViewBag.chatUserId = chatUserId;
+            string url = baseUrl + $"api/ChatAPI/SeeProfileData?SeeProfileID={Id}&loginID={chatUserId}";
+
+            HttpResponseMessage res = await _httpClient.GetAsync(url);
+            if (res.IsSuccessStatusCode)
+            {
+                dynamic resBody = await res.Content.ReadAsStringAsync();
+                user = JsonConvert.DeserializeObject<UserConnection>(resBody);
+            }
+            return PartialView(user);
+
         }
 
         [HttpGet]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using RealTimeChatApplication.Models;
 using System.Data;
 using System.Data.SqlClient;
@@ -99,10 +100,44 @@ namespace RealTimeChatApplication.API
                 message = ex.Message;
                 return StatusCode(500, "An error occurred while searching for connections.");
             }
-
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult SeeProfileData(int SeeProfileID = 0, int loginID = 0)
+        {
+
+            UserConnection user = new UserConnection();
+            try
+            {
+                if (SeeProfileID > 0 && loginID > 0)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Mode", 5);
+                        cmd.Parameters.AddWithValue("@ChatUserID", loginID);
+                        cmd.Parameters.AddWithValue("@AcceptID", SeeProfileID);
+
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                user.RequestID = Convert.ToInt32(rdr["RequestID"]);
+                                user.AcceptID = Convert.ToInt32(rdr["AcceptID"]);
+                                user.IsRequestAccepted = Convert.ToBoolean(rdr["IsRequestAccepted"]);
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex) { }
+            return Ok(user);
+        }
 
         [HttpGet]
         public IActionResult LastLoginTime(string LastLoginTimeID = "")
