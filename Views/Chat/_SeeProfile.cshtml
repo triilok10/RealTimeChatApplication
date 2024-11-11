@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewData["Title"] = "_SeeProfile";
+}
+
+<style>
+    /* Base styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* Profile Box */
+.profile-box {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+/* Profile Image */
+.profile-image img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+/* Profile Details */
+.profile-details {
+    margin-bottom: 20px;
+}
+
+.profile-details h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-details p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #333;
+}
+
+/* Buttons Section */
+.profile-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 20px;
+}
+
+.profile-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 0.3s ease;
+    width: 30%;
+}
+
+.accept-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.send-btn {
+    background-color: #007BFF;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Hover effects for buttons */
+.profile-buttons button:hover {
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@@media screen and (max-width: 768px) {
+    .profile-box {
+        width: 90%;
+    }
+
+    .profile-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-buttons button {
+        width: 80%;
+        margin-bottom: 10px;
+    }
+}
+
+@@media screen and (max-width: 480px) {
+    .profile-box {
+        width: 95%;
+    }
+
+    .profile-buttons button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+</style>
+
+
+
+
+<div class="profile-box">
+    <div class="profile-content">
+        <!-- Dummy Profile Image -->
+        <div class="profile-image">
+            <img src="https://via.placeholder.com/150" alt="Profile Picture">
+        </div>
+
+        <!-- Profile Details -->
+        <div class="profile-details">
+            <h2>John Doe</h2>
+            <p><strong>Username:</strong> johndoe_123</p>
+            <p><strong>Email:</strong> johndoe@example.com</p>
+            <p><strong>Gender:</strong> Male</p>
+        </div>
+
+        <!-- Buttons Section -->
+        <div class="profile-buttons">
+            <button class="accept-btn">Accept Request</button>
+            <button class="send-btn">Send Request</button>
+            <button class="cancel-btn">Cancel Request</button>
+        </div>
+    </div>
+</div>

@@ -79,7 +79,7 @@ namespace RealTimeChatApplication.Controllers
 
 
         [HttpGet]
-        public PartialViewResult SeeProfile(int Id = 0)
+        public PartialViewResult _SeeProfile(int Id = 0)
         {
             return PartialView();
         }
