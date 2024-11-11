@@ -83,6 +83,7 @@ namespace RealTimeChatApplication.Controllers
         {
             var chatUserId = _sessionService.GetInt32("UserID");
             UserConnection user = new UserConnection();
+            ChatUser userobj = new ChatUser();
             ViewBag.chatUserId = chatUserId;
             string url = baseUrl + $"api/ChatAPI/SeeProfileData?SeeProfileID={Id}&loginID={chatUserId}";
 
@@ -91,6 +92,17 @@ namespace RealTimeChatApplication.Controllers
             {
                 dynamic resBody = await res.Content.ReadAsStringAsync();
                 user = JsonConvert.DeserializeObject<UserConnection>(resBody);
+            }
+
+
+            string userInfoUrl = baseUrl + $"api/ChatAPI/UserInfo?SeeProfileID={Id}";
+
+            HttpResponseMessage userInfoUrlRes = await _httpClient.GetAsync(userInfoUrl);
+            if (res.IsSuccessStatusCode)
+            {
+                dynamic resBodyRes = await userInfoUrlRes.Content.ReadAsStringAsync();
+                userobj = JsonConvert.DeserializeObject<ChatUser>(resBodyRes);
+                ViewBag.UserInfo = userobj;
             }
             return PartialView(user);
 

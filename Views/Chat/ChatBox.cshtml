@@ -323,7 +323,6 @@
             </div>
             <div class="connection-listOptions chat-containerPartial" style="display:none"> </div>
         </div>
-
     </div>
 
 </body>
@@ -416,15 +415,15 @@
                         }
 
                         resultsContainer.innerHTML += `
-                                                         <div class="connection-list-item">
-                                                             <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                             <div class="profile-info">
-                                                                 <div class="profile-infoManage">
-                                                                     <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                     ${actionButtons}
-                                                                 </div>
-                                                             </div>
-                                                         </div>`;
+                                                                         <div class="connection-list-item">
+                                                                             <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                             <div class="profile-info">
+                                                                                 <div class="profile-infoManage">
+                                                                                     <h3>${post.searchConnection || 'No Username'}</h3>
+                                                                                     ${actionButtons}
+                                                                                 </div>
+                                                                             </div>
+                                                                         </div>`;
                     });
                 }
             },
@@ -487,31 +486,31 @@
             content += '<h2>Connections List</h2><ul>';
             data.lst.forEach(connection => {
                 content += `
-                                                        <li>
-                                                            <div class="action-buttons">
-                                                                <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                <span class="connection-name">${connection.fullName}</span>
-                                                            </div>
-                                                           <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
-                                                        </li>
-                                                    `;
+                                                                        <li>
+                                                                            <div class="action-buttons">
+                                                                                <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                                <span class="connection-name">${connection.fullName}</span>
+                                                                            </div>
+                                                                           <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
+                                                                        </li>
+                                                                    `;
             });
             content += '</ul>';
         } else if (data.type === 'pendingRequests') {
             content += '<h2>Pending Requests</h2><ul>';
             data.lst.forEach(request => {
                 content += `
-                                                   <li>
-                                                       <div class="action-buttons">
-                                                           <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                           <span class="request-name">${request.fullName}</span>
-                                                       </div>
-                                                       <div class="action-buttons">
-                                                                <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
-                                                               <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
-                                                       </div>
-                                                   </li>
-                                               `;
+                                                                   <li>
+                                                                       <div class="action-buttons">
+                                                                           <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                           <span class="request-name">${request.fullName}</span>
+                                                                       </div>
+                                                                       <div class="action-buttons">
+                                                                                <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
+                                                                               <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
+                                                                       </div>
+                                                                   </li>
+                                                               `;
             });
             content += '</ul>';
         }
@@ -581,17 +580,17 @@
             data: { id: chatMessageID },
             data: { id: chatMessageID },
             success: function (response) {
-                // On success, handle the response (e.g., show profile details in a modal)
-                $('#loadingSpinner').hide(); // Hide loading spinner
-
-                // Assume the response contains the profile data, e.g., HTML or JSON
-                if (response.success) {
-                    // For example, populate a modal with the profile data
-                    $('#profileModal .modal-body').html(response.profileHtml);
-                    $('#profileModal').modal('show');
-                } else {
-                    alert('Profile could not be loaded.');
-                }
+                console.log(response);
+                $('#loadingSpinner').hide();
+                $(".resFixContainer").css("display", "none");
+                $(".chat-containerPartial").html(response).slideDown();
+                // if (response.success) {
+                //     // For example, populate a modal with the profile data
+                //     $('#profileModal .modal-body').html(response.profileHtml);
+                //     $('#profileModal').modal('show');
+                // } else {
+                //     alert('Profile could not be loaded.');
+                // }
             },
             error: function (xhr, status, error) {
                 // Handle error case

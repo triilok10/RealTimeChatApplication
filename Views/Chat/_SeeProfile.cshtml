@@ -1,6 +1,7 @@
 ﻿@using RealTimeChatApplication.Models
 @{
     ViewData["Title"] = "_SeeProfile";
+    var profileData = ViewBag.UserInfo as RealTimeChatApplication.Models.ChatUser;
 }
 
 <style>
@@ -134,10 +135,10 @@
 
         <!-- Profile Details -->
         <div class="profile-details">
-            <h2>John Doe</h2>
-            <p><strong>Username:</strong> johndoe_123</p>
-            <p><strong>Email:</strong> johndoe@example.com</p>
-            <p><strong>Gender:</strong> Male</p>
+            <h2>@profileData.FullName</h2>
+            <p><strong>Username:</strong> @profileData.UserName</p>
+            <p><strong>Email:</strong> @profileData.Email</p>
+            <p><strong>Gender:</strong> @profileData.Gender</p>
         </div>
 
         <!-- Buttons Section -->

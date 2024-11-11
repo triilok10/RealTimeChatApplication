@@ -139,6 +139,44 @@ namespace RealTimeChatApplication.API
             return Ok(user);
         }
 
+
+        [HttpGet]
+        public IActionResult UserInfo(int SeeProfileID = 0)
+        {
+
+            ChatUser user = new ChatUser();
+            try
+            {
+                if (SeeProfileID > 0)
+                {
+                    using (SqlConnection con = new SqlConnection(_connectionString))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@Mode", 6);
+                        cmd.Parameters.AddWithValue("@ChatUserID", SeeProfileID);
+
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            while (rdr.Read())
+                            {
+                                user.ChatUserID = Convert.ToInt32(rdr["ChatUserID"]);
+                                user.FullName = Convert.ToString(rdr["FullName"]);
+                                user.UserName = Convert.ToString(rdr["UserName"]);
+                                user.Email = Convert.ToString(rdr["Email"]);
+                                user.Gender = (ChatUser.GenderType?)Convert.ToInt16(rdr["Gender"]);
+                            }
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex) { }
+            return Ok(user);
+        }
+
         [HttpGet]
         public IActionResult LastLoginTime(string LastLoginTimeID = "")
         {
