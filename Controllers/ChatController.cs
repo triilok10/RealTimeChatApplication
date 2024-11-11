@@ -79,6 +79,12 @@ namespace RealTimeChatApplication.Controllers
 
 
         [HttpGet]
+        public PartialViewResult SeeProfile(int Id = 0)
+        {
+            return PartialView();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> ChatMessage(int Id = 0)
         {
             string message = "";
