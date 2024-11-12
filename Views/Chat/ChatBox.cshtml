@@ -319,9 +319,9 @@
                 </div>
                 <div class="connection-list">
                 </div>
-
+                <div class="connection-listOptions chat-containerPartial" style="display:none"> </div>
             </div>
-            <div class="connection-listOptions chat-containerPartial" style="display:none"> </div>
+            
         </div>
     </div>
 
@@ -569,7 +569,7 @@
 
     function js_loadProfile(chatMessageID) {
 
-        $('#loadingSpinner').show();
+        //$('#loadingSpinner').show();
 
         var Id = chatMessageID;
         debugger;
@@ -581,8 +581,8 @@
             data: { id: chatMessageID },
             success: function (response) {
                 console.log(response);
-                $('#loadingSpinner').hide();
-                $(".resFixContainer").css("display", "none");
+                //$('#loadingSpinner').hide();
+                $(".connection-list").css("display", "none");
                 $(".chat-containerPartial").html(response).slideDown();
                 // if (response.success) {
                 //     // For example, populate a modal with the profile data

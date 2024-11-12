@@ -18,6 +18,11 @@
         margin-top: 30px;
     }
 
+    .chat-containerPartial {
+        overflow-y: revert;
+        height: 100vh;
+    }
+
     /* Profile Box */
     .profile-box {
         width: 100%;
@@ -143,9 +148,20 @@
 
         <!-- Buttons Section -->
         <div class="profile-buttons">
-            <button class="accept-btn">Accept Request</button>
-            <button class="send-btn">Send Request</button>
-            <button class="cancel-btn">Cancel Request</button>
+            <button class="cancel-btn" onclick="js_CloseCard();">Close</button>
+            @if (Model.AcceptID == null && Model.RequestID == null)
+            {
+                <button class="send-btn" href="@Url.Action("SendRequest","Chat")?Id=@profileData.ChatUserID">Send Request</button>
+            }
+            @if (Model.AcceptID != null && Model.RequestID == @profileData.ChatUserID && Model.AcceptID == @ViewBag.chatUserId)
+            {
+                <button class="accept-btn" onclick="js_AcceptRequest(@profileData.ChatUserID)">Accept Request</button>
+            }
+            @if (Model.RequestID == @ViewBag.chatUserId)
+            {
+                <button class="cancel-btn" onclick="js_RejectRequest(@profileData.ChatUserID);">Cancel Request</button>
+            }
+
         </div>
     </div>
 </div>
