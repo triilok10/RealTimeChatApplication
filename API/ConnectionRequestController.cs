@@ -149,8 +149,8 @@ namespace RealTimeChatApplication.API
                     SqlCommand cmd = new SqlCommand("usp_ConnectionRequest", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 4);
-                    cmd.Parameters.AddWithValue("@AcceptID", AcceptID);
-                    cmd.Parameters.AddWithValue("@RequestID", RequestID);
+                    cmd.Parameters.AddWithValue("@AcceptID", RequestID);
+                    cmd.Parameters.AddWithValue("@RequestID", AcceptID);
                     cmd.ExecuteNonQuery();
                     res = true;
                     msg = "Connection request accepted";

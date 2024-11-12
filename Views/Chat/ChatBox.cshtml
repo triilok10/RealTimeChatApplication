@@ -321,7 +321,7 @@
                 </div>
                 <div class="connection-listOptions chat-containerPartial" style="display:none"> </div>
             </div>
-            
+
         </div>
     </div>
 
@@ -362,7 +362,6 @@
     var currentUserID = @ViewBag.UserID;
     function searchConnections() {
         var value = $("#searchConnections").val();
-        debugger;
         if (!value) {
             toastr.error("Please enter the Value");
             return false;
@@ -376,8 +375,6 @@
             },
             success: function (res) {
                 if (res.lstChat != null) {
-
-                    console.log(res.lstChat);
                     var resultsContainer = document.querySelector(".connection-list");
                     resultsContainer.innerHTML = '';
 
@@ -385,20 +382,14 @@
                         resultsContainer.innerHTML = '<p class="text-center">No profiles found.</p>';
                         return;
                     }
-
                     res.lstChat.forEach(function (post) {
                         let actionButtons = '';
-                        debugger;
 
+                        actionButtons = `<a class="btn btn-primary" href="javascript:void(0);" onclick="js_loadProfile(${post.chatUserID});">See Profile</a>`;
 
-                        actionButtons = `<a class="btn btn-primary" href="javascript:void(0);" onclick="js_loadProfile(${post.chatMessageID});">See Profile</a>`;
-
-
-                        if (post.chatMessageID == currentUserID) {
-                            actionButtons = `<a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatMessageID}">View Profile</a>`;
+                        if (post.isRequestAccepted == true || post.chatUserID == currentUserID) {
+                            actionButtons = `<a class="btn btn-primary" href="@Url.Action("ChatMessage", "Chat")?Id=${post.chatUserID}">View Profile</a>`;
                         }
-
-
 
 
                         // Determine profile image based on gender
@@ -415,15 +406,15 @@
                         }
 
                         resultsContainer.innerHTML += `
-                                                                         <div class="connection-list-item">
-                                                                             <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                             <div class="profile-info">
-                                                                                 <div class="profile-infoManage">
-                                                                                     <h3>${post.searchConnection || 'No Username'}</h3>
-                                                                                     ${actionButtons}
-                                                                                 </div>
-                                                                             </div>
-                                                                         </div>`;
+                                                                <div class="connection-list-item">
+                                                                    <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                    <div class="profile-info">
+                                                                        <div class="profile-infoManage">
+                                                                            <h3>${post.userName || 'No Username'}</h3>
+                                                                            ${actionButtons}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>`;
                     });
                 }
             },
@@ -486,31 +477,31 @@
             content += '<h2>Connections List</h2><ul>';
             data.lst.forEach(connection => {
                 content += `
-                                                                        <li>
-                                                                            <div class="action-buttons">
-                                                                                <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                                <span class="connection-name">${connection.fullName}</span>
-                                                                            </div>
-                                                                           <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
-                                                                        </li>
-                                                                    `;
+                                                                  <li>
+                                                                      <div class="action-buttons">
+                                                                          <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                          <span class="connection-name">${connection.fullName}</span>
+                                                                      </div>
+                                                                     <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
+                                                                  </li>
+                                                              `;
             });
             content += '</ul>';
         } else if (data.type === 'pendingRequests') {
             content += '<h2>Pending Requests</h2><ul>';
             data.lst.forEach(request => {
                 content += `
-                                                                   <li>
-                                                                       <div class="action-buttons">
-                                                                           <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                           <span class="request-name">${request.fullName}</span>
-                                                                       </div>
-                                                                       <div class="action-buttons">
-                                                                                <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
-                                                                               <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
-                                                                       </div>
-                                                                   </li>
-                                                               `;
+                                                                 <li>
+                                                                     <div class="action-buttons">
+                                                                         <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
+                                                                         <span class="request-name">${request.fullName}</span>
+                                                                     </div>
+                                                                     <div class="action-buttons">
+                                                                              <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
+                                                                             <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
+                                                                     </div>
+                                                                 </li>
+                                                             `;
             });
             content += '</ul>';
         }
@@ -531,6 +522,9 @@
             success: function (res) {
                 if (res.response == true) {
                     toastr.success(res.message);
+                    $(".connection-list").css("display", "block");
+                    $(".profile-box").css("display", "none");
+
                 } else {
                     toastr.error(res.message);
                 }
@@ -540,6 +534,12 @@
             }
         });
 
+    }
+
+
+    function js_CloseCard() {
+        $(".connection-list").css("display", "block");
+        $(".profile-box").css("display", "none");
     }
 
 
@@ -555,6 +555,9 @@
             success: function (res) {
                 if (res.response == true) {
                     toastr.success(res.message);
+                    $(".connection-list").css("display", "block");
+                    $(".profile-box").css("display", "none");
+
                 } else {
                     toastr.error(res.message);
                 }
@@ -568,9 +571,6 @@
 
 
     function js_loadProfile(chatMessageID) {
-
-        //$('#loadingSpinner').show();
-
         var Id = chatMessageID;
         debugger;
 
@@ -578,10 +578,8 @@
             url: '@Url.Action("_SeeProfile", "Chat")',
             type: 'GET',
             data: { id: chatMessageID },
-            data: { id: chatMessageID },
             success: function (response) {
                 console.log(response);
-                //$('#loadingSpinner').hide();
                 $(".connection-list").css("display", "none");
                 $(".chat-containerPartial").html(response).slideDown();
                 // if (response.success) {
@@ -593,8 +591,7 @@
                 // }
             },
             error: function (xhr, status, error) {
-                // Handle error case
-                $('#loadingSpinner').hide();
+
                 alert('An error occurred while loading the profile.');
             }
         });

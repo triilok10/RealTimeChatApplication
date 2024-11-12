@@ -31,8 +31,8 @@ namespace RealTimeChatApplication.API
                     SqlCommand cmd = new SqlCommand("usp_ChatMessage", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", 1);
-                    cmd.Parameters.AddWithValue("@UserName", pChatMessage.SearchConnection);
-                    cmd.Parameters.AddWithValue("@ChatUserID", pChatMessage.ChatMessageID);
+                    cmd.Parameters.AddWithValue("@SearchUserName", pChatMessage.SearchConnection);
+                    cmd.Parameters.AddWithValue("@SearchUserID", pChatMessage.ChatMessageID);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -40,14 +40,15 @@ namespace RealTimeChatApplication.API
                         {
                             ChatMessage obj = new ChatMessage
                             {
-                                SearchConnection = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
-                                ChatMessageID = reader["ChatUserID"] != DBNull.Value ? Convert.ToInt32(reader["ChatUserID"]) : 0,
+                                UserName = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : string.Empty,
+                                FullName = reader["FullName"] != DBNull.Value ? Convert.ToString(reader["FullName"]) : string.Empty,
                                 ProfilePictureURL = reader["ProfilePictureURL"] != DBNull.Value ? Convert.ToString(reader["ProfilePictureURL"]) : string.Empty,
                                 IsRequestAccepted = reader["IsRequestAccepted"] != DBNull.Value ? Convert.ToBoolean(reader["IsRequestAccepted"]) : false,
-                                RequestID = reader["RequestID"] != DBNull.Value ? Convert.ToInt32(reader["RequestID"]) : 0,
-                                AcceptID = reader["AcceptID"] != DBNull.Value ? Convert.ToInt32(reader["AcceptID"]) : 0,
+                                RequestID = reader["RequesterID"] != DBNull.Value ? Convert.ToInt32(reader["RequesterID"]) : 0,
+                                AcceptID = reader["AccepterID"] != DBNull.Value ? Convert.ToInt32(reader["AccepterID"]) : 0,
                                 Gender = reader["Gender"] != DBNull.Value ? (ChatMessage.GenderType?)Enum.ToObject(typeof(ChatMessage.GenderType), Convert.ToInt16(reader["Gender"])) : null,
-                                Accept = reader["Accept"] != DBNull.Value ? Convert.ToInt32(reader["Accept"]) : 0,
+                                Status = reader["RequestStatus"] != DBNull.Value ? Convert.ToString(reader["RequestStatus"]) : "",
+                                ChatUserID = reader["ChatUserID"] != DBNull.Value ? Convert.ToInt32(reader["ChatUserID"]) : 0
                             };
 
                             lstMessage.Add(obj);

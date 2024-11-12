@@ -1,4 +1,4 @@
-﻿@using RealTimeChatApplication.Models
+﻿@model RealTimeChatApplication.Models.UserConnection
 @{
     ViewData["Title"] = "_SeeProfile";
     var profileData = ViewBag.UserInfo as RealTimeChatApplication.Models.ChatUser;
@@ -144,6 +144,7 @@
             <p><strong>Username:</strong> @profileData.UserName</p>
             <p><strong>Email:</strong> @profileData.Email</p>
             <p><strong>Gender:</strong> @profileData.Gender</p>
+            <input type="hidden" value="@profileData.ChatUserID" />
         </div>
 
         <!-- Buttons Section -->
@@ -151,15 +152,15 @@
             <button class="cancel-btn" onclick="js_CloseCard();">Close</button>
             @if (Model.AcceptID == null && Model.RequestID == null)
             {
-                <button class="send-btn" href="@Url.Action("SendRequest","Chat")?Id=@profileData.ChatUserID">Send Request</button>
+                <a class="btn btn-primary" href="@Url.Action("SendRequest","Chat")?Id=@profileData.ChatUserID">Send Request</a>
             }
-            @if (Model.AcceptID != null && Model.RequestID == @profileData.ChatUserID && Model.AcceptID == @ViewBag.chatUserId)
+            @if (Model.AcceptID != null && Model.RequestID != null && Model.IsRequestAccepted == false && Model.RequestID != @ViewBag.chatUserId)
             {
-                <button class="accept-btn" onclick="js_AcceptRequest(@profileData.ChatUserID)">Accept Request</button>
+                <a class="btn btn-success" onclick="js_AcceptRequest(@profileData.ChatUserID)">Accept Request</a>
             }
-            @if (Model.RequestID == @ViewBag.chatUserId)
+            @if (Model.RequestID == @ViewBag.chatUserId && Model.IsRequestAccepted == false)
             {
-                <button class="cancel-btn" onclick="js_RejectRequest(@profileData.ChatUserID);">Cancel Request</button>
+                <a class="btn btn-danger" onclick="js_RejectRequest(@profileData.ChatUserID);">Cancel Request</a>
             }
 
         </div>
