@@ -464,6 +464,7 @@
                     </div>
                     <div class="cameraContainer" id="cameraContainerID" style="display:none">
                         <a href="" class="btn btn-outline-danger" style="display:none;" id="cancelButton">Cancel</a>
+                        <a href="" class="btn btn-outline-primary mt-2" style="display:none;" id="SendButton">Send</a>
                         <a class="btn btn-secondary mt-2" id="captureButton" style="display:none;" onclick="takeSnapshot()">Capture</a>
                     </div>
                 </div>
@@ -581,6 +582,7 @@
             Webcam.reset();
             document.getElementById('captureButton').style.display = 'none';
             document.getElementById('cameraButton').style.display = 'block';
+            document.getElementById('SendButton').style.display = 'block';
         });
     }
 
@@ -590,6 +592,7 @@
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
+
                 document.getElementById('profilePicturePreview').src = e.target.result;
                 document.getElementById('profilePicturePreview').style.display = 'block';
                 document.getElementById('my_camera').style.display = 'none';
