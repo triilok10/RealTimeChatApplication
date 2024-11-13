@@ -18,7 +18,7 @@ namespace RealTimeChatApplication.API
 
 
         [HttpPost]
-        public IActionResult GetPendingRequests(ChatMessage pChatMessage)
+        public IActionResult GetPendingRequests([FromBody] ChatMessage pChatMessage)
         {
             bool res = false;
             string msg = "";
@@ -63,7 +63,7 @@ namespace RealTimeChatApplication.API
         }
 
         [HttpPost]
-        public IActionResult GetConnections(ChatMessage pChatMessage)
+        public IActionResult GetConnections([FromBody] ChatMessage pChatMessage)
         {
             bool res = false;
             string msg = "";
