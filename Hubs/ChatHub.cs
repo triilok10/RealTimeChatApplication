@@ -10,8 +10,10 @@ namespace RealTimeChatApplication.Hubs
     public interface IChatHub
     {
         //Task SendNotificationToUser(int userId, string message);
-       // Task<bool> IsUserConnected(int userId);
+        // Task<bool> IsUserConnected(int userId);
         Task SendMessage(string recipientUserId, string message);
+
+        Task SendImage(string recipientUserId, string senderUserName, string base64ImageData, string fileName);
     }
 
     public class ChatHub : Hub, IChatHub
@@ -173,5 +175,84 @@ namespace RealTimeChatApplication.Hubs
         //    return Task.FromResult(_userConnections.ContainsKey(userId.ToString()));
         //}
         //#endregion
+
+
+
+        public async Task SendImage(string recipientUserId, string senderUserName, string base64ImageData, string fileName)
+        {
+            try
+            {
+                Console.WriteLine($"SendImage called for recipient: {recipientUserId}, sender: {senderUserName}, file: {fileName}");
+
+                if (string.IsNullOrWhiteSpace(base64ImageData))
+                {
+                    throw new ArgumentException("Image data is invalid.");
+                }
+
+                byte[] imageData = null;
+
+                if (base64ImageData.StartsWith("data:image/jpeg;base64,"))
+                {
+                    base64ImageData = base64ImageData.Replace("data:image/jpeg;base64,", "");
+                }
+                
+                imageData = Convert.FromBase64String(base64ImageData);
+
+                //await SaveImageToDatabase(recipientUserId, senderUserName, imageData, fileName);
+
+                
+                if (_userConnections.TryGetValue(recipientUserId, out var connectionIds))
+                {
+                    foreach (var connectionId in connectionIds)
+                    {
+                        await Clients.Client(connectionId).SendAsync("ReceiveImage", senderUserName, base64ImageData, fileName);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"No active connections found for recipient {recipientUserId}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in SendImage: {ex.Message}");
+            }
+        }
+
+        private async Task SaveImageToDatabase(string recipientId, string senderUserName, byte[] imageData, string fileName)
+        {
+            try
+            {
+                var senderUserId = _sessionService.GetInt32("UserID");
+
+                if (!senderUserId.HasValue)
+                {
+                    Console.WriteLine("Sender user ID is not available.");
+                    return;
+                }
+
+                using (SqlConnection con = new SqlConnection(_connectionString))
+                {
+                    await con.OpenAsync();
+
+                    using (SqlCommand cmd = new SqlCommand("usp_ImageRecord", con))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Mode", 2);  
+                        cmd.Parameters.AddWithValue("@SenderID", senderUserId.Value);
+                        cmd.Parameters.AddWithValue("@ReceiverID", recipientId);
+                        cmd.Parameters.AddWithValue("@ImageData", imageData);
+                        cmd.Parameters.AddWithValue("@FileName", fileName);
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving image: {ex.Message}");
+            }
+        }
+
     }
 }

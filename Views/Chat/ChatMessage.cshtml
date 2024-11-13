@@ -550,8 +550,60 @@
         jpeg_quality: 90
     });
 
-    //Function to Open-Close the Camera
+    // //Function to Open-Close the Camera
 
+    // function toggleCamera() {
+    //     const cameraDiv = document.getElementById('my_camera');
+    //     document.getElementById('cameraButton').style.display = 'none';
+    //     if (cameraDiv.style.display === 'none') {
+    //         cameraDiv.style.display = 'block';
+    //         Webcam.attach(cameraDiv);
+    //         document.getElementById('captureButton').style.display = 'block';
+    //         document.getElementById('cancelButton').style.display = 'block';
+    //         document.getElementById('cameraContainerID').style.display = 'block';
+    //         //document.getElementById('profilePicturePreview').style.display = 'none';
+    //         document.getElementById('recipientUserId').style.display = 'none';
+    //         document.getElementById('messageInput').style.display = 'none';
+    //         document.getElementById('resDivButtonID').style.display = 'none';
+    //     } else {
+    //         cameraDiv.style.display = 'none';
+    //         Webcam.reset();
+    //         document.getElementById('captureButton').style.display = 'none';
+    //     }
+    // }
+
+    // //This function is used to Capture the Photo
+    // function takeSnapshot() {
+    //     Webcam.snap(function (data_uri) {
+    //         document.getElementById('ProfilePictureURLCamera').value = data_uri;
+    //         document.getElementById('profilePicturePreview').src = data_uri;
+    //         document.getElementById('profilePicturePreview').style.display = 'block';
+    //         document.getElementById('my_camera').style.display = 'none';
+    //         Webcam.reset();
+    //         document.getElementById('captureButton').style.display = 'none';
+    //         document.getElementById('cameraButton').style.display = 'block';
+    //         document.getElementById('SendButton').style.display = 'block';
+    //     });
+    // }
+
+    // //This photo is used to preview the Photo.
+    // function loadFile(event) {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onload = function (e) {
+
+    //             document.getElementById('profilePicturePreview').src = e.target.result;
+    //             document.getElementById('profilePicturePreview').style.display = 'block';
+    //             document.getElementById('my_camera').style.display = 'none';
+    //             Webcam.reset();
+    //         }
+    //         reader.readAsDataURL(file);
+    //     }
+    // }
+
+
+    // Toggles the camera visibility on and off
     function toggleCamera() {
         const cameraDiv = document.getElementById('my_camera');
         document.getElementById('cameraButton').style.display = 'none';
@@ -561,7 +613,6 @@
             document.getElementById('captureButton').style.display = 'block';
             document.getElementById('cancelButton').style.display = 'block';
             document.getElementById('cameraContainerID').style.display = 'block';
-            //document.getElementById('profilePicturePreview').style.display = 'none';
             document.getElementById('recipientUserId').style.display = 'none';
             document.getElementById('messageInput').style.display = 'none';
             document.getElementById('resDivButtonID').style.display = 'none';
@@ -572,7 +623,7 @@
         }
     }
 
-    //This function is used to Capture the Photo
+    // This function captures the photo when the "Capture" button is clicked
     function takeSnapshot() {
         Webcam.snap(function (data_uri) {
             document.getElementById('ProfilePictureURLCamera').value = data_uri;
@@ -586,13 +637,12 @@
         });
     }
 
-    //This photo is used to preview the Photo.
+    // This function handles image preview when a user selects an image file
     function loadFile(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-
                 document.getElementById('profilePicturePreview').src = e.target.result;
                 document.getElementById('profilePicturePreview').style.display = 'block';
                 document.getElementById('my_camera').style.display = 'none';
@@ -601,4 +651,92 @@
             reader.readAsDataURL(file);
         }
     }
+
+    // Send image via SignalR when the "Send" button is clicked
+    document.getElementById("SendButton").addEventListener("click", function () {
+        debugger;
+        let imageData = document.getElementById('ProfilePictureURLCamera').value;
+        const recipientUserId = document.getElementById('recipientUserId').value;
+        const senderUserName = "YourUserName";
+
+        if (imageData && recipientUserId) {
+
+            imageData = cleanBase64String(imageData);
+            resizeImage(imageData, 300, 300)
+                .then(resizedImageData => {
+
+                    connection.invoke("SendImage", recipientUserId, senderUserName, resizedImageData, "captured-image.jpg")
+                        .catch(function (err) {
+                            console.error("Error sending image:", err.toString());
+                        });
+                })
+                .catch(function (err) {
+                    console.error("Error resizing image:", err.toString());
+                });
+        } else {
+            alert("Please capture an image and enter a recipient.");
+        }
+    });
+
+
+    function cleanBase64String(base64Data) {
+        const base64Regex = /^data:image\/\w+;base64,/;
+        return base64Data.replace(base64Regex, '');
+    }
+
+    // This function resizes the image using a canvas and returns a new base64 string
+    function resizeImage(base64Data, maxWidth, maxHeight) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function () {
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round(height * maxWidth / width);
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round(width * maxHeight / height);
+                        height = maxHeight;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                const resizedBase64 = canvas.toDataURL('image/jpeg');
+
+                resolve(resizedBase64);
+            };
+            img.onerror = function (error) {
+                reject(error);
+            };
+            img.src = "data:image/jpeg;base64," + base64Data;
+        });
+    }
+
+
+
+
+
+
+    connection.on("ReceiveImage", function (senderUserName, imageData, imageFileName) {
+
+        const imageContainer = document.getElementById("chatImages");
+        const imageElement = document.createElement("img");
+
+
+        imageElement.src = imageData;
+        imageElement.alt = imageFileName;
+
+
+        imageContainer.appendChild(imageElement);
+    });
+
 </script>
