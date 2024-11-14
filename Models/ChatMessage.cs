@@ -17,6 +17,7 @@
         public string? Status { get; set; } = "";
         public int? ChatUserID { get; set; } = 0;
         public IFormFile? ChatPhoto { get; set; } 
+        public string? HdnChatPhoto { get; set; } 
         public GenderType? Gender { get; set; }
         public enum GenderType
         {

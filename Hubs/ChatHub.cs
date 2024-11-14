@@ -219,7 +219,7 @@ namespace RealTimeChatApplication.Hubs
             }
         }
 
-        private async Task SaveImageToDatabase(string recipientId, string senderUserName,string base64ImageData)
+        private async Task SaveImageToDatabase(string recipientId, string senderUserName, string base64ImageData)
         {
             try
             {
@@ -240,7 +240,7 @@ namespace RealTimeChatApplication.Hubs
                         cmd.Parameters.AddWithValue("@Mode", 6);
                         cmd.Parameters.AddWithValue("@SenderID", senderUserId.Value);
                         cmd.Parameters.AddWithValue("@ReceiverID", recipientId);
-                        cmd.Parameters.AddWithValue("@Message", 1);
+                        cmd.Parameters.AddWithValue("@Message", "Image");
                         cmd.Parameters.AddWithValue("@ImageData", base64ImageData);
 
                         await cmd.ExecuteNonQueryAsync();

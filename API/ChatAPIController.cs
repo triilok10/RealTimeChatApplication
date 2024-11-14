@@ -296,7 +296,8 @@ namespace RealTimeChatApplication.API
                                 ChatMessageID = Convert.ToInt32(rdr["SenderID"]),
                                 ChatReceiverID = Convert.ToInt32(rdr["ReceiverID"]),
                                 ChatMessageData = Convert.ToString(rdr["ChatMessage"]),
-                                TimeStamp = Convert.ToDateTime(rdr["TimeStamp"])
+                                TimeStamp = Convert.ToDateTime(rdr["TimeStamp"]),
+                                HdnChatPhoto = "data:image/jpeg;base64," + Convert.ToString(rdr["ImageData"])
                             };
                             lstChatMessage.Add(obj);
                         }

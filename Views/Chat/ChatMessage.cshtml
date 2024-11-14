@@ -440,16 +440,32 @@
                             @if (ViewBag.UserLoginID == @Item.ChatMessageID)
                             {
                                 <div class="alignHistorySent">
-                                    <p class="message Historysent">@Item.ChatMessageData</p>
+                                    @if (Item.HdnChatPhoto != "data:image/jpeg;base64,")
+                                    {
+                                        <img src="@Item.HdnChatPhoto" />
+                                    }
+                                    else
+                                    {
+                                        <p class="message Historysent">@Item.ChatMessageData</p>
+
+                                    }
+
 
                                 </div>
                             }
                             else
                             {
                                 <div class="alignHistoryRight">
-                                    <p class="message Historyreceived">
-                                        @Item.ChatMessageData
-                                    </p>
+                                    @if (Item.HdnChatPhoto != "data:image/jpeg;base64,")
+                                    {
+                                        <img src="@Item.HdnChatPhoto" />
+                                    }
+                                    else
+                                    {
+                                        <p class="message Historyreceived">
+                                            @Item.ChatMessageData
+                                        </p>
+                                    }
                                 </div>
                             }
                         </div>
