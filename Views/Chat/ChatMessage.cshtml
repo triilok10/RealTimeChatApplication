@@ -44,6 +44,21 @@
         height: 100vh;
     }
 
+
+    #chatImages {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        max-width: 100%;
+    }
+
+        #chatImages img {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: contain;
+            border: 1px solid #ccc;
+        }
+
     .main-container {
         display: flex;
         width: 100%;
@@ -451,6 +466,9 @@
                     <div class="cameraContainer" style="display:flex; justify-content:right">
                         <img id="profilePicturePreview" src="" class="profile-picture-preview mt-2" style="width:350px;height:auto">
                     </div>
+                    <div id="chatImages">
+                        <!-- Images will be appended here -->
+                    </div>
                 </div>
 
                 <div class="chat-input-container">
@@ -727,12 +745,12 @@
 
 
     connection.on("ReceiveImage", function (senderUserName, imageData, imageFileName) {
-
+        debugger;
         const imageContainer = document.getElementById("chatImages");
         const imageElement = document.createElement("img");
 
 
-        imageElement.src = imageData;
+        imageElement.src = "data:image/jpeg;base64," + imageData;
         imageElement.alt = imageFileName;
 
 

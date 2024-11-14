@@ -243,7 +243,6 @@ namespace RealTimeChatApplication.Hubs
                         cmd.Parameters.AddWithValue("@ReceiverID", recipientId);
                         cmd.Parameters.AddWithValue("@ImageData", imageData);
                         cmd.Parameters.AddWithValue("@FileName", fileName);
-
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
