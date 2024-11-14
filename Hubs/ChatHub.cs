@@ -195,12 +195,12 @@ namespace RealTimeChatApplication.Hubs
                 {
                     base64ImageData = base64ImageData.Replace("data:image/jpeg;base64,", "");
                 }
-                
+
                 imageData = Convert.FromBase64String(base64ImageData);
 
-                //await SaveImageToDatabase(recipientUserId, senderUserName, imageData, fileName);
+                await SaveImageToDatabase(recipientUserId, senderUserName, base64ImageData);
 
-                
+
                 if (_userConnections.TryGetValue(recipientUserId, out var connectionIds))
                 {
                     foreach (var connectionId in connectionIds)
@@ -219,7 +219,7 @@ namespace RealTimeChatApplication.Hubs
             }
         }
 
-        private async Task SaveImageToDatabase(string recipientId, string senderUserName, byte[] imageData, string fileName)
+        private async Task SaveImageToDatabase(string recipientId, string senderUserName,string base64ImageData)
         {
             try
             {
@@ -234,15 +234,15 @@ namespace RealTimeChatApplication.Hubs
                 using (SqlConnection con = new SqlConnection(_connectionString))
                 {
                     await con.OpenAsync();
-
-                    using (SqlCommand cmd = new SqlCommand("usp_ImageRecord", con))
+                    using (SqlCommand cmd = new SqlCommand("usp_MessageRecord", con))
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@Mode", 2);  
+                        cmd.Parameters.AddWithValue("@Mode", 6);
                         cmd.Parameters.AddWithValue("@SenderID", senderUserId.Value);
                         cmd.Parameters.AddWithValue("@ReceiverID", recipientId);
-                        cmd.Parameters.AddWithValue("@ImageData", imageData);
-                        cmd.Parameters.AddWithValue("@FileName", fileName);
+                        cmd.Parameters.AddWithValue("@Message", 1);
+                        cmd.Parameters.AddWithValue("@ImageData", base64ImageData);
+
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
