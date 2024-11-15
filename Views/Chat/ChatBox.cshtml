@@ -406,15 +406,15 @@
                         }
 
                         resultsContainer.innerHTML += `
-                                                                <div class="connection-list-item">
-                                                                    <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
-                                                                    <div class="profile-info">
-                                                                        <div class="profile-infoManage">
-                                                                            <h3>${post.userName || 'No Username'}</h3>
-                                                                            ${actionButtons}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>`;
+                                                                                <div class="connection-list-item">
+                                                                                    <img src="${profileImageSrc}" alt="Profile Photo" loading="lazy" class="profile-img"/>
+                                                                                    <div class="profile-info">
+                                                                                        <div class="profile-infoManage">
+                                                                                            <h3>${post.userName || 'No Username'}</h3>
+                                                                                            ${actionButtons}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>`;
                     });
                 }
             },
@@ -434,7 +434,7 @@
             success: function (res) {
 
                 $(".connection-listOptions").css('display', 'block');
-                // $(".resFixContainer").css('display', 'none');
+                $(".connection-list").css('display', 'none');
 
 
                 var resultsContainer = document.querySelector(".connection-listOptions");
@@ -445,10 +445,6 @@
             }
         });
     }
-
-
-
-
 
 </script>
 <script>
@@ -476,36 +472,49 @@
         if (data.type === 'connections') {
             content += '<h2>Connections List</h2><ul>';
             data.lst.forEach(connection => {
+                debugger;
                 content += `
-                                                                  <li>
-                                                                      <div class="action-buttons">
-                                                                          <img src="${connection.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                          <span class="connection-name">${connection.fullName}</span>
-                                                                      </div>
-                                                                     <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
-                                                                  </li>
-                                                              `;
+                <li>
+                    <div class="action-buttons">
+                        <img src="${connection.profilePictureURL ? connection.profilePictureURL : getDefaultImage(connection.gender)}" alt="Profile Picture" class="profile-picture">
+                        <span class="connection-name">${connection.fullName}</span>
+                    </div>
+                    <a class="view-profile-btn" href="@Url.Action("ChatMessage", "Chat")?Id=${connection.chatUserID}">View Profile</a>
+                </li>
+            `;
             });
             content += '</ul>';
         } else if (data.type === 'pendingRequests') {
             content += '<h2>Pending Requests</h2><ul>';
             data.lst.forEach(request => {
                 content += `
-                                                                 <li>
-                                                                     <div class="action-buttons">
-                                                                         <img src="${request.profilePictureURL}" alt="Profile Picture" class="profile-picture">
-                                                                         <span class="request-name">${request.fullName}</span>
-                                                                     </div>
-                                                                     <div class="action-buttons">
-                                                                              <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
-                                                                             <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
-                                                                     </div>
-                                                                 </li>
-                                                             `;
+                                <li>
+                                    <div class="action-buttons">
+                                                        <img src="${request.profilePictureURL ? request.profilePictureURL : getDefaultImage(request.gender)}" alt="Profile Picture" class="profile-picture">
+                                        <span class="request-name">${request.fullName}</span>
+                                    </div>
+                                    <div class="action-buttons">
+                                             <button class="accept-btn" onclick="js_AcceptRequest(${request.chatUserID})">Accept</button>
+                                            <button class="reject-btn" onclick="js_RejectRequest(${request.chatUserID});">Reject</button>
+                                    </div>
+                                </li>
+                            `;
             });
             content += '</ul>';
         }
         return content;
+    }
+
+
+    function getDefaultImage(gender) {
+        if (gender === 0) {
+            return '/images/Gender/Male.svg';
+        } else if (gender === 1) {
+            return '/images/Gender/Female.svg';
+        } else if (gender === 3) {
+            return '/images/Gender/Other.svg';
+        }
+        return '/images/Gender/Default.svg';
     }
 
     function js_AcceptRequest(id) {

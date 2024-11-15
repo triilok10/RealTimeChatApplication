@@ -43,6 +43,7 @@ namespace RealTimeChatApplication.API
                                 ChatUserID = Convert.ToInt32(rdr["ChatUserID"]),
                                 FullName = Convert.ToString(rdr["FullName"]),
                                 ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"]),
+                                Gender = rdr["Gender"] != DBNull.Value ? (ChatMessage.GenderType?)Enum.ToObject(typeof(ChatMessage.GenderType), Convert.ToInt16(rdr["Gender"])) : null
                             };
                             lstPendingRequest.Add(chatMessage);
                         }
@@ -88,6 +89,7 @@ namespace RealTimeChatApplication.API
                                 ChatUserID = Convert.ToInt32(rdr["ChatUserID"]),
                                 FullName = Convert.ToString(rdr["FullName"]),
                                 ProfilePictureURL = Convert.ToString(rdr["ProfilePictureURL"]),
+                                Gender = rdr["Gender"] != DBNull.Value ? (ChatMessage.GenderType?)Enum.ToObject(typeof(ChatMessage.GenderType), Convert.ToInt16(rdr["Gender"])) : null
                             };
                             lstGetConnections.Add(chatMessage);
                         }
