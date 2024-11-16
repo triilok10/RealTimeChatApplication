@@ -94,6 +94,9 @@
                         <div class="form-group">
                             <label for="password" class="text-muted">Password</label>
                             <input asp-for="Password" class="form-control" type="password" id="password" name="password" />
+                            <input type="hidden" asp-for="Longitude" id="Longitude" value="" />
+                            <input type="hidden" asp-for="Latitude" id="Latitude" value="" />
+                            <input type="hidden" asp-for="FCMToken" id="FCMToken">
                         </div>
                         <button type="submit" class="btn btn-primary btn-block mt-auto">Sign In</button>
                     </form>
@@ -139,4 +142,107 @@
     }
 
 
+    function geoLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        document.getElementById("Latitude").value = latitude;
+        document.getElementById("Longitude").value = longitude;
+
+        console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+    }
+
+    function showError(error) {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.");
+                break;
+        }
+    }
+    window.onload = geoLocation;
+
+</script>
+
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getMessaging, getToken, deleteToken } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging.js";
+
+    // Firebase configuration object
+    const firebaseConfig = {
+        apiKey: "AIzaSyBIWES3c3n3-JXMAwSfp1bNZQ6oZ3yQGyc",
+        authDomain: "realtimechatapplication-trilok.firebaseapp.com",
+        projectId: "realtimechatapplication-trilok",
+        storageBucket: "realtimechatapplication-trilok.appspot.com",
+        messagingSenderId: "965800671505",
+        appId: "1:965800671505:web:3f3238b4bf441f8708f4b0",
+        measurementId: "G-LCJX2K7LR6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+    }
+
+
+    async function requestNotificationPermission() {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+
+                // const currentToken = await getToken(messaging, { vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
+                // if (currentToken) {
+                //     await deleteToken(messaging);
+                //     console.log('Existing FCM token deleted.');
+                // }
+
+
+                const newToken = await getToken(messaging, { vapidKey: "BDdcrVCClOEYjV0Cfn6MeKext7zv8tYhs4Gc8Y5X7MthCId0ccJIvCifrPtNfllC5j-qVM_rMc4l7byyq8E6ZvE" });
+                if (newToken) {
+                    console.log('New FCM Token:', newToken);
+                    document.getElementById("FCMToken").value = newToken;
+
+                } else {
+                    console.log('No new registration token available.');
+                }
+            } else {
+                console.log('Notification permission not granted.');
+            }
+        } catch (err) {
+            console.error('Error getting FCM token: ', err);
+        }
+    }
+
+    requestNotificationPermission();
 </script>

@@ -42,6 +42,8 @@ namespace RealTimeChatApplication.API
                         cmd.Parameters.AddWithValue("@ProfilePictureURL", pChatUser.HdnProfilePicture);
                         cmd.Parameters.AddWithValue("@FullName", pChatUser.FullName);
                         cmd.Parameters.AddWithValue("@FCMToken", pChatUser.FCMToken);
+                        cmd.Parameters.AddWithValue("@Longitude", pChatUser.Longitude);
+                        cmd.Parameters.AddWithValue("@Latitude", pChatUser.Latitude);
 
                         SqlParameter outputIdParam = new SqlParameter("@ChatUser", System.Data.SqlDbType.Int)
                         {
@@ -88,7 +90,9 @@ namespace RealTimeChatApplication.API
                     cmd.Parameters.AddWithValue("@ProfilePictureURL", DBNull.Value);
                     cmd.Parameters.AddWithValue("@ChatUser", DBNull.Value);
                     cmd.Parameters.AddWithValue("@FullName", DBNull.Value);
-
+                    cmd.Parameters.AddWithValue("@FCMToken", pChatUser.FCMToken);
+                    cmd.Parameters.AddWithValue("@Latitude", pChatUser.Latitude);
+                    cmd.Parameters.AddWithValue("@Longitude", pChatUser.Longitude);
 
                     using (SqlDataReader rdr = cmd.ExecuteReader())
                     {
@@ -111,7 +115,7 @@ namespace RealTimeChatApplication.API
                             }
                             else
                             {
-                                obj.Gender = null; 
+                                obj.Gender = null;
                             }
                         }
                         res = true;
@@ -123,6 +127,7 @@ namespace RealTimeChatApplication.API
                             msg = "Please check your Username or Password";
                         }
                     }
+                    
                 }
             }
             catch (Exception ex)
