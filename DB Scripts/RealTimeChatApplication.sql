@@ -1,4 +1,5 @@
-/****** Object:  Database [RealTimeChatApplication]    Script Date: 13-11-2024 07:27:15 ******/
+
+/****** Object:  Database [RealTimeChatApplication]    Script Date: 17-11-2024 13:07:17 ******/
 CREATE DATABASE [RealTimeChatApplication]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -78,7 +79,7 @@ ALTER DATABASE [RealTimeChatApplication] SET QUERY_STORE = OFF
 GO
 USE [RealTimeChatApplication]
 GO
-/****** Object:  Table [dbo].[ChatMessage]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  Table [dbo].[ChatMessage]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -91,13 +92,14 @@ CREATE TABLE [dbo].[ChatMessage](
 	[TimeStamp] [smalldatetime] NOT NULL,
 	[Latitude] [varchar](30) NULL,
 	[Longitude] [varchar](30) NULL,
+	[ImageData] [text] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[ChatMessageID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[ChatUser]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  Table [dbo].[ChatUser]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -113,13 +115,15 @@ CREATE TABLE [dbo].[ChatUser](
 	[AuthenticationTime] [smalldatetime] NULL,
 	[Gender] [varchar](10) NULL,
 	[FCMToken] [varchar](350) NULL,
+	[Latitude] [varchar](50) NULL,
+	[Longitude] [varchar](50) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[ChatUserID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[SendNotificationMessage]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  Table [dbo].[SendNotificationMessage]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -137,7 +141,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserConnectionList]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  Table [dbo].[UserConnectionList]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -155,7 +159,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[UserLoginData]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  Table [dbo].[UserLoginData]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -172,7 +176,7 @@ PRIMARY KEY CLUSTERED
 GO
 ALTER TABLE [dbo].[UserConnectionList] ADD  DEFAULT ((0)) FOR [Accept]
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ChatMessage]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  StoredProcedure [dbo].[usp_ChatMessage]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -280,221 +284,241 @@ ORDER BY UserName;
 END     
     
 GO
-/****** Object:  StoredProcedure [dbo].[usp_ChatUser]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  StoredProcedure [dbo].[usp_ChatUser]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[usp_ChatUser]                  
-(                  
-    @Mode                INT,                  
-    @UserName            VARCHAR(30) ='',                  
-    @Password            VARCHAR(20)='',                 
-    @Email               VARCHAR(50) ='',                
-    @Gender              VARCHAR(10) ='',                
-    @ProfilePictureURL   VARCHAR(100) NULL = '',      
-    @FCMToken    VARCHAR(350) = '',      
-    @FullName            VARCHAR(50) ='',       
-	@ChatUserUpdate           INT = 0,
-    @ChatUser            INT OUTPUT  -- Changed to OUTPUT parameter            
-)                  
-AS                   
-BEGIN                   
-    SET NOCOUNT ON;                  
-            
-    DECLARE @EmailMessage VARCHAR(150);              
-    DECLARE @UserMessage VARCHAR(150);              
-            
-    -- Insert                  
-    IF (@Mode = 1)                  
+CREATE PROCEDURE [dbo].[usp_ChatUser]                    
+(                    
+    @Mode                INT,                    
+    @UserName            VARCHAR(30) ='',                    
+    @Password            VARCHAR(20)='',                   
+    @Email               VARCHAR(50) ='',
+	@ChatUserPK           INT = 0,
+    @Gender              VARCHAR(10) ='',                  
+    @ProfilePictureURL   VARCHAR(100) NULL = '',        
+    @FCMToken             VARCHAR(350) = '',        
+    @FullName            VARCHAR(50) ='',         
+    @ChatUserUpdate           INT = 0, 
+	@Latitude            VARCHAR(50) = '',
+	@Longitude           VARCHAR(50) = '',
+    @ChatUser            INT OUTPUT  -- Changed to OUTPUT parameter              
+)                    
+AS                     
+BEGIN                     
+    SET NOCOUNT ON;                    
+              
+    DECLARE @EmailMessage VARCHAR(150);                
+    DECLARE @UserMessage VARCHAR(150);                
+              
+    -- Insert                    
+    IF (@Mode = 1)                    
+    BEGIN                  
+        -- Check the Email availability                
+        IF EXISTS (SELECT 1 FROM ChatUser WHERE Email = @Email)                
+        BEGIN                
+            SET @EmailMessage = 'Email ID already exists. Please use a new email to register or login with the same email.';                
+            RAISERROR(@EmailMessage, 16, 1);                
+            RETURN;                
+        END                
+                
+        -- Check the UserName availability                
+        IF EXISTS (SELECT 1 FROM ChatUser WHERE UserName = @UserName)                
+        BEGIN                
+            SET @UserMessage = 'Username already exists. Please use a new username to register or login with the same username.';                
+            RAISERROR(@UserMessage, 16, 1);                
+            RETURN;                
+        END                
+                
+        -- Insert the Data for Creating New User                
+        INSERT INTO ChatUser (UserName, Email, Password, AuthenticationTime, Gender, ProfilePictureURL, FullName, FCMToken, Latitude, Longitude)                    
+        VALUES (@UserName, @Email, @Password, GETDATE(), @Gender, @ProfilePictureURL, @FullName , @FCMToken, @Latitude, @Longitude);                   
+                
+        -- Return the Last Id Inserted Here                
+        SET @ChatUser = SCOPE_IDENTITY();                
+    END            
+ --For Login            
+ IF (@Mode = 2)             
+ BEGIN            
+      SELECT * FROM ChatUser WHERE UserName=@UserName AND Password = @Password            
+      
+   Declare @ChatUserID INT;      
+   SET @ChatUserID = ( SELECT ChatUserID FROM ChatUser WHERE UserName=@UserName AND Password = @Password ) 
+   
+   UPDATE ChatUser SET Latitude = @Latitude, Longitude = @Longitude , FCMToken = @FCMToken Where ChatUserID = @ChatUserID
+      
+ --Insert the Login time when User is Login Every Time      
+   IF(@ChatUserID<>'')      
+   BEGIN      
+    INSERT INTO UserLoginData(ChatUserID, LastLoginTime)      
+    Values(@ChatUserID,GETDATE())      
+   END      
+ END     
+   
+ --For Update  
+   IF(@Mode=3)  
+   BEGIN  
+     SELECT ChatUserID,UserName,FullName,Email,ProfilePictureURL,Gender FROM ChatUser WHERE ChatUserID = @ChatUserUpdate  
+   END  
+    --For Update  FCM Token
+   IF(@Mode=4)  
+   BEGIN 
+    UPDATE ChatUser 
+    SET FCMToken = @FCMToken, Latitude = @Latitude, Longitude = @Longitude 
+    WHERE ChatUserID = @ChatUserPK
+   END  
+END 
+GO
+/****** Object:  StoredProcedure [dbo].[usp_ConnectionRequest]    Script Date: 17-11-2024 13:07:18 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[usp_ConnectionRequest]        
+(        
+    @Mode          INT,         
+    @UserID        INT=0,      
+ @AcceptID      INT=0,      
+ @RequestID      INT=0      
+       
+)        
+AS         
+BEGIN        
+    SET NOCOUNT ON;        
+    IF (@Mode = 1)        
+    BEGIN        
+        -- Retrieve pending connection requests        
+        SELECT         
+            CS.ChatUserID,         
+            CS.FullName,         
+            CS.ProfilePictureURL,
+			CS.Gender
+        FROM         
+            UserConnectionList UCL        
+        INNER JOIN         
+            ChatUser CS ON UCL.RequestID = CS.ChatUserID         
+        WHERE         
+            UCL.IsRequestAccepted = 0         
+            AND UCL.AcceptID = @UserID;        
+    END        
+    ELSE IF (@Mode = 2)        
+    BEGIN        
+        -- Retrieve accepted connection requests   
+          Select CS.ChatUserID,CS.FullName,CS.ProfilePictureURL, CS.Gender,CS.UserName from UserConnectionList UCL   
+          INNER Join ChatUser CS on (CS.ChatUserID = UCL.AcceptID OR CS.ChatUserID = UCL.RequestID)  
+          where (RequestID = @UserID or AcceptID = @UserID) AND IsRequestAccepted = 1 AND cs.ChatUserID <> @UserID  
+    END        
+ --To Accept the Request      
+    ELSE IF(@Mode=3)      
+ BEGIN      
+  Update UserConnectionList SET IsRequestAccepted=1 Where RequestID =@RequestID AND AcceptID = @AcceptID       
+       
+ END      
+ --To Reject the Request      
+ ELSE IF(@Mode=4)      
+ BEGIN      
+   DELETE FROM UserConnectionList WHERE RequestID =@RequestID AND AcceptID = @AcceptID       
+ END      
+ ELSE      
+    BEGIN        
+        -- Optional: handle invalid mode        
+        RAISERROR('Invalid mode specified. Please use 1 for pending requests or 2 for accepted requests.', 16, 1);        
+    END        
+END 
+GO
+/****** Object:  StoredProcedure [dbo].[usp_MessageRecord]    Script Date: 17-11-2024 13:07:18 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[usp_MessageRecord]                    
+(                    
+    @Mode             INT = 0,                    
+    @SenderID         INT = 0,                    
+    @ReceiverID       INT = 0,                    
+    @Message          VARCHAR(100) = '',                    
+    @ChatMessageID    INT = 0,
+	@ImageData        TEXT =''
+           
+)                    
+AS                    
+BEGIN                    
+    SET NOCOUNT ON;                    
+    DECLARE @LoginID INT;                
+                
+    -- Insert a new chat message                    
+    IF (@Mode = 1)                    
+    BEGIN                    
+        INSERT INTO ChatMessage (SenderID, ReceiverID, ChatMessage, TimeStamp)                    
+        VALUES (@SenderID, @ReceiverID, @Message, GETDATE());                    
+    END                    
+                    
+    -- Chat History List                    
+    IF (@Mode = 2)                    
     BEGIN                
-        -- Check the Email availability              
-        IF EXISTS (SELECT 1 FROM ChatUser WHERE Email = @Email)              
-        BEGIN              
-            SET @EmailMessage = 'Email ID already exists. Please use a new email to register or login with the same email.';              
-            RAISERROR(@EmailMessage, 16, 1);              
-            RETURN;              
-        END              
-              
-        -- Check the UserName availability              
-        IF EXISTS (SELECT 1 FROM ChatUser WHERE UserName = @UserName)              
-        BEGIN              
-            SET @UserMessage = 'Username already exists. Please use a new username to register or login with the same username.';              
-            RAISERROR(@UserMessage, 16, 1);              
-            RETURN;              
-        END              
-              
-        -- Insert the Data for Creating New User              
-        INSERT INTO ChatUser (UserName, Email, Password, AuthenticationTime, Gender, ProfilePictureURL, FullName, FCMToken)                  
-        VALUES (@UserName, @Email, @Password, GETDATE(), @Gender, @ProfilePictureURL, @FullName , @FCMToken);                 
-              
-        -- Return the Last Id Inserted Here              
-        SET @ChatUser = SCOPE_IDENTITY();              
-    END          
- --For Login          
- IF (@Mode = 2)           
- BEGIN          
-      SELECT * FROM ChatUser WHERE UserName=@UserName AND Password = @Password          
-    
-   Declare @ChatUserID INT;    
-   SET @ChatUserID = ( SELECT ChatUserID FROM ChatUser WHERE UserName=@UserName AND Password = @Password )    
-    
- --Insert the Login time when User is Login Every Time    
-   IF(@ChatUserID<>'')    
-   BEGIN    
-    INSERT INTO UserLoginData(ChatUserID, LastLoginTime)    
-    Values(@ChatUserID,GETDATE())    
-   END    
- END   
- 
- --For Update
-   IF(@Mode=3)
-   BEGIN
-     SELECT ChatUserID,UserName,FullName,Email,ProfilePictureURL,Gender FROM ChatUser WHERE ChatUserID = @ChatUserUpdate
-   END
-END 
-GO
-/****** Object:  StoredProcedure [dbo].[usp_ConnectionRequest]    Script Date: 13-11-2024 07:27:16 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE PROCEDURE [dbo].[usp_ConnectionRequest]      
-(      
-    @Mode          INT,       
-    @UserID        INT=0,    
- @AcceptID      INT=0,    
- @RequestID      INT=0    
-     
-)      
-AS       
-BEGIN      
-    SET NOCOUNT ON;      
-    IF (@Mode = 1)      
-    BEGIN      
-        -- Retrieve pending connection requests      
-        SELECT       
-            CS.ChatUserID,       
-            CS.FullName,       
-            CS.ProfilePictureURL      
-        FROM       
-            UserConnectionList UCL      
-        INNER JOIN       
-            ChatUser CS ON UCL.RequestID = CS.ChatUserID       
-        WHERE       
-            UCL.IsRequestAccepted = 0       
-            AND UCL.AcceptID = @UserID;      
-    END      
-    ELSE IF (@Mode = 2)      
-    BEGIN      
-        -- Retrieve accepted connection requests 
-          Select CS.ChatUserID,CS.FullName,CS.ProfilePictureURL, CS.Gender,CS.UserName from UserConnectionList UCL 
-          INNER Join ChatUser CS on (CS.ChatUserID = UCL.AcceptID OR CS.ChatUserID = UCL.RequestID)
-          where (RequestID = @UserID or AcceptID = @UserID) AND IsRequestAccepted = 1 AND cs.ChatUserID <> @UserID
-    END      
- --To Accept the Request    
-    ELSE IF(@Mode=3)    
- BEGIN    
-  Update UserConnectionList SET IsRequestAccepted=1 Where RequestID =@RequestID AND AcceptID = @AcceptID     
-     
- END    
- --To Reject the Request    
- ELSE IF(@Mode=4)    
- BEGIN    
-   DELETE FROM UserConnectionList WHERE RequestID =@RequestID AND AcceptID = @AcceptID     
- END    
- ELSE    
-    BEGIN      
-        -- Optional: handle invalid mode      
-        RAISERROR('Invalid mode specified. Please use 1 for pending requests or 2 for accepted requests.', 16, 1);      
-    END      
-END 
-GO
-/****** Object:  StoredProcedure [dbo].[usp_MessageRecord]    Script Date: 13-11-2024 07:27:16 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE PROCEDURE [dbo].[usp_MessageRecord]                  
-(                  
-    @Mode             INT = 0,                  
-    @SenderID         INT = 0,                  
-    @ReceiverID       INT = 0,                  
-    @Message          VARCHAR(100) = '',                  
-    @ChatMessageID    INT = 0        
-         
-)                  
-AS                  
-BEGIN                  
-    SET NOCOUNT ON;                  
-    DECLARE @LoginID INT;              
-              
-    -- Insert a new chat message                  
-    IF (@Mode = 1)                  
-    BEGIN                  
-        INSERT INTO ChatMessage (SenderID, ReceiverID, ChatMessage, TimeStamp)                  
-        VALUES (@SenderID, @ReceiverID, @Message, GETDATE());                  
-    END                  
-                  
-    -- Chat History List                  
-    IF (@Mode = 2)                  
-    BEGIN              
-                     
-           SELECT DISTINCT ChatUserID          
-           INTO #TempChatUsers          
-           FROM ChatUser          
-           WHERE ChatUserId IN (          
-               -- Get distinct ReceiverIDs where the logged-in user is the Sender          
-               SELECT DISTINCT ReceiverID FROM ChatMessage WHERE SenderID = @ChatMessageID          
-                         
-               UNION          
-                         
-               -- Get distinct SenderIDs where the logged-in user is the Receiver          
-               SELECT DISTINCT SenderID FROM ChatMessage WHERE ReceiverID = @ChatMessageID          
-                );          
-                     
-             -- Now select user details for those distinct user IDs          
-                SELECT UserName, FullName, ProfilePictureURL, ChatUserID,Gender FROM ChatUser          
-                WHERE ChatUserID IN (SELECT ChatUserID FROM #TempChatUsers);          
-                     
-              -- Clean up the temporary table          
-                 DROP TABLE #TempChatUsers;              
-    END                  
-                  
-    -- Chat Record between the Users                  
-    IF (@Mode = 3)                  
-    BEGIN                  
-        IF (@SenderID = @ReceiverID)                  
-        BEGIN                  
-            SELECT *                   
-            FROM ChatMessage                   
-            WHERE                   
-                (SenderID = @SenderID AND ReceiverID = @ReceiverID);                  
-        END                  
-                  
-        IF (@SenderID <> @ReceiverID)                  
-        BEGIN                  
-            SELECT *                   
-            FROM ChatMessage                   
-            WHERE                   
-                (SenderID = @SenderID OR ReceiverID = @SenderID) AND                   
-                (ReceiverID = @ReceiverID OR SenderID = @ReceiverID);                  
-        END                  
-    END         
- IF (@Mode=4)        
-  BEGIN        
-     INSERT INTO UserConnectionList (RequestID, AcceptID, TIMESTAMP, IsRequestAccepted)        
-     values(@SenderID, @ReceiverID,GETDATE(),0)        
-         
-     Select FCMToken from ChatUser where ChatUserID = @ReceiverID      
-  END     
- IF (@Mode=5)  
-  BEGIN  
-  DELETE FROM UserConnectionList WHERE RequestID=@SenderID AND AcceptID = @ReceiverID AND IsRequestAccepted =0  
+                       
+           SELECT DISTINCT ChatUserID            
+           INTO #TempChatUsers            
+           FROM ChatUser            
+           WHERE ChatUserId IN (            
+               -- Get distinct ReceiverIDs where the logged-in user is the Sender            
+               SELECT DISTINCT ReceiverID FROM ChatMessage WHERE SenderID = @ChatMessageID            
+                           
+               UNION            
+                           
+               -- Get distinct SenderIDs where the logged-in user is the Receiver            
+               SELECT DISTINCT SenderID FROM ChatMessage WHERE ReceiverID = @ChatMessageID            
+                );            
+                       
+             -- Now select user details for those distinct user IDs            
+                SELECT UserName, FullName, ProfilePictureURL, ChatUserID,Gender FROM ChatUser            
+                WHERE ChatUserID IN (SELECT ChatUserID FROM #TempChatUsers);            
+                       
+              -- Clean up the temporary table            
+                 DROP TABLE #TempChatUsers;                
+    END                    
+                    
+    -- Chat Record between the Users                    
+    IF (@Mode = 3)                    
+    BEGIN                    
+        IF (@SenderID = @ReceiverID)                    
+        BEGIN                    
+            SELECT *                     
+            FROM ChatMessage                     
+            WHERE                     
+                (SenderID = @SenderID AND ReceiverID = @ReceiverID);                    
+        END                    
+                    
+        IF (@SenderID <> @ReceiverID)                    
+        BEGIN                    
+            SELECT *                     
+            FROM ChatMessage                     
+            WHERE                     
+                (SenderID = @SenderID OR ReceiverID = @SenderID) AND                     
+                (ReceiverID = @ReceiverID OR SenderID = @ReceiverID);                    
+        END                    
+    END           
+ IF (@Mode=4)          
+  BEGIN          
+     INSERT INTO UserConnectionList (RequestID, AcceptID, TIMESTAMP, IsRequestAccepted)          
+     values(@SenderID, @ReceiverID,GETDATE(),0)          
+           
+     Select FCMToken from ChatUser where ChatUserID = @ReceiverID        
+  END       
+ IF (@Mode=5)    
+  BEGIN    
+  DELETE FROM UserConnectionList WHERE RequestID=@SenderID AND AcceptID = @ReceiverID AND IsRequestAccepted =0    
   END  
+  --To save the Image
+  IF(@Mode=6)
+  BEGIN
+      INSERT INTO ChatMessage (SenderID, ReceiverID, ChatMessage, TimeStamp,ImageData)                    
+      VALUES (@SenderID, @ReceiverID, @Message, GETDATE(),@ImageData); 
+  END
 END 
 GO
-/****** Object:  StoredProcedure [dbo].[usp_NotificationRecord]    Script Date: 13-11-2024 07:27:16 ******/
+/****** Object:  StoredProcedure [dbo].[usp_NotificationRecord]    Script Date: 17-11-2024 13:07:18 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
